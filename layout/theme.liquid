@@ -1,6 +1,6 @@
 <!doctype html>
 <html class="no-js" lang="{{ request.locale.iso_code }}">
-  <head>{% render 'pagefly-head' %}
+  <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -159,6 +159,8 @@
         --variant-pills-shadow-horizontal-offset: {{ settings.variant_pills_shadow_horizontal_offset }}px;
         --variant-pills-shadow-vertical-offset: {{ settings.variant_pills_shadow_vertical_offset }}px;
         --variant-pills-shadow-blur-radius: {{ settings.variant_pills_shadow_blur }}px;
+
+        --color-background-cart: {{ thanh123.red }}, {{ thanh123.green }}, {{ thanh123.blue }};
       }
 
       *,
@@ -214,7 +216,13 @@
     </script>
   </head>
 
-  <body class="gradient">
+  {% if request.page_type == 'cart' %}
+    <style>
+      
+    </style>
+  {% endif %}
+
+  <body class="gradient thanh">
     <a class="skip-to-content-link button visually-hidden" href="#MainContent">
       {{ "accessibility.skip_to_text" | t }}
     </a>
@@ -222,6 +230,10 @@
     {%- if settings.cart_type == 'drawer' -%}
       {%- render 'cart-drawer' -%}
     {%- endif -%}
+
+    <style>
+      
+    </style>
 
     {% section 'announcement-bar' %}
     {% section 'header' %}
