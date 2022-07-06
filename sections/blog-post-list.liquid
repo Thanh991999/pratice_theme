@@ -1,0 +1,160 @@
+{% schema %}
+{
+  "name": "Blog posts",
+  "settings": [
+    {
+      "type": "select",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "cs-background cs-background-2",
+      "options": [
+        {
+          "value": "cs-accent cs-accent-1",
+          "label": "Accent 1"
+        },
+        {
+          "value": "cs-accent cs-accent-2",
+          "label": "Accent 2"
+        },
+        {
+          "value": "cs-background cs-background-1",
+          "label": "Background 1"
+        },
+        {
+          "value": "cs-background cs-background-2",
+          "label": "Background 2"
+        }
+      ]
+    },
+    { 
+      "type":"header",
+      "content": "Content"
+    },
+    {
+      "type": "text",
+      "label": "Heading",
+      "id": "heading"
+    },
+    {
+      "type": "blog",
+      "id": "blog",
+      "label": "Blog"
+    },
+    { 
+      "type":"header",
+      "content": "Layout"
+    },
+    {
+      "type": "select",
+      "id": "image_ratio",
+      "label": "Image ratio",
+      "default": "landscape",
+      "options": [
+        {
+          "value": "square",
+          "label": "Square"
+        },
+        {
+          "value": "portrait",
+          "label": "Portrait (2:3)"
+        },
+        {
+          "value": "landscape",
+          "label": "Landscape (3:2)"
+        }
+      ]
+    },
+    {
+      "type": "checkbox",
+      "id": "show_featured_image",
+      "label": "Show featured image"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_blog_tag",
+      "label": "Show blog’s tag"
+    },
+    {
+      "type": "checkbox",
+      "id": "checkbox_show_image",
+      "label": "Show excerpt",
+      "info": "Change excerpts by editing your blog posts.[Learn more](https://www.figma.com/file/OcmkNnTsla14jPs5bsVyJV/Blum-v2---settings-%26-wireframes?node-id=986%3A25529)"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_published_date",
+      "label": "Show published date"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_author",
+      "label": "Show author"
+    },
+    {
+      "type": "header",
+      "content": "button"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_view_all",
+      "label": "Show ‘view all’ button if blog has more posts then being shown"
+    },
+    {
+      "type": "text",
+      "id": "btn_text",
+      "label": "Button text"
+    },
+    {
+      "type": "header",
+      "content": "layout"
+    },
+    {
+      "type": "range",
+      "id": "item_per_row",
+      "min": 1,
+      "max": 6,
+      "step": 1,
+      "label": "Item per row",
+      "default": 3
+    },
+    {
+      "type": "range",
+      "id": "item_to_show",
+      "min": 1,
+      "max": 8,
+      "step": 1,
+      "label": "Max items to show",
+      "default": 3,
+      "info": "Show the blog post list as a carousel instead of rows"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_carousel",
+      "label": "Enable carousel on mobile"
+    }
+  ],
+  "blocks": [
+    {
+      "name": "Logo",
+      "type": "image",
+      "settings": [
+        {
+          "type": "image_picker",
+          "label": "Logo image",
+          "id": "logo"
+        },
+        {
+          "type": "url",
+          "label": "Link",
+          "id": "logo_link"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Blog Post List"
+    }
+  ]
+}
+{% endschema %}

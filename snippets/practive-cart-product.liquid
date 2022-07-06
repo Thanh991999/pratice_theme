@@ -1,0 +1,22 @@
+
+{%- comment -%}
+  Usage: 
+  {% render'practive-card-product', product: product, show_vendors: false, show_rating: false %}
+{%- endcomment -%}  
+
+
+<div class="trending-product">
+  <div class="trending-product__image">
+    <!-- <img src="./assets/image/trending-product/img1.png" alt=""> -->
+    <img class="feature-img__contain" width="{{ image.width }}" height="{{ image.height }}" loading="lazy" src="{{ product.featured_image | image_url: width: 300 }}" alt="img product">
+    
+  </div>
+  <div class="trending-product__content">
+    <h4 class="trending-product__title text--dark">{{- product.title -}}</h4>
+    <div class="price">
+      <span class="price__new"> </span>
+      <span class="price__old"> {{ product.price | money }}</span>
+    </div>
+  </div>
+</div>
+

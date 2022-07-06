@@ -1,0 +1,112 @@
+{% schema %}
+{
+  "name": "Popup",
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "Once closed without submitting, the popup will not show again until the next visit. After submitting, customers will not see the popup again until it’s re-enabled."
+    },
+    {
+      "type": "checkbox",
+      "id": "show_popup",
+      "label": "Enable popup",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Image"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "placeholder": "Popup Heading",
+      "default": "Popup heading"
+    },
+    {
+      "type": "richtext",
+      "id": "text",
+      "label": "Description"
+    },
+    {
+      "type": "header",
+      "content": "Trigger"
+    },
+    {
+      "type": "select",
+      "id": "trigger",
+      "label": "When to show",
+      "options": [
+        {
+          "value": "reaching-to-footer",
+          "label": "Reaching the footer"
+        },
+        {
+          "value": "after-add-to-cart",
+          "label": "After add to cart"
+        }
+      ],
+      "default": "reaching-to-footer",
+      "info": "“After add to cart” will trigger popup once visitors close the cart drawer"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_only_on_index",
+      "label": "Show only on home page",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_only_for_visitors",
+      "label": "Show only for non-login visitors",
+      "default": true
+    }
+  ],
+  "blocks": [
+    {
+      "type": "button",
+      "name": "Call to action",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "button_title",
+          "label": "CTA text",
+          "default": "Popup CTA"
+        },
+        {
+          "type": "url",
+          "id": "button_link",
+          "label": "CTA link"
+        }
+      ] 
+    },
+    {
+      "type": "newsletter",
+      "name": "Newsletter form",
+      "settings": [
+        {
+          "type": "paragraph",
+          "content": "Subscribers added automatically to your “Email subscribers” customer list. [Learn more](https://help.shopify.com/en/manual/customers/manage-customers)"
+        },
+        {
+          "type": "paragraph",
+          "content": "No customizable settings available."
+        }
+        
+      ],
+      "limit": 1
+    }
+  ],
+  "presets": [
+    {
+      "name": "Popup"
+    }
+  ]
+}
+{% endschema %}

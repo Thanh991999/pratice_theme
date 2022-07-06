@@ -1,0 +1,96 @@
+{% schema %}
+{
+  "name": "Brand list",
+  "settings": [
+    {
+      "type": "select",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "cs-background cs-background-2",
+      "options": [
+        {
+          "value": "cs-accent cs-accent-1",
+          "label": "Accent 1"
+        },
+        {
+          "value": "cs-accent cs-accent-2",
+          "label": "Accent 2"
+        },
+        {
+          "value": "cs-background cs-background-1",
+          "label": "Background 1"
+        },
+        {
+          "value": "cs-background cs-background-2",
+          "label": "Background 2"
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "label": "Heading",
+      "id": "heading"
+    },
+    { 
+      "type":"header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "logo_width",
+      "min": 60,
+      "max": 180,
+      "step": 2,
+      "label": "Logo max width",
+      "default": 90,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "space_items",
+      "min": 4,
+      "max": 40,
+      "step": 1,
+      "label": "Space between items",
+      "default": 16,
+      "unit": "px"
+    },
+    { 
+      "type":"header",
+      "content": "Mobile Layout"
+    },
+    {
+      "type": "range",
+      "id": "item_per_row",
+      "min": 2,
+      "max": 4,
+      "step": 1,
+      "label": "Logo per row",
+      "default": 3
+    }
+  ],
+  "blocks": [
+    {
+      "name": "Logo",
+      "type": "image",
+      "settings": [
+        {
+          "type": "image_picker",
+          "label": "Logo image",
+          "id": "logo"
+        },
+        {
+          "type": "url",
+          "label": "Link",
+          "id": "logo_link"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Brand list"
+    }
+  ]
+}
+{% endschema %}

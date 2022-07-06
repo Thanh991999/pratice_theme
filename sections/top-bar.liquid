@@ -1,0 +1,96 @@
+{% schema %}
+{
+  "name": "Top bar",
+  "settings": [
+  {
+    "type": "select",
+    "id": "color_scheme",
+    "label": "Color scheme",
+    "default": "cs-accent cs-accent-1",
+    "options": [
+      {
+        "value": "cs-accent cs-accent-1",
+        "label": "Accent 1"
+      },
+      {
+        "value": "cs-accent cs-accent-2",
+        "label": "Accent 2"
+      },
+      {
+        "value": "cs-background cs-background-1",
+        "label": "Background 1"
+      },
+      {
+        "value": "cs-background cs-background-2",
+        "label": "Background 2"
+      }
+    ]
+  },
+    { 
+      "type":"header",
+      "content": "Messages"
+    },
+    {
+      "type": "checkbox",
+      "label": "Enable messages autoplay",
+      "id": "Enabel_autoplay"
+    },
+    {
+      "type": "range",
+      "id": "time_message_run",
+      "min": 3,
+      "max": 10,
+      "step": 1,
+      "label": "Change message every",
+      "default": 5,
+      "unit": "s"
+    },
+    { 
+      "type":"header",
+      "content": "Currency selector",
+      "info": "To add a currency, go to your [payment settings](https://accounts.shopify.com/select?rid=c08d3742-4fa9-4af3-8360-7c926dcc3806)"
+    },
+    {
+      "type": "checkbox",
+      "label": "Show currency selector",
+      "id": "show_currency_selector",
+      "info": "Currency selector displays inside drawer on mobile"
+    },
+    { 
+      "type":"header",
+      "content": "Language selector",
+      "info": "To add a language, go to your [language settings](https://gia-dinh-g-u.myshopify.com/admin/settings/languages)"
+    },
+    {
+      "type": "checkbox",
+      "label": "Show language selector",
+      "id": "show_language_selector",
+      "info": "Language selector displays inside drawer on mobile"
+    }
+  ],
+  "blocks": [
+    {
+      "name": "Message",
+      "type": "text",
+      "settings": [
+        {
+          "type": "text",
+          "label": "Text",
+          "id": "message_text",
+          "default": "Welcome to our store"
+        },
+        {
+          "type": "url",
+          "label": "Link",
+          "id": "message_link"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Top bar"
+    }
+  ]
+}
+{% endschema %}

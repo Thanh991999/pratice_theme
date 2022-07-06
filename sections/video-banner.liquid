@@ -1,6 +1,6 @@
 {% schema %}
 {
-  "name": "Image Banner",
+  "name": "Video banner",
   "settings": [
     {
       "type": "select",
@@ -83,18 +83,6 @@
       "content": "background"
     },
     {
-      "type": "image_picker",
-      "label": "Desktop background image",
-      "id": "desktop_background_img",
-      "info": "1600px x 800px .png recommended"
-    },
-    {
-      "type": "image_picker",
-      "label": "Mobile background image",
-      "id": "mobile_background_img",
-      "info": "750 x 1100px .jpg recommended. If none is set, desktop image will be cropped."
-    },
-    {
       "type": "select",
       "label": "Height",
       "id": "height",
@@ -113,7 +101,18 @@
         }
       ],
       "default": "70"
-
+    },
+    {
+      "type": "video_url",
+      "id": "video_url",
+      "accept": [
+        "youtube",
+        "vimeo"
+      ],
+      "default": "https://www.youtube.com/watch?v=_9VUPq3SxOc",
+      "label": "Banner video link",
+      "placeholder": "Enter video link",
+      "info": "Accepts YouTube or Vimeo links"
     },
     {
       "type": "checkbox",
@@ -161,7 +160,7 @@
   ],
   "presets": [
     {
-      "name": "Image Banner"
+      "name": "Video Banner"
     }
   ]
 }

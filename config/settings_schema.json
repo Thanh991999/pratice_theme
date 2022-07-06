@@ -4,8 +4,8 @@
     "theme_name": "Dawn",
     "theme_version": "6.0.2",
     "theme_author": "Shopify",
-    "theme_documentation_url": "https://help.shopify.com/manual/online-store/themes",
-    "theme_support_url": "https://support.shopify.com/"
+    "theme_documentation_url": "https:\/\/help.shopify.com\/manual\/online-store\/themes",
+    "theme_support_url": "https:\/\/support.shopify.com\/"
   },
   {
     "name": "t:settings_schema.colors.name",
@@ -83,6 +83,15 @@
         "id": "gradient_background_2",
         "type": "color_background",
         "label": "t:settings_schema.colors.settings.gradient_background_2.label"
+      },
+      {
+        "type": "header",
+        "content": "thanhdz"
+      },
+      {
+        "id": "thanh123",
+        "type": "color_background",
+        "label": "doi mau cart"
       }
     ]
   },

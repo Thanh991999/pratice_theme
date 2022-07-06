@@ -1,7 +1,8 @@
 
+
 {% schema %}
 {
-  "name": "Collapsible content",
+  "name": "Hero image with text",
   "settings": [
     {
       "type": "select",
@@ -32,95 +33,120 @@
       "content": "content"
     },
     {
-      "type": "text",
-      "id": "heading",
-      "label": "Heading",
-      "default": "Frequently asked questions"
-    },
-    {
-      "type": "checkbox",
-      "label": "Nest heading in content column",
-      "id": "content_checkbox"
-    },
-    {
-      "type": "header",
-      "content": "Image"
-    },
-    {
-      "type": "image_picker",
-      "label": "Image",
-      "id": "image"
-    },
-    {
       "type": "select",
-      "id": "Image_position",
-      "label": "Image layout",
+      "id": "content_layout",
+      "label": "Content alignment",
       "default": "left",
       "options": [
         {
           "value": "left",
-          "label": "On the left"
+          "label": "Left"
         },
         {
-          "value": "right",
-          "label": "On the right"
+          "value": "center",
+          "label": "Center"
         }
       ]
-    },
-    {
-      "type": "select",
-      "id": "image_ratio",
-      "label": "Image ratio",
-      "default": "landscape",
-      "options": [
-        {
-          "value": "adapt",
-          "label": "Adapt to image"
-        },
-        {
-          "value": "square",
-          "label": "Square"
-        },
-        {
-          "value": "portrait",
-          "label": "Portrait (2:3)"
-        },
-        {
-          "value": "landscape",
-          "label": "Landscape (3:2)"
-        }
-      ]
-    },
-    {
-      "type": "header",
-      "content": "Collapsible items"
-    },
-    {
-      "type": "checkbox",
-      "id": "show_icon",
-      "label": "Show icon"
-    },
-    {
-      "type": "header",
-      "content": "Button"
     },
     {
       "type": "text",
-      "id": "btn_label",
-      "label": "Button label",
-      "placeholder": "Enter label text"
+      "id": "heading",
+      "label": "Heading",
+      "default": "Welcome to our store"
+    },
+    {
+      "type": "richtext",
+      "id": "description",
+      "label": "Description"
+    }
+    ,
+    {
+      "type": "text",
+      "id": "primary_btn_label",
+      "label": "Primary button label",
+      "default": "Check now"
     },
     {
       "type": "url",
-      "id": "btn_link",
-      "label": "Button link"
+      "id": "primary_button_link",
+      "label": "Primary button link"
+    },
+    {
+      "type": "text",
+      "id": "secondary_btn_label",
+      "label": "Secondary button label",
+      "default": "View details"
+    },
+    {
+      "type": "url",
+      "id": "secondary_button_link",
+      "label": "Secondary link"
+    },
+    {
+      "type": "header",
+      "content": "Background"
+    },
+    {
+      "type": "image_picker",
+      "label": "Desktop background image",
+      "id": "desktop_background_img",
+      "info": "1000 x 1000px .png recommended"
+    },
+    {
+      "type": "image_picker",
+      "label": "Mobile background image",
+      "id": "mobile_background_img",
+      "info": "1000 x 1000px .png recommended. If unset, desktop image will be used."
+    },
+    {
+      "type": "range",
+      "unit": "%",
+      "max": 90,
+      "min": 0,
+      "step": 1,
+      "default": 30,
+      "id": "overlay_opa",
+      "label": "Overlay opacity"
+    },
+    {
+      "type": "header",
+      "content": "Highlighted Collections",
+      "info": "Show a list of product collections for better catalogue navigation"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_collections",
+      "label": "Enable highlighted collections"
+    },
+    {
+      "type": "text",
+      "id": "heading_collections",
+      "label": "Heading"
+    },
+    {
+      "type": "collection_list",
+      "id": "collections_list",
+      "label": "Selected collections",
+      "limit": 6,
+      "info": "Maximum 6 collections"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_view_all",
+      "label": "Enable \"View all\""
+    },
+    {
+      "type": "text",
+      "id": "btn_text",
+      "label": "Button text",
+      "default": "View all"
     }
   ],
   "blocks": [
     {
       "type": "content",
-      "name": "Collapsible item",
-      "limit": 5,
+      "name": "Highlighted content",
+      "limit": 3,
       "settings": [
         {
           "type": "select",
@@ -332,18 +358,13 @@
           "type": "richtext",
           "id": "description",
           "label": "Description"
-        },
-        {
-          "type": "page",
-          "id": "page",
-          "label": "Content from page"
         }
       ]
     }
   ],
   "presets": [
     {
-      "name": "Collapsible Content"
+      "name": "Hero image with text"
     }
   ]
 }
