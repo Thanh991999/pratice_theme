@@ -2,101 +2,100 @@
 
 {% schema %}
 {
-  "name": "Hero image with text",
+  "name": "t:sections.hero_image_with_text.name",
   "settings": [
     {
       "type": "select",
       "id": "color_scheme",
-      "label": "Color scheme",
+      "label": "t:general.settings.color_scheme.label",
       "default": "cs-accent cs-accent-1",
       "options": [
         {
           "value": "cs-accent cs-accent-1",
-          "label": "Accent 1"
+          "label": "t:settings_schema.colors.settings.colors_accent_1.label"
         },
         {
           "value": "cs-accent cs-accent-2",
-          "label": "Accent 2"
+          "label": "t:settings_schema.colors.settings.colors_accent_2.label"
         },
         {
           "value": "cs-background cs-background-1",
-          "label": "Background 1"
+          "label": "t:settings_schema.colors.settings.colors_background_1.label"
         },
         {
           "value": "cs-background cs-background-2",
-          "label": "Background 2"
+          "label": "t:settings_schema.colors.settings.colors_background_2.label"
         }
       ]
     },
     {
       "type": "header",
-      "content": "content"
+      "content": "t:general.settings.headers.header_content.content"
     },
     {
       "type": "select",
       "id": "content_layout",
-      "label": "Content alignment",
+      "label": "t:general.settings.content_alignment.label",
       "default": "left",
       "options": [
         {
           "value": "left",
-          "label": "Left"
+          "label": "t:general.settings.content_alignment.options.option_left.label"
         },
         {
           "value": "center",
-          "label": "Center"
+          "label": "t:general.settings.content_alignment.options.option_right.label"
         }
       ]
     },
     {
       "type": "text",
       "id": "heading",
-      "label": "Heading",
+      "label": "t:general.settings.heading.label",
       "default": "Welcome to our store"
     },
     {
       "type": "richtext",
       "id": "description",
-      "label": "Description"
-    }
-    ,
+      "label": "t:general.settings.description.label"
+    },
     {
       "type": "text",
       "id": "primary_btn_label",
-      "label": "Primary button label",
+      "label": "t:general.settings.primary_button_label.label",
       "default": "Check now"
     },
     {
       "type": "url",
-      "id": "primary_button_link",
-      "label": "Primary button link"
+      "id": "primary_btn_link",
+      "label": "t:general.settings.primary_button_link.label"
     },
     {
       "type": "text",
       "id": "secondary_btn_label",
-      "label": "Secondary button label",
+      "label": "t:general.settings.secondary_button_label.label",
       "default": "View details"
     },
     {
       "type": "url",
-      "id": "secondary_button_link",
-      "label": "Secondary link"
+      "id": "secondary_btn_link",
+      "label": "t:general.settings.secondary_button_link.label"
     },
     {
       "type": "header",
-      "content": "Background"
+      "content": "t:general.settings.headers.header_content.content"
     },
     {
       "type": "image_picker",
-      "label": "Desktop background image",
+      "label": "t:general.settings.desktop_background_image.label",
       "id": "desktop_background_img",
-      "info": "1000 x 1000px .png recommended"
+      "info": "t:general.settings.desktop_background_image.info"
     },
     {
       "type": "image_picker",
-      "label": "Mobile background image",
+      "label": "t:general.settings.mobile_background_image.label",
       "id": "mobile_background_img",
-      "info": "1000 x 1000px .png recommended. If unset, desktop image will be used."
+      "info": "t:general.settings.mobile_background_image.info"
     },
     {
       "type": "range",
@@ -106,52 +105,52 @@
       "step": 1,
       "default": 30,
       "id": "overlay_opa",
-      "label": "Overlay opacity"
+      "label": "t:general.settings.overlay_opacity.label"
     },
     {
       "type": "header",
-      "content": "Highlighted Collections",
-      "info": "Show a list of product collections for better catalogue navigation"
+      "content": "t:sections.hero_image_with_text.settings.headers.header_highlighted_collections.content",
+      "info": "t:sections.hero_image_with_text.settings.headers.header_highlighted_collections.info"
     },
     {
       "type": "checkbox",
       "id": "enable_collections",
-      "label": "Enable highlighted collections"
+      "label": "t:sections.hero_image_with_text.settings.enable_highlighted_collections.label"
     },
     {
       "type": "text",
       "id": "heading_collections",
-      "label": "Heading"
+      "label": "t:general.settings.heading.label"
     },
     {
       "type": "collection_list",
       "id": "collections_list",
-      "label": "Selected collections",
+      "label": "t:general.settings.selected_collections.label",
       "limit": 6,
-      "info": "Maximum 6 collections"
+      "info": "t:sections.hero_image_with_text.settings.selected_collections.info"
     },
     {
       "type": "checkbox",
       "id": "enable_view_all",
-      "label": "Enable \"View all\""
+      "label": "t:sections.hero_image_with_text.settings.enable_view_all.label"
     },
     {
       "type": "text",
       "id": "btn_text",
-      "label": "Button text",
+      "label": "t:settings_schema.colors.settings.colors_button_text.label",
       "default": "View all"
     }
   ],
   "blocks": [
     {
       "type": "content",
-      "name": "Highlighted content",
+      "name": "t:sections.hero_image_with_text.blocks.highlighted_content.name",
       "limit": 3,
       "settings": [
         {
           "type": "select",
           "id": "icon",
-          "label": "Icon",
+          "label": "t:general.settings.icon.label",
           "default": "check-mark",
           "options": [
             {
@@ -351,20 +350,20 @@
         {
           "type": "text",
           "id": "block_heading",
-          "label": "Heading",
+          "label": "t:general.settings.heading.label",
           "placeholder": "Enter name"
         },
         {
           "type": "richtext",
           "id": "description",
-          "label": "Description"
+          "label": "t:general.settings.description.label"
         }
       ]
     }
   ],
   "presets": [
     {
-      "name": "Hero image with text"
+      "name": "t:sections.hero_image_with_text.name"
     }
   ]
 }

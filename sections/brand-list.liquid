@@ -1,39 +1,39 @@
 {% schema %}
 {
-  "name": "Brand list",
+  "name": "t:sections.brand_list.name",
   "settings": [
     {
       "type": "select",
       "id": "color_scheme",
-      "label": "Color scheme",
-      "default": "cs-background cs-background-2",
+      "label": "t:general.settings.color_scheme.label",
+      "default": "cs-accent cs-accent-1",
       "options": [
         {
           "value": "cs-accent cs-accent-1",
-          "label": "Accent 1"
+          "label": "t:settings_schema.colors.settings.colors_accent_1.label"
         },
         {
           "value": "cs-accent cs-accent-2",
-          "label": "Accent 2"
+          "label": "t:settings_schema.colors.settings.colors_accent_2.label"
         },
         {
           "value": "cs-background cs-background-1",
-          "label": "Background 1"
+          "label": "t:settings_schema.colors.settings.colors_background_1.label"
         },
         {
           "value": "cs-background cs-background-2",
-          "label": "Background 2"
+          "label": "t:settings_schema.colors.settings.colors_background_2.label"
         }
       ]
     },
     {
       "type": "text",
-      "label": "Heading",
+      "label": "t:general.settings.heading.label",
       "id": "heading"
     },
     { 
       "type":"header",
-      "content": "Layout"
+      "content": "t:general.settings.headers.header_layout.content"
     },
     {
       "type": "range",
@@ -41,7 +41,7 @@
       "min": 60,
       "max": 180,
       "step": 2,
-      "label": "Logo max width",
+      "label": "t:sections.brand_list.settings.logo_max_width.label",
       "default": 90,
       "unit": "px"
     },
@@ -51,13 +51,13 @@
       "min": 4,
       "max": 40,
       "step": 1,
-      "label": "Space between items",
+      "label": "t:sections.brand_list.settings.space_between_items.label",
       "default": 16,
       "unit": "px"
     },
     { 
       "type":"header",
-      "content": "Mobile Layout"
+      "content": "t:general.settings.headers.header_mobile_layout.content"
     },
     {
       "type": "range",
@@ -65,7 +65,7 @@
       "min": 2,
       "max": 4,
       "step": 1,
-      "label": "Logo per row",
+      "label": "t:sections.brand_list.settings.logo_per_row.label",
       "default": 3
     }
   ],
@@ -76,12 +76,14 @@
       "settings": [
         {
           "type": "image_picker",
-          "label": "Logo image",
-          "id": "logo"
+          "label": "t:sections.brand_list.blocks.logo.settings.image.label",
+          "id": "logo",
+          "info": "t:sections.brand_list.blocks.logo.settings.image.info"
+
         },
         {
           "type": "url",
-          "label": "Link",
+          "label": "t:general.settings.link.label",
           "id": "logo_link"
         }
       ]
@@ -89,7 +91,7 @@
   ],
   "presets": [
     {
-      "name": "Brand list"
+      "name": "t:sections.brand_list.name"
     }
   ]
 }

@@ -1,0 +1,53 @@
+{% schema %}
+{
+  "name" : "t:sections.custom_liquid.name",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "t:general.settings.heading.label",
+      "default": "Custom Liquid"
+    },
+    {
+      "type": "richtext",
+      "label": "t:general.settings.subheading.label",
+      "label": "Sub Heading",
+      "id": "subheading"
+    },
+    {
+      "type": "select",
+      "id": "color_scheme",
+      "label": "t:general.settings.color_scheme.label",
+      "default": "cs-background cs-background-1",
+      "options": [
+        {
+          "value": "cs-accent cs-accent-1",
+          "label": "t:settings_schema.colors.settings.colors_accent_1.label"
+        },
+        {
+          "value": "cs-accent cs-accent-2",
+          "label": "t:settings_schema.colors.settings.colors_accent_2.label"
+        },
+        {
+          "value": "cs-background cs-background-1",
+          "label": "t:settings_schema.colors.settings.colors_background_1.label"
+        },
+        {
+          "value": "cs-background cs-background-2",
+          "label": "t:settings_schema.colors.settings.colors_background_2.label"
+        }
+      ]
+    },
+    {
+      "type": "liquid",
+      "id": "liquid_code",
+      "label": "t:general.settings.liquid_code.label"
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:sections.custom_liquid.name"
+    }
+  ]
+}
+{% endschema %}

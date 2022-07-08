@@ -1,39 +1,39 @@
 {% schema %}
 {
-  "name": "Top bar",
+  "name": "t:sections.top_bar.name",
   "settings": [
   {
     "type": "select",
     "id": "color_scheme",
-    "label": "Color scheme",
+    "label": "t:general.settings.color_scheme.label",
     "default": "cs-accent cs-accent-1",
     "options": [
       {
         "value": "cs-accent cs-accent-1",
-        "label": "Accent 1"
+        "label": "t:settings_schema.colors.settings.colors_accent_1.label"
       },
       {
         "value": "cs-accent cs-accent-2",
-        "label": "Accent 2"
+        "label": "t:settings_schema.colors.settings.colors_accent_2.label"
       },
       {
         "value": "cs-background cs-background-1",
-        "label": "Background 1"
+        "label": "t:settings_schema.colors.settings.colors_background_1.label"
       },
       {
         "value": "cs-background cs-background-2",
-        "label": "Background 2"
+        "label": "t:settings_schema.colors.settings.colors_background_2.label"
       }
     ]
   },
     { 
       "type":"header",
-      "content": "Messages"
+      "content": "t:general.settings.headers.header_messages.content"
     },
     {
       "type": "checkbox",
-      "label": "Enable messages autoplay",
-      "id": "Enabel_autoplay"
+      "label": "t:sections.top_bar.settings.enable_message_autoplay.label",
+      "id": "enabel_autoplay"
     },
     {
       "type": "range",
@@ -41,47 +41,47 @@
       "min": 3,
       "max": 10,
       "step": 1,
-      "label": "Change message every",
+      "label": "t:sections.top_bar.settings.change_message_every.label",
       "default": 5,
       "unit": "s"
     },
     { 
       "type":"header",
-      "content": "Currency selector",
-      "info": "To add a currency, go to your [payment settings](https://accounts.shopify.com/select?rid=c08d3742-4fa9-4af3-8360-7c926dcc3806)"
+      "content": "t:general.settings.headers.header_currency_selector.content",
+      "info": "t:general.settings.headers.header_currency_selector.info"
     },
     {
       "type": "checkbox",
-      "label": "Show currency selector",
+      "label": "t:general.settings.show_currency_selector.label",
       "id": "show_currency_selector",
-      "info": "Currency selector displays inside drawer on mobile"
+      "info": "t:general.settings.show_currency_selector.info"
     },
     { 
       "type":"header",
-      "content": "Language selector",
-      "info": "To add a language, go to your [language settings](https://gia-dinh-g-u.myshopify.com/admin/settings/languages)"
+      "content": "t:general.settings.headers.header_language_selector.content",
+      "info": "t:general.settings.headers.header_language_selector.info"
     },
     {
       "type": "checkbox",
-      "label": "Show language selector",
+      "label": "t:general.settings.show_language_selector.label",
       "id": "show_language_selector",
-      "info": "Language selector displays inside drawer on mobile"
+      "info": "t:general.settings.show_language_selector.info"
     }
   ],
   "blocks": [
     {
-      "name": "Message",
+      "name": "t:general.settings.headers.header_messages.content",
       "type": "text",
       "settings": [
         {
           "type": "text",
-          "label": "Text",
+          "label": "t:general.settings.text.label",
           "id": "message_text",
           "default": "Welcome to our store"
         },
         {
           "type": "url",
-          "label": "Link",
+          "label": "t:general.settings.link.label",
           "id": "message_link"
         }
       ]
@@ -89,7 +89,7 @@
   ],
   "presets": [
     {
-      "name": "Top bar"
+      "name": "t:sections.top_bar.name"
     }
   ]
 }

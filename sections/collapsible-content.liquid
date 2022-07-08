@@ -1,131 +1,131 @@
 
 {% schema %}
 {
-  "name": "Collapsible content",
+  "name": "t:sections.collapsible_content.name",
   "settings": [
     {
       "type": "select",
       "id": "color_scheme",
-      "label": "Color scheme",
-      "default": "cs-accent cs-accent-1",
+      "label": "t:general.settings.color_scheme.label",
+      "default": "cs-background cs-background-1",
       "options": [
         {
           "value": "cs-accent cs-accent-1",
-          "label": "Accent 1"
+          "label": "t:settings_schema.colors.settings.colors_accent_1.label"
         },
         {
           "value": "cs-accent cs-accent-2",
-          "label": "Accent 2"
+          "label": "t:settings_schema.colors.settings.colors_accent_2.label"
         },
         {
           "value": "cs-background cs-background-1",
-          "label": "Background 1"
+          "label": "t:settings_schema.colors.settings.colors_background_1.label"
         },
         {
           "value": "cs-background cs-background-2",
-          "label": "Background 2"
+          "label": "t:settings_schema.colors.settings.colors_background_2.label"
         }
       ]
     },
     {
       "type": "header",
-      "content": "content"
+      "content": "t:general.settings.headers.header_content.content"
     },
     {
       "type": "text",
       "id": "heading",
-      "label": "Heading",
+      "label": "t:general.settings.heading.label",
       "default": "Frequently asked questions"
     },
     {
       "type": "checkbox",
-      "label": "Nest heading in content column",
+      "label": "t:sections.collapsible_content.settings.nest_heading.label",
       "id": "content_checkbox"
     },
     {
       "type": "header",
-      "content": "Image"
+      "content": "t:general.settings.headers.header_image.content"
     },
     {
       "type": "image_picker",
-      "label": "Image",
+      "label": "t:general.settings.image.label",
       "id": "image"
     },
     {
       "type": "select",
       "id": "Image_position",
-      "label": "Image layout",
+      "label": "t:sections.collapsible_content.settings.image_layout.label",
       "default": "left",
       "options": [
         {
           "value": "left",
-          "label": "On the left"
+          "label": "t:sections.collapsible_content.settings.image_layout.options.option_left.label"
         },
         {
           "value": "right",
-          "label": "On the right"
+          "label": "t:sections.collapsible_content.settings.image_layout.options.option_right.label"
         }
       ]
     },
     {
       "type": "select",
       "id": "image_ratio",
-      "label": "Image ratio",
-      "default": "landscape",
+      "label": "t:general.settings.image_ratio.label",
+      "default": "adapt",
       "options": [
         {
           "value": "adapt",
-          "label": "Adapt to image"
+          "label": "t:general.settings.image_ratio.options.option_adapt.label"
         },
         {
           "value": "square",
-          "label": "Square"
+          "label": "t:general.settings.image_ratio.options.option_square.label"
         },
         {
           "value": "portrait",
-          "label": "Portrait (2:3)"
+          "label": "t:general.settings.image_ratio.options.option_landscape.label"
         },
         {
           "value": "landscape",
-          "label": "Landscape (3:2)"
+          "label": "t:general.settings.image_ratio.options.option_portrait.label"
         }
       ]
     },
     {
       "type": "header",
-      "content": "Collapsible items"
+      "content": "t:sections.collapsible_content.settings.headers.header_collapsible_items.content"
     },
     {
       "type": "checkbox",
       "id": "show_icon",
-      "label": "Show icon"
+      "label": "t:sections.collapsible_content.settings.show_icon.label"
     },
     {
       "type": "header",
-      "content": "Button"
+      "content": "t:general.settings.headers.header_button.content"
     },
     {
       "type": "text",
       "id": "btn_label",
-      "label": "Button label",
+      "label": "t:general.settings.button_label.label",
       "placeholder": "Enter label text"
     },
     {
       "type": "url",
       "id": "btn_link",
-      "label": "Button link"
+      "label": "t:general.settings.button_link.label"
     }
   ],
   "blocks": [
     {
       "type": "content",
-      "name": "Collapsible item",
+      "name": "t:sections.collapsible_content.settings.headers.header_collapsible_items.content",
       "limit": 5,
       "settings": [
         {
           "type": "select",
           "id": "icon",
-          "label": "Icon",
+          "label": "t:general.settings.icon.label",
           "default": "check-mark",
           "options": [
             {
@@ -325,25 +325,25 @@
         {
           "type": "text",
           "id": "block_heading",
-          "label": "Heading",
+          "label": "t:general.settings.heading.label",
           "placeholder": "Enter name"
         },
         {
           "type": "richtext",
           "id": "description",
-          "label": "Description"
+          "label": "t:general.settings.description.label"
         },
         {
           "type": "page",
           "id": "page",
-          "label": "Content from page"
+          "label": "t:sections.collapsible_content.blocks.settings.content_from_page"
         }
       ]
     }
   ],
   "presets": [
     {
-      "name": "Collapsible Content"
+      "name": "t:sections.collapsible_content.name"
     }
   ]
 }

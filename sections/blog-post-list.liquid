@@ -1,112 +1,112 @@
 {% schema %}
 {
-  "name": "Blog posts",
+  "name": "t:sections.blog_posts.name",
   "settings": [
     {
       "type": "select",
       "id": "color_scheme",
-      "label": "Color scheme",
-      "default": "cs-background cs-background-2",
+      "label": "t:general.settings.color_scheme.label",
+      "default": "cs-background cs-background-1",
       "options": [
         {
           "value": "cs-accent cs-accent-1",
-          "label": "Accent 1"
+          "label": "t:settings_schema.colors.settings.colors_accent_1.label"
         },
         {
           "value": "cs-accent cs-accent-2",
-          "label": "Accent 2"
+          "label": "t:settings_schema.colors.settings.colors_accent_2.label"
         },
         {
           "value": "cs-background cs-background-1",
-          "label": "Background 1"
+          "label": "t:settings_schema.colors.settings.colors_background_1.label"
         },
         {
           "value": "cs-background cs-background-2",
-          "label": "Background 2"
+          "label": "t:settings_schema.colors.settings.colors_background_2.label"
         }
       ]
     },
-    { 
-      "type":"header",
-      "content": "Content"
+    {
+      "type": "header",
+      "content": "t:general.settings.headers.header_content.content"
     },
     {
       "type": "text",
-      "label": "Heading",
+      "label": "t:general.settings.heading.label",
       "id": "heading"
     },
     {
       "type": "blog",
       "id": "blog",
-      "label": "Blog"
+      "label": "t:sections.blog_posts.settings.blog.label"
     },
     { 
       "type":"header",
-      "content": "Layout"
+      "content": "t:general.settings.headers.header_layout.content"
     },
     {
       "type": "select",
       "id": "image_ratio",
-      "label": "Image ratio",
+      "label": "t:general.settings.image_ratio.label",
       "default": "landscape",
       "options": [
         {
           "value": "square",
-          "label": "Square"
+          "label": "t:general.settings.image_ratio.options.option_square.label"
         },
         {
           "value": "portrait",
-          "label": "Portrait (2:3)"
+          "label": "t:general.settings.image_ratio.options.option_landscape.label"
         },
         {
           "value": "landscape",
-          "label": "Landscape (3:2)"
+          "label": "t:general.settings.image_ratio.options.option_portrait.label"
         }
       ]
     },
     {
       "type": "checkbox",
       "id": "show_featured_image",
-      "label": "Show featured image"
+      "label": "t:settings_schema.article_cards.settings.show_featured_image.label"
     },
     {
       "type": "checkbox",
       "id": "show_blog_tag",
-      "label": "Show blog’s tag"
+      "label": "t:sections.blog_posts.settings.show_blog_tag.label"
     },
     {
       "type": "checkbox",
       "id": "checkbox_show_image",
-      "label": "Show excerpt",
-      "info": "Change excerpts by editing your blog posts.[Learn more](https://www.figma.com/file/OcmkNnTsla14jPs5bsVyJV/Blum-v2---settings-%26-wireframes?node-id=986%3A25529)"
+      "label": "t:sections.blog_posts.settings.show_excerpt.label",
+      "info": "t:sections.blog_posts.settings.show_excerpt.info"
     },
     {
       "type": "checkbox",
       "id": "show_published_date",
-      "label": "Show published date"
+      "label": "t:sections.blog_posts.settings.show_published_date.label"
     },
     {
       "type": "checkbox",
       "id": "show_author",
-      "label": "Show author"
+      "label": "t:sections.blog_posts.settings.show_author.label"
     },
     {
       "type": "header",
-      "content": "button"
+      "content": "t:general.settings.headers.header_button.content"
     },
     {
       "type": "checkbox",
       "id": "show_view_all",
-      "label": "Show ‘view all’ button if blog has more posts then being shown"
+      "label": "t:sections.blog_posts.settings.show_view_all.label"
     },
     {
       "type": "text",
       "id": "btn_text",
-      "label": "Button text"
+      "label": "t:settings_schema.colors.settings.colors_button_text.label"
     },
     {
       "type": "header",
-      "content": "layout"
+      "content": "t:general.settings.headers.header_layout.content"
     },
     {
       "type": "range",
@@ -114,7 +114,7 @@
       "min": 1,
       "max": 6,
       "step": 1,
-      "label": "Item per row",
+      "label": "t:general.settings.item_per_row.label",
       "default": 3
     },
     {
@@ -123,37 +123,19 @@
       "min": 1,
       "max": 8,
       "step": 1,
-      "label": "Max items to show",
+      "label": "t:sections.blog_posts.settings.max_items_to_show.label",
       "default": 3,
-      "info": "Show the blog post list as a carousel instead of rows"
+      "info": "t:sections.blog_posts.settings.max_items_to_show.info"
     },
     {
       "type": "checkbox",
       "id": "enable_carousel",
-      "label": "Enable carousel on mobile"
-    }
-  ],
-  "blocks": [
-    {
-      "name": "Logo",
-      "type": "image",
-      "settings": [
-        {
-          "type": "image_picker",
-          "label": "Logo image",
-          "id": "logo"
-        },
-        {
-          "type": "url",
-          "label": "Link",
-          "id": "logo_link"
-        }
-      ]
+      "label": "t:general.settings.enable_carousel.label"
     }
   ],
   "presets": [
     {
-      "name": "Blog Post List"
+      "name": "t:sections.blog_posts.name"
     }
   ]
 }

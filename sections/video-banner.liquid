@@ -1,73 +1,73 @@
 {% schema %}
 {
-  "name": "Video banner",
+  "name": "t:sections.video_banners.name",
   "settings": [
     {
       "type": "select",
       "id": "color_scheme",
-      "label": "Color scheme",
+      "label": "t:general.settings.color_scheme.label",
       "default": "cs-accent cs-accent-1",
       "options": [
         {
           "value": "cs-accent cs-accent-1",
-          "label": "Accent 1"
+          "label": "t:settings_schema.colors.settings.colors_accent_1.label"
         },
         {
           "value": "cs-accent cs-accent-2",
-          "label": "Accent 2"
+          "label": "t:settings_schema.colors.settings.colors_accent_2.label"
         },
         {
           "value": "cs-background cs-background-1",
-          "label": "Background 1"
+          "label": "t:settings_schema.colors.settings.colors_background_1.label"
         },
         {
           "value": "cs-background cs-background-2",
-          "label": "Background 2"
+          "label": "t:settings_schema.colors.settings.colors_background_2.label"
         }
       ]
     },
     {
       "type": "header",
-      "content": "content"
+      "content": "t:general.settings.headers.header_content.content"
     },
     {
       "type": "checkbox",
       "id": "enable_large_heading",
-      "label": "Enable large heading"
+      "label": "t:general.settings.enable_large_heading.label"
     },
     {
       "type": "text",
-      "label": "Heading",
+      "label": "t:general.settings.heading.label",
       "default": "Welcome to our store",
       "id": "heading"
     },
     {
       "type": "text",
-      "label": "Subheading",
+      "label": "t:general.settings.subheading.label",
       "default": "Banner title",
       "id": "sub_heading"
     },
     {
       "type": "richtext",
-      "label": "Description",
+      "label": "t:general.settings.description.label",
       "id": "description"
     },
     {
       "type": "select",
-      "label": "Content position",
+      "label": "t:general.settings.content_position.label",
       "id": "content_position",
       "options": [
         {
           "value": "center",
-          "label": "Center"
+          "label": "t:general.settings.content_position.options.option_center.label"
         },
         {
           "value": "left_center",
-          "label": "Left center"
+          "label": "t:general.settings.content_position.options.option_left_center.label"
         },
         {
           "value": "left_bottom",
-          "label": "Left bottom "
+          "label": "t:general.settings.content_position.options.option_bottom_left.label"
         }
 
       ],
@@ -76,28 +76,28 @@
     {
       "type": "checkbox",
       "id": "show_content_background",
-      "label": "Show content background"
+      "label": "t:general.settings.show_content_background.label"
     },
     {
       "type": "header",
-      "content": "background"
+      "content": "t:general.settings.headers.header_background.content"
     },
     {
       "type": "select",
-      "label": "Height",
+      "label": "t:general.settings.height.label",
       "id": "height",
       "options": [
         {
           "value": "50",
-          "label": "50% screen height"
+          "label": "t:general.settings.height.options.option_50.label"
         },
         {
           "value": "70",
-          "label": "70% screen height"
+          "label": "t:general.settings.height.options.option_70.label"
         },
         {
           "value": "100",
-          "label": "100% screen height"
+          "label": "t:general.settings.height.options.option_100.label"
         }
       ],
       "default": "70"
@@ -110,15 +110,14 @@
         "vimeo"
       ],
       "default": "https://www.youtube.com/watch?v=_9VUPq3SxOc",
-      "label": "Banner video link",
-      "placeholder": "Enter video link",
-      "info": "Accepts YouTube or Vimeo links"
+      "label": "t:sections.video_banners.settings.banner_video_link.label",
+      "info": "t:sections.video_banners.settings.banner_video_link.info"
     },
     {
       "type": "checkbox",
       "id": "show_scroll_indicator",
-      "label": "Show scroll indicator",
-      "info": "Useful when the banner is a full screen height hero section"
+      "label": "t:general.settings.show_scroll_indicator.label",
+      "info": "t:general.settings.show_scroll_indicator.info"
     },
     {
       "type": "range",
@@ -128,39 +127,39 @@
       "step": 1,
       "default": 30,
       "id": "overlay_opacity",
-      "label": "Overlay opacity"
+      "label": "t:general.settings.overlay_opacity.label"
     },
     {
       "type": "header",
-      "content": "button"
+      "content": "t:general.settings.headers.header_button.content"
     },
     {
       "type": "text",
       "id": "primary_btn_label",
-      "label": "Primary button label",
+      "label": "t:general.settings.primary_button_label.label",
       "default": "Check now"
     },
     {
       "type": "url",
-      "id": "primary_button_link",
-      "label": "Primary button link"
+      "id": "primary_btn_link",
+      "label": "t:general.settings.primary_button_link.label"
     },
     {
       "type": "text",
       "id": "secondary_btn_label",
-      "label": "Secondary button label",
+      "label": "t:general.settings.secondary_button_label.label",
       "default": "View details"
     },
     {
       "type": "url",
-      "id": "secondary_button_link",
-      "label": "Secondary link"
+      "id": "secondary_btn_link",
+      "label": "t:general.settings.secondary_button_link.label"
     }
 
   ],
   "presets": [
     {
-      "name": "Video Banner"
+      "name": "t:sections.video_banners.name"
     }
   ]
 }

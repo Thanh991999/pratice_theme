@@ -1,70 +1,68 @@
 {% schema %}
 {
-  "name": "Popup",
+  "name": "t:sections.popup.name",
   "settings": [
     {
-      "type": "paragraph",
-      "content": "Once closed without submitting, the popup will not show again until the next visit. After submitting, customers will not see the popup again until it’s re-enabled."
+      "type": "header",
+      "content": "t:general.settings.headers.header_general.content"
     },
     {
       "type": "checkbox",
       "id": "show_popup",
       "label": "Enable popup",
-      "default": false
+      "default": false,
+      "info": "t:sections.popup.settings.enable_popup.info"
     },
     {
       "type": "header",
-      "content": "Content"
+      "content": "t:general.settings.headers.header_content.content"
     },
     {
       "type": "image_picker",
       "id": "image",
-      "label": "Image"
+      "label": "t:general.settings.image.label"
     },
     {
       "type": "text",
       "id": "heading",
-      "label": "Heading",
-      "placeholder": "Popup Heading",
+      "label": "t:general.settings.heading.label",
       "default": "Popup heading"
     },
     {
       "type": "richtext",
       "id": "text",
-      "label": "Description"
+      "label": "t:general.settings.description.label"
     },
     {
       "type": "header",
-      "content": "Trigger"
+      "content": "t:sections.popup.settings.headers.header_trigger.content"
     },
     {
       "type": "select",
       "id": "trigger",
-      "label": "When to show",
+      "label": "t:sections.popup.settings.when_to_show.label",
       "options": [
         {
           "value": "reaching-to-footer",
-          "label": "Reaching the footer"
+          "label": "t:sections.popup.settings.when_to_show.options.option_after_add_to_cart.label"
         },
         {
           "value": "after-add-to-cart",
-          "label": "After add to cart"
+          "label": "t:sections.popup.settings.when_to_show.options.option_reaching_the_footer.label"
         }
       ],
       "default": "reaching-to-footer",
-      "info": "“After add to cart” will trigger popup once visitors close the cart drawer"
+      "info": "t:sections.popup.settings.when_to_show.info"
     },
     {
       "type": "checkbox",
       "id": "show_only_on_index",
-      "label": "Show only on home page",
-      "default": true
+      "label": "t:sections.popup.settings.show_only_on_home_page.label"
     },
     {
       "type": "checkbox",
       "id": "show_only_for_visitors",
-      "label": "Show only for non-login visitors",
-      "default": true
+      "label": "t:sections.popup.settings.Show_only_for_non-login_visitors.label"
     }
   ],
   "blocks": [
@@ -76,27 +74,27 @@
         {
           "type": "text",
           "id": "button_title",
-          "label": "CTA text",
+          "label": "t:sections.popup.blocks.button.settings.text.label",
           "default": "Popup CTA"
         },
         {
           "type": "url",
           "id": "button_link",
-          "label": "CTA link"
+          "label": "t:sections.popup.blocks.button.settings.link.label"
         }
       ] 
     },
     {
       "type": "newsletter",
-      "name": "Newsletter form",
+      "name": "t:sections.popup.blocks.newsletter.name",
       "settings": [
         {
           "type": "paragraph",
-          "content": "Subscribers added automatically to your “Email subscribers” customer list. [Learn more](https://help.shopify.com/en/manual/customers/manage-customers)"
+          "content": "t:sections.popup.blocks.newsletter.settings.paragraph_one.content"
         },
         {
           "type": "paragraph",
-          "content": "No customizable settings available."
+          "content": "t:sections.popup.blocks.newsletter.settings.paragraph_two.content"
         }
         
       ],
@@ -105,7 +103,7 @@
   ],
   "presets": [
     {
-      "name": "Popup"
+      "name": "t:sections.popup.name"
     }
   ]
 }
