@@ -1,0 +1,199 @@
+{%- liquid
+  assign image_placeholder = 'image' | placeholder_svg_tag: 'placeholder--svg placeholder--square-200'
+-%}
+
+<div class="testimonials dpy-flx flx-drtn-cln" data-ui-component="Product Testimonials Section">
+  <div class="testimonials__container ctnr">
+    <h2 class="testimonials__heading tt-aln-ctr hide-on-empty">{{ section.settings.heading }}</h2>
+    <p class="testimonials__description tt-aln-ctr hide-on-empty">{{ section.settings.description }}</p>
+    <div class="testimonials__list">
+      {% for block in section.blocks limit: section.blocks.size %}
+        {%- assign cover = image_placeholder -%}
+        {%- assign cover = block.settings.avatar | image_url: width: 200, height: 200 | image_tag: widths: '200', sizes: 'calc(100vw/1)', placeholder: "data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==", alt:  block.settings.name, class: 'js-lazy-loading-image-item' -%}
+        <div class="testimonial">
+          <div class="testimonial__cover">
+            {% render 'lazy-loading-image', image_item: cover, lazy_image_loading_image_css: "no-js-hidden dpy-blk pstn-rlte", lazy_image_loading_spinner_css: "js-lazy-loading-image-spinner aln-ctr-mde pstn-asle ptr-ne", replace_srcset: true, is_first: forloop.first %}
+          </div>
+          <div class="testimonial__content">
+            <h3 class="testimonial__title hide-on-empty">{{ block.settings.name }}</h3>
+            <p class="testimonial__sub-title hide-on-empty">{{ block.settings.job_title }}</p>
+            <div class="testimonial__social">{% render 'socials', settings: block.settings %}</div>
+            <div class="testimonial__text hide-on-empty">{{ block.settings.description }}</div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+{% schema %}
+{
+  "name": "t:sections.testimonials.name",
+  "settings": [
+    {
+      "type": "select",
+      "id": "color_scheme",
+      "label": "t:general.settings.color_scheme.label",
+      "default": "cs-background cs-background-1",
+      "options": [
+        {
+          "value": "cs-accent cs-accent-1",
+          "label": "t:settings_schema.colors.settings.colors_accent_1.label"
+        },
+        {
+          "value": "cs-accent cs-accent-2",
+          "label": "t:settings_schema.colors.settings.colors_accent_2.label"
+        },
+        {
+          "value": "cs-background cs-background-1",
+          "label": "t:settings_schema.colors.settings.colors_background_1.label"
+        },
+        {
+          "value": "cs-background cs-background-2",
+          "label": "t:settings_schema.colors.settings.colors_background_2.label"
+        }
+      ]
+    },
+    {
+      "type": "header",
+      "content": "t:general.settings.headers.header_content.content"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "t:general.settings.description.label",
+      "default": "Testimonials"
+    },
+    {
+      "type": "textarea",
+      "id": "description",
+      "label": "t:general.settings.description.label",
+      "default": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt."
+    },
+    {
+      "type": "header",
+      "content": "t:general.settings.headers.header_layout.content"
+    },
+    {
+      "type": "range",
+      "id": "item_per_row",
+      "min": 1,
+      "max": 6,
+      "step": 1,
+      "label": "t:general.settings.item_per_row.label",
+      "default": 3
+    }
+  ],
+  "blocks": [
+    {
+      "type": "testimonial",
+      "name": "t:sections.testimonials.blocks.item.name",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "avatar",
+          "label": "t:sections.testimonials.blocks.item.settings.avatar.label",
+          "info": "t:sections.testimonials.blocks.item.settings.avatar.info"
+        },
+        {
+          "type": "text",
+          "id": "name",
+          "label": "t:sections.testimonials.blocks.item.settings.name.label",
+          "default": "John Doe"
+        },
+        {
+          "type": "text",
+          "id": "job_title",
+          "label": "t:sections.testimonials.blocks.item.settings.job_title.label",
+          "default": "Freelancer & fashionista"
+        },
+        {
+          "type": "textarea",
+          "id": "description",
+          "label": "t:general.settings.description.label",
+          "default": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt."
+        },
+        {
+          "type": "header",
+          "content": "t:general.settings.headers.header_social_accounts.content"
+        },
+        {
+          "type": "text",
+          "id": "social_facebook_link",
+          "label": "t:settings_schema.social_media.settings.social_facebook_link.label",
+          "info": "t:settings_schema.social_media.settings.social_facebook_link.info"
+        },
+        {
+          "type": "text",
+          "id": "social_twitter_link",
+          "label": "t:settings_schema.social_media.settings.social_twitter_link.label",
+          "info": "t:settings_schema.social_media.settings.social_twitter_link.info"
+        },
+        {
+          "type": "text",
+          "id": "social_instagram_link",
+          "label": "t:settings_schema.social_media.settings.social_instagram_link.label",
+          "info": "t:settings_schema.social_media.settings.social_instagram_link.info"
+        },
+        {
+          "type": "text",
+          "id": "social_linkedin_link",
+          "label": "t:settings_schema.social_media.settings.social_linkedin_link.label",
+          "info": "t:settings_schema.social_media.settings.social_linkedin_link.info"
+        },
+        {
+          "type": "text",
+          "id": "social_pinterest_link",
+          "label": "t:settings_schema.social_media.settings.social_pinterest_link.label",
+          "info": "t:settings_schema.social_media.settings.social_pinterest_link.info"
+        },
+        {
+          "type": "text",
+          "id": "social_vimeo_link",
+          "label": "t:settings_schema.social_media.settings.social_vimeo_link.label",
+          "info": "t:settings_schema.social_media.settings.social_vimeo_link.info"
+        },
+        {
+          "type": "text",
+          "id": "social_youtube_link",
+          "label": "t:settings_schema.social_media.settings.social_youtube_link.label",
+          "info": "t:settings_schema.social_media.settings.social_youtube_link.info"
+        },
+        {
+          "type": "text",
+          "id": "social_tiktok_link",
+          "label": "t:settings_schema.social_media.settings.social_tiktok_link.label",
+          "info": "t:settings_schema.social_media.settings.social_tiktok_link.info"
+        },
+        {
+          "type": "text",
+          "id": "social_tumblr_link",
+          "label": "t:settings_schema.social_media.settings.social_tumblr_link.label",
+          "info": "t:settings_schema.social_media.settings.social_tumblr_link.info"
+        },
+        {
+          "type": "text",
+          "id": "social_snapchat_link",
+          "label": "t:settings_schema.social_media.settings.social_snapchat_link.label",
+          "info": "t:settings_schema.social_media.settings.social_snapchat_link.info"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:sections.testimonials.name",
+      "blocks": [
+        {
+          "type": "testimonial"
+        },
+        {
+          "type": "testimonial"
+        },
+        {
+          "type": "testimonial"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

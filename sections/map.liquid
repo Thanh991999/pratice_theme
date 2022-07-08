@@ -1,0 +1,112 @@
+<div class="map" data-ui-component="Map Section">
+	<div class="map__container">
+		<div class="map__content">
+      <h2 class="map__heading"></h2>
+      <div class="map__info"></div>
+		</div>
+    <div class="map__canvas">
+      <sht-map data-zoom="14" data-type="roadmap" data-location="{{ section.settings.map_address }}">
+        <iframe defer class="map__iframe js-map-iframe" loading="lazy" scrolling="no" title="Google Map" src="" srcdoc="loading..."></iframe>
+      </sht-map>
+    </div>
+	</div>
+</div>
+{%- assign files = "map.js" | split: ', ' -%}
+{%- render 'js-loader', files: files, type: 'inline' -%}
+
+{% schema %}
+{
+  "name": "t:sections.map.name",
+  "settings": [
+    {
+      "type": "select",
+      "id": "color_scheme",
+      "label": "t:general.settings.color_scheme.label",
+      "default": "cs-background cs-background-1",
+      "options": [
+        {
+          "value": "cs-accent cs-accent-1",
+          "label": "t:settings_schema.colors.settings.colors_accent_1.label"
+        },
+        {
+          "value": "cs-accent cs-accent-2",
+          "label": "t:settings_schema.colors.settings.colors_accent_2.label"
+        },
+        {
+          "value": "cs-background cs-background-1",
+          "label": "t:settings_schema.colors.settings.colors_background_1.label"
+        },
+        {
+          "value": "cs-background cs-background-2",
+          "label": "t:settings_schema.colors.settings.colors_background_2.label"
+        }
+      ]
+    },
+    {
+      "type": "header",
+      "content": "t:sections.map.settings.headers.header_map.content"
+    },
+    {
+      "type": "text",
+      "id": "map_address",
+      "label": "t:sections.map.settings.map_address.label",
+      "info": "t:sections.map.settings.map_address.info"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "t:sections.map.settings.custom_map_image.label",
+      "info": "t:sections.map.settings.custom_map_image.info"
+    }
+  ],
+  "blocks":[
+    {
+      "type": "heading",
+      "name": "t:general.settings.heading.label",
+      "limit": 1,
+      "settings":[
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "t:general.settings.heading.label",
+          "default": "Heading"
+        }
+      ]
+    },
+    {
+      "type": "description",
+      "name": "t:general.settings.description.label",
+      "limit": 1,
+      "settings":[
+        {
+          "type": "richtext",
+          "id": "description",
+          "label": "t:general.settings.description.label"
+        }
+      ]
+    },
+    {
+      "type": "direction_button",
+      "name": "t:sections.map.blocks.direction_button.name",
+      "limit": 1,
+      "settings":[
+        {
+          "type": "paragraph",
+          "content": "t:sections.map.blocks.paragraph.content"
+        },
+        {
+          "type": "text",
+          "id": "button_label",
+          "label": "t:general.settings.button_label.label",
+          "default": "Get direction"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:sections.map.name"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,128 @@
+
+
+{% schema %}
+{
+  "name": "t:sections.contact_form.name",
+  "settings": [
+    {
+      "type": "select",
+      "id": "color_scheme",
+      "label": "t:general.settings.color_scheme.label",
+      "default": "cs-background cs-background-1",
+      "options": [
+        {
+          "value": "cs-accent cs-accent-1",
+          "label": "t:settings_schema.colors.settings.colors_accent_1.label"
+        },
+        {
+          "value": "cs-accent cs-accent-2",
+          "label": "t:settings_schema.colors.settings.colors_accent_2.label"
+        },
+        {
+          "value": "cs-background cs-background-1",
+          "label": "t:settings_schema.colors.settings.colors_background_1.label"
+        },
+        {
+          "value": "cs-background cs-background-2",
+          "label": "t:settings_schema.colors.settings.colors_background_2.label"
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "t:general.settings.heading.label",
+      "default": "Contact us"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "t:general.settings.image.label"
+    },
+    {
+      "type": "select",
+      "id": "image_position",
+      "label": "t:general.settings.image_position.label",
+      "default": "left",
+      "options": [
+        {
+          "value": "left",
+          "label": "t:general.settings.image_position.options.option_left.label"
+        },
+        {
+          "value": "right",
+          "label": "t:general.settings.image_position.options.option_right.label"
+        }
+      ]
+    }
+  ],
+  "blocks": [
+    {
+      "type": "custom_text_field",
+      "name": "t:sections.contact_form.blocks.custom_text_field.name",
+      "settings": [
+        {
+          "type": "text",
+          "id": "label",
+          "label": "t:general.settings.label.label",
+          "default": "Custom text field label"
+        },
+        {
+          "type": "text",
+          "id": "placeholder",
+          "label": "t:sections.contact_form.general.blocks.settings.placeholder.label",
+          "default": "Placeholder"
+        },
+        {
+          "type": "checkbox",
+          "id": "required",
+          "label": "t:sections.contact_form.general.blocks.settings.field_is_required.label",
+          "default": false
+        },
+        {
+          "type": "checkbox",
+          "id": "textarea",
+          "label": "t:sections.contact_form.blocks.custom_text_field.settings.use_textarea.label",
+          "default": false
+        }
+      ]
+    },
+    {
+      "type": "custom_dropdown",
+      "name": "t:sections.contact_form.blocks.custom_dropdown.name",
+      "settings": [
+        {
+          "type": "text",
+          "id": "label",
+          "label": "t:general.settings.label.label",
+          "default": "Custom dropdown label"
+        },
+        {
+          "type": "text",
+          "id": "placeholder",
+          "label": "t:sections.contact_form.general.blocks.settings.placeholder.label",
+          "default": "Placeholder"
+        },
+        {
+          "type": "checkbox",
+          "id": "required",
+          "label": "t:sections.contact_form.general.blocks.settings.field_is_required.label",
+          "default": false
+        },
+        {
+          "type": "text",
+          "id": "value",
+          "label": "t:sections.contact_form.blocks.custom_dropdown.settings.value.label",
+          "default": "value1, value2, value3",
+          "info": "t:sections.contact_form.blocks.custom_dropdown.settings.value.info"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:sections.contact_form.name"
+    }
+  ]
+}
+{% endschema %}

@@ -4,19 +4,25 @@
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <meta name="theme-color" content="" />
+    <meta name="theme-color" content="{{ settings.color_primary }}" />
     <link rel="canonical" href="{{ canonical_url }}" />
     <link rel="preconnect" href="https://cdn.shopify.com" crossorigin />
 
-    {%- unless settings.heading_font.system? and settings.body_font.system? -%}
-    <link rel="preconnect" href="https://fonts.shopifycdn.com" crossorigin />
-  {%- endunless -%}
+    {%- unless settings.type_header_font.system? and settings.type_body_font.system? -%}
+      <link rel="preconnect" href="https://fonts.shopifycdn.com" crossorigin />
+    {%- endunless -%}
+  
 
     {%- if settings.favicon != blank -%}
       <link rel="icon" type="image/png" href="{{ settings.favicon | image_url: width: 32, height: 32 }}">
     {%- endif -%}
-    
-    <title>{{ shop.name }}</title>
+
+    <title>
+      {{ page_title }}
+      {%- if current_tags -%} &ndash; tagged "{{ current_tags | join: ', ' }}" {%- endif -%}
+      {%- if current_page != 1 -%} &ndash; Page {{ current_page }} {%- endif -%}
+      {%- unless page_title contains shop.name -%} &ndash; {{ shop.name }} {%- endunless -%}
+    </title>
 
     {% if page_description %}
       <meta name="description" content="{{ page_description | escape }}" />
@@ -24,22 +30,20 @@
 
     {% render 'meta-tags' %}
     {% render 'style-variables' %}
-    
+
     {{ content_for_header }}
-    
-    <noscript>
-      <link rel="stylesheet" href="{{ 'no-js.css' | asset_url }}" media="all" />
-    </noscript>
-    
+
     <link rel="preload" href="{{ 'layout.css' | asset_url }}" as="style" />
     <link rel="preload" href="{{ 'main.css' | asset_url }}" as="style" />
-
+    <link rel="preload" href="{{ 'animations.css' | asset_url }}" as="style" />
     
     {{ "layout.css" | asset_url | stylesheet_tag }}
     {{ "main.css" | asset_url | stylesheet_tag }}
+    {{ "animations.css" | asset_url | stylesheet_tag }}
 
-    
-
+    <noscript>
+      <link rel="stylesheet" href="{{ 'no-js.css' | asset_url }}" media="all" />
+    </noscript>
     {%- if settings.css_file != blank -%}
       <link rel="stylesheet" href="{{ settings.css_file | asset_url }}" media="print" onload="this.media='all'" />
       <noscript>
@@ -66,15 +70,8 @@
       });
     </script>
   </head>
-  
-  <body class="password">
-    <a class="skip-to-content-link visually-hidden" href="#main-content">
-      {{ "accessibility.skip_to_text" | t }}
-    </a> 
-
-    <main id="main-content" role="main" tabindex="-1">
-      {{ content_for_layout }}
-    </main>
+  <body>
+    <main id="main-content" role="main" tabindex="-1">{{ content_for_layout }}</main>
     <script>
       window.shopUrl = `{{ request.origin }}`;
       window.routes = {
@@ -98,5 +95,6 @@
         MODAL_BUTTON_CLOSE: `Close`,
       };  
     </script> 
+  
   </body>
 </html>
