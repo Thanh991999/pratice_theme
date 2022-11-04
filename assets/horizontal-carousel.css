@@ -1,0 +1,5 @@
+.horizontal-carousel {
+  -webkit-overflow-scrolling: touch;
+  max-width: 640px;
+}
+

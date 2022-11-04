@@ -1,0 +1,102 @@
+{% comment %}
+    Renders section header
+
+    Accepts:
+    - subheading: {String} Section subheading.
+    - heading: {String} Section heading.
+    - description: {String} Section description.
+    - content_align: {String} Header text alignment. Value is "ta-center" for center, left is empty.
+    - button_main_text: {String} Button primary text.
+    - button_main_link: {String} Button primary link.
+    - button_sub_text: {String} Button secondary text.
+    - button_sub_link: {String} Button secondary link.
+    - badge_text: {String} Prominent badge content. Leave if empty if want to hide it.
+    - badge_position: {String} Prominent badge position. Value are section setting values.
+    - badge_shape: {String} Prominent badge shape. Value are section setting values.
+    - badge_color: {String} Prominent badge color. Value are section setting values.
+
+    Example usage:
+    {% render 'section-header',
+      content_align: section.settings.content_alignment,
+      subheading: section.settings.subheading,
+      heading: section.settings.heading,
+      description: section.settings.description,
+      button_main_text: section.settings.button_main_text,
+      button_main_link: section.settings.button_main_link,
+      button_sub_text: section.settings.button_sub_text,
+      button_sub_link: section.settings.button_sub_link,
+      badge_text: section.settings.badge_text,
+      badge_position: section.settings.badge_position,
+      badge_shape: section.settings.badge_shape,
+      badge_color: section.settings.badge_color
+    %}
+{% endcomment %}
+{% liquid
+  assign subheading_style   = settings.subheading_style
+  assign subheading_scheme  = settings.subheading_scheme
+  assign classes = classes | default: 's-header'
+  assign header_style = header_style
+  assign content_align = content_align
+
+  if content_align contains 'ta-center'
+    assign content_align_class = ' clm ta-center m-auto p-zero'
+    assign description_class = ' m-sides'
+    assign header_content_style = '--w-md:8'
+  elsif content_align contains 'ta-left'
+    assign content_align_class = ' clm p-zero'
+    assign header_content_style = '--w-md:8'
+  else
+    assign description_class = ' '
+  endif
+
+  assign sub_classes = ' color-normal-2'
+  if subheading_scheme == 'main-accent'
+    assign sub_classes = ' color-normal-1'
+  endif
+
+  if subheading_style == 'badge'
+    assign sub_classes = sub_classes | replace: 'normal', 'accent' | prepend: ' badge badge--para'
+  endif
+
+%}
+{% unless subheading == blank and heading == blank and description == blank %}
+<div class="{{ classes }}" {% if content_align contains 'ta-' or header_style %} style="{{ header_style }}"{% endif %}>
+  {% if badge_text != blank and badge_position contains 'top' %}
+    <sht-shape-parallax class="d-block p-relative p-badge-wrap" data-content-transform="rotate(-4deg) translate(-50%, -50%)">
+      <div class="js-shape-parallax-shape {{ badge_position }} p-absolute zi-2 o-hidden">
+        <div class="js-shape-parallax-rotation p-badge {{ badge_shape }} {{ badge_color }}">
+          <span class="js-shape-parallax-content p-badge__content hdg-6 ta-center p-absolute center-middle">{{ badge_text }}</span>
+        </div>
+      </div>
+    </sht-shape-parallax>
+  {% endif %}
+  <div class="s-header__content{{ content_align_class }}" {% if content_align contains 'ta-' or header_content_style %} style="{{ header_content_style }}"{% endif %}>
+    <div class="s-header__sub hide-empty d-inline-block fw-700 tt-up {{ sub_classes }}">{{- subheading | escape -}}</div>
+    <h2 id="sectionHeading-{{ section.id | md5 | truncate: 12, "" }}" class="s-header__title wb-break-word hide-empty {{ heading_classes }}">{{- heading | escape -}}</h2>
+    {% if description %}<div class="s-header__desc rte hide-empty {{ description_class }}{{ description_extra_class }}">{{- description -}}</div>{% endif %}
+
+    {% capture button_group %}
+    {%- if button_main_text -%}
+    <div class="s-header__buttons d-inline-flex button-group fw-wrap hide-empty {% if content_align contains 'ta-center' %}center-xs{% endif %}">
+      {%- if button_main_text and button_main_link -%}
+        <a class="button button--large button--primary disable-empty" href="{{- button_main_link -}}">{{- button_main_text -}}</a>
+      {%- endif -%}
+      {%- if button_sub_text -%}
+        <a class="button button--large button--secondary disable-empty" href="{{- button_sub_link -}}">{{- button_sub_text -}}</a>
+      {%- endif -%}
+    </div>
+    {%- endif -%}
+    {% endcapture %}
+    {{ button_group | lstrip }}
+  </div>
+  {% if badge_text != blank and badge_position contains 'bottom' %}
+    <sht-shape-parallax class="d-block p-relative p-badge-wrap" data-content-transform="rotate(-4deg) translate(-50%, -50%)">
+      <div class="js-shape-parallax-shape {{ badge_position }} p-absolute zi-2 o-hidden">
+        <div class="js-shape-parallax-rotation p-badge {{ badge_shape }} {{ badge_color }}">
+          <span class="js-shape-parallax-content p-badge__content hdg-6 ta-center p-absolute center-middle">{{ badge_text }}</span>
+        </div>
+      </div>
+    </sht-shape-parallax>
+  {% endif %}
+</div>
+{% endunless %}
