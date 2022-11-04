@@ -1,0 +1,98 @@
+{%-liquid
+  assign image_element = place_holder
+  assign image_element = media | image_url: width: media.width | image_tag: widths: '350, 450, 550, 750, 950, 1024, 1200, 1400, 1600, 1800, 2000', sizes: '(min-width: 361px) calc(100vw/2), calc(100vw/3)', alt: media.alt, class: 'js-image-lazy media of-cover w-100 h-100'
+  assign hide_variant_image_class = ''
+  if hide_variant_image
+    assign hide_variant_image_class = 'd-none'
+  endif
+ -%}
+<sht-carousel-item role="listitem" tabindex="-1" class="js-carousel-item product-slideshow__item product-slideshow__item--{{ media.media_type }} js-product-slideshow-item{% if is_first_image %} d-block {% else %} {{ hide_variant_image_class }} {% endif %}" data-media-id="{{ section.id }}-{{ media.id }}">
+  <sht-product-slideshow-item  data-hide-variant-image="{{ hide_variant_image }}" class="w-100 o-hidden" {% if media.media_type == 'model' %} style="---ratio: 100%;"{% else %} style="--ratio: {{ media.aspect_ratio }}"{% endif %}>
+    {%- case media.media_type -%}
+      {%- when 'image' -%}
+        {% if open_zoom_modal %}
+          <button class="js-product-media-open-gallery-button product-button-open-gallery cursor--zoom p-relative d-block h-100 w-100 p-zero b-zero not-visibility" type="button" aria-haspopup="dialog" aria-label="{{ 'accessibility.open_media_modal' | t: index: product_media_index }}" data-gallery-dialog-id="dialogProductGallery{{ rand }}" data-dialog-media-id="{{ section.id }}-{{ media.id }}">
+            <span class="button button--small button--icon button--secondary open-gallery-icon p-absolute zi-1">
+              {% render 'icon-zoom-in', width: 20, height: 20 %}
+            </span>
+        {% endif %}
+        {% render 'image', image_item: image_element, ratio: 'auto', image_wrap_classes: 'w-100 h-100', image_classes: 'w-100 h-100', class: 'of-cover w-100 h-100' %}
+        {% if open_zoom_modal %}
+          </button>
+        {% endif %}
+      {%- when 'external_video' -%}
+        {% assign external_class = 'js-media-item-' | append: media.host %}
+        <sht-product-media-item-deferred-video class="js-product-media-deferred-video media-type--video w-100 h-100 d-flex middle-xs center-xs {% if media.aspect_ratio > 1 %}video-size-landscape{% else %} video-size-portrait {% endif %}">
+          <div class="js-product-media-item-deferred-video-image w-100 h-100 p-relative">
+            <span class="p-absolute center-middle d-flex center-xs middle-xs button--primary button--large button--icon zi-1 br-50p">
+              {% render 'icon-play' width: 20, height: 20 %}
+            </span>
+            {% if is_first_image %}
+              {{- media | image_url: width: media.width, height: media.height | image_tag: widths: '350, 450, 550, 750, 950, 1024, 1200, 1400, 1600, 1800, 2000', sizes: '(min-width: 361px) calc(100vw/2), calc(100vw/3)', alt: media.alt, class: 'js-image-lazy media of-cover w-100 h-100' -}}
+            {% else %}
+              {% render 'image',
+                image_item: image_element,
+                ratio: 'auto',
+                image_wrap_classes: 'w-100 h-100',
+                image_classes: 'w-100 h-100'
+              %}
+            {% endif %}
+          </div>
+          <template>
+            {{- media | external_video_url: autoplay: true, playlist: media.external_id | external_video_tag: class: external_class -}}
+          </template>
+        </sht-product-media-item-deferred-video>
+      {%- when 'video' -%}
+        <sht-product-media-item-deferred-video class="js-product-media-deferred-video media-type--video w-100 h-100 d-flex middle-xs center-xs {% if media.aspect_ratio > 1 %}video-size-landscape{% else %} video-size-portrait {% endif %}">
+          <div class="js-product-media-item-deferred-video-image w-100 h-100 p-relative">
+            <span class="p-absolute center-middle d-flex center-xs middle-xs button--primary button--large button--icon zi-1 br-50p">
+              {% render 'icon-play' width: 20, height: 20 %}
+            </span>
+            {% if is_first_image %}
+              {{- media | image_url: width: media.width, height: media.height | image_tag: widths: '350, 450, 550, 750, 950, 1024, 1200, 1400, 1600, 1800, 2000', sizes: '(min-width: 361px) calc(100vw/2), calc(100vw/3)', alt: media.alt, class: 'js-image-lazy media of-cover w-100 h-100' -}}
+            {% else %}
+              {% render 'image',
+                image_item: image_element,
+                ratio: 'auto',
+                image_wrap_classes: 'w-100 h-100',
+                image_classes: 'w-100 h-100'
+              %}
+            {% endif %}
+          </div>
+          <template>
+            {{- media | video_tag: autoplay: true, controls: true, preload: "none", class:	'js-media-item-video' -}}
+          </template>
+        </sht-product-media-item-deferred-video>
+      {%- when 'model' -%}
+        <sht-product-media-item-model class="js-product-media-deferred-model w-100 h-100 d-flex middle-xs center-xs">
+          <div class="js-product-media-item-model-image w-100 h-100 d-flex center-xs middle-xs">
+            {% if is_first_image %}
+              {{- media | image_url: width: media.width | image_tag: widths: '350, 450, 550, 750, 950, 1024, 1200, 1400, 1600, 1800, 2000', sizes: '(min-width: 361px) calc(100vw/2), calc(100vw/3)', alt: media.alt, class: 'js-image-lazy media of-cover w-100 h-100' -}}
+            {% else %}
+              {% render 'image',
+                image_item: image_element,
+                ratio: 'auto',
+                image_wrap_classes: 'w-100'
+              %}
+            {% endif %}
+          </div>
+          <template>
+            {%- liquid
+              echo media | media_tag: image_size: "1024x", toggleable: true
+            -%}
+          </template>
+        </sht-product-media-item-model>
+        {% if xr_button %}
+          <button class="middle-x p-absolute product__xr-button button button--large button--secondary zi-1" type="button"
+            aria-label="{{ 'products.product.xr_button_label' | t }}"
+            data-shopify-xr
+            data-shopify-model3d-id="{{ media.id }}"
+            data-shopify-title="title"
+            data-shopify-xr-hidden>
+            {% render 'icon-3d-model', width: 20, height: 20, class: 'mr-8' %}
+            {{ 'products.product.xr_button' | t }}
+          </button>
+      {% endif %}
+    {%- endcase -%}
+  </sht-product-slideshow-item>
+</sht-carousel-item>

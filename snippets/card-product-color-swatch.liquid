@@ -1,0 +1,42 @@
+{%-liquid
+  assign variant_label = 'color,colour,couleur,colore,boja,farbe,색,色,warna,dath,боја,lliw,liw,колір,värvi,värv,գույն,krāsa,màu sắc,màu,cor,cцвят,färg,farve,ngjyrë,kleur,väri,farge,renk,culoare,szín,цвет,kolor,barva,χρώμα,litur,spalva,farba' | split: ','
+-%}
+<sht-variant-swatch class="variant-swatchs hide-empty d-flex fw-wrap middle-xs no-js-hidden mb-12">
+  {%- unless product.has_only_default_variant -%}
+    {%- for option in product.options_with_values -%}
+      {% liquid
+        assign variant_name = option.name | downcase
+        assign assign limit = 5
+        if option.values.size > 5
+          assign assign limit = 4
+        endif
+        %}
+      {%- if variant_label contains variant_name -%}
+
+        {%- for value in option.values limit: limit -%}
+          {%-liquid
+            assign variant_img = ''
+            for variant in product.variants
+              if variant.title contains value and variant.image
+                assign variant_img = variant.image | image_url: width: variant.image.width | image_tag: widths: '350, 450, 550, 750, 950, 1024, 1200', sizes: '(min-width: 361px) calc(100vw/2), calc(100vw/3)', alt: variant.title, data_url: variant.url
+                break
+              endif
+            endfor
+          -%}
+          <button class="vs__item clr-swh__type js-variant-swatch-item p-relative has-tooltip" aria-controls="{{ image_id }}" data-product-link-class="{{ product_link_class }}" data-product-image-id="{{ product_image_id }}" data-option-value="{{ value | downcase | escape | remove: " " }}" title="{{ value | escape }}" aria-label="{{ 'products.product.media.view_color_swatch' | t: color_swatch_name: value, product_name: product.title }}" type="button">
+            {% if variant_img != blank %}
+              <template>
+                {{ variant_img }}
+              </template>
+            {% endif %}
+            <span class="tooltip tooltip__text tooltip--top p-absolute" aria-hidden="true">{{ value | escape }}</span>
+          </button>
+        {%- endfor -%}
+        {% if option.values.size > 5 %}
+        <span>+{{ option.values.size | minus: limit }}</span>
+      {% endif %}
+      {%- endif -%}
+    {%- endfor -%}
+  {%- endunless -%}
+</sht-variant-swatch>
+

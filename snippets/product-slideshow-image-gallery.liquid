@@ -1,0 +1,54 @@
+<sht-gallery-slide role="listitem" data-item-index="{{ index }}" tabindex="-1" class="h-100 gallery__slide d-none gallery__slide--{{- media.media_type }} js-gallery-slide center-xs {% unless media.media_type == 'image' %} {% endunless %}  p-relative" data-media-id="{{ section.id }}-{{ media.id }}" data-gallery-dialog-id="dialogProductGallery{{ rand }}" >
+  <div {% if media.media_type == 'model' %} style="---ratio: 100%;"{% else %} style="--ratio: {{ media.aspect_ratio }}; "{% endif %} class="d-block w-100 h-100 ta-center">
+    {%- case media.media_type -%}
+      {%- when 'image' -%}
+        <div class="container-zoom d-block h-100">
+          <sht-zoom class="d-block w-100 h-100" data-container-id="zoomContainer-{{ section.id }}">
+            {{ media | image_url: width: media.width | image_tag: widths: '350, 450, 550, 750, 950, 1024, 1200, 1400, 1600, 1800, 2000', sizes: '100vw', alt: media.alt, class: 'of-contain w-100 h-100 cursor--zoom js-zoom-item' }}
+          </sht-zoom>
+        </div>
+      {%- when 'external_video' -%}
+      {% assign external_class = 'js-media-item-' | append: media.host %}
+        <sht-product-media-item-deferred-video class="js-product-media-deferred-video {{ media.video_source }}{% if media.aspect_ratio > 1 %} video-size-landscape {% else %} video-size-portrait {% endif %} w-100 h-100 d-flex middle-xs center-xs">
+          <div class="js-product-media-item-deferred-video-image" style="--w-md: 10; --times-fold: 0;">
+            {{- media | image_url: width: media.width, height: media.height | image_tag: widths: '350, 450, 550, 750, 950, 1024, 1200, 1400, 1600, 1800, 2000', sizes: '(min-width: 361px) calc(100vw/2), calc(100vw/3)', alt: media.alt, class: 'maw-100 mah-100 of-cover top-0 left-0' -}}
+          </div>
+          <template>
+            {{- media | external_video_url: autoplay: true, playlist: media.external_id | external_video_tag: class: external_class -}}
+          </template>
+        </sht-product-media-item-deferred-video>
+      {%- when 'video' -%}
+        <sht-product-media-item-deferred-video class="js-product-media-deferred-video {{ media.video_source }} {% if media.aspect_ratio > 1 %} video-size-landscape {% else %} video-size-portrait {% endif %} w-100 h-100 d-flex middle-xs center-xs">
+          <div class="js-product-media-item-deferred-video-image" style="--w-md: 10; --times-fold: 0;">
+            {{- media | image_url: width: media.width, height: media.height | image_tag: widths: '350, 450, 550, 750, 950, 1024, 1200, 1400, 1600, 1800, 2000', sizes: '(min-width: 361px) calc(100vw/2), calc(100vw/3)', alt: media.alt, class: 'maw-100 mah-100 of-cover top-0 left-0' -}}
+          </div>
+          <template>
+            {{- media | video_tag: autoplay: true, controls: true, preload: "none", class:	'js-media-item-video' -}}
+          </template>
+        </sht-product-media-item-deferred-video>
+      {%- when 'model' -%}
+        <sht-product-media-item-model class="js-product-media-deferred-model">
+          <div class="js-product-media-item-model-image" style="--w-md: 10; --times-fold: 0;">
+            {{- media | image_url: width: media.width | image_tag: widths: '350, 450, 550, 750, 950, 1024, 1200, 1400, 1600, 1800, 2000', sizes: '(min-width: 361px) calc(100vw/2), calc(100vw/3)', alt: media.alt, class: 'js-image-lazy maw-100 mah-100 of-cover' -}}
+          </div>
+          <template>
+            {%- liquid
+              echo media | media_tag: image_size: "1024x", toggleable: true
+            -%}
+          </template>
+        </sht-product-media-item-model>
+        {% if xr_button %}
+          <button class="middle-x p-absolute product__xr-button button button--large button--secondary zi-1" type="button"
+            aria-label="{{ 'products.product.xr_button_label' | t }}"
+            data-shopify-xr
+            data-shopify-model3d-id="{{ media.id }}"
+            data-shopify-title="title"
+            data-shopify-xr-hidden>
+            {% render 'icon-3d-model', width: 20, height: 20, class: 'mr-8' %}
+            {{ 'products.product.xr_button' | t }}
+          </button>
+
+        {% endif %}
+    {%- endcase -%}
+  </div>
+</sht-gallery-slide>
