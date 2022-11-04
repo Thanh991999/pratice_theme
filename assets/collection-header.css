@@ -1,0 +1,33 @@
+.collection__header {
+  padding-bottom: 0;
+}
+.collection__header .media {
+  height: 30vh;
+}
+@media (min-width: 769px) {
+  .collection__header .s-header__desc {
+    margin-inline-end: calc(var(--spacing) * var(--times, 4));
+    margin-inline-start: 0;
+  }
+  .s-grid {
+    display: grid;
+    grid-template-columns: repeat(12,1fr);
+    gap: 64px;
+  }
+  .s-grid__image {
+    grid-column: 7 / span 6;
+    grid-row: 1;
+    height: 50vh;
+  }
+  .s-grid__content{
+    grid-column: 1 / span 8;
+    grid-row: 1;
+    position: relative;
+    z-index: 1;
+    padding-right: 0;
+    text-align: left;
+  }
+  .collection__header .media {
+    height: 50vh;
+  }
+}

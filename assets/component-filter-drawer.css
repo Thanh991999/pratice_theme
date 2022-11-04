@@ -1,0 +1,195 @@
+.filter-form-container {
+  margin-bottom: 32px;
+  row-gap: 24px;
+}
+.filter-form__summary {
+  padding: 16px 0 16px 0;
+}
+.filter-form__details[open] .filter-form__summary .icon-plus {
+  display: none;
+}
+.filter-form__price {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-gap: 16px;
+}
+
+.filter-price-range {
+  grid-column: 1 / span 2;
+}
+
+.range-slider input[type="range"] {
+  width: 100%;
+  outline: none;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: transparent;
+  pointer-events: none;
+  margin: 0;
+  z-index: 2;
+}
+
+.range-slider-bar {
+  width: 100%;
+  height: 2px;
+  position: absolute;
+  margin: auto;
+  top: 2px;
+  bottom: 0;
+  border-radius: 5px;
+  left: 0px;
+  right: 0;
+  z-index: 1;
+}
+
+.range-slider input[type="range"]::-webkit-slider-runnable-track {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 2px;
+}
+
+.range-slider input[type="range"]::-moz-range-track {
+  -moz-appearance: none;
+  appearance: none;
+  height: 2px;
+}
+
+.range-slider input[type="range"]::-ms-track {
+  appearance: none;
+  height: 2px;
+}
+
+.range-slider input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 20px;
+  width: 20px;
+  background-color: rgb(var(--color-button-bg-rgb));
+  cursor: pointer;
+  border-radius: 10px;
+  margin-top: -7px;
+  pointer-events: auto;
+}
+
+.range-slider input[type="range"]::-moz-range-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 20px;
+  width: 20px;
+  cursor: pointer;
+  border-radius: 50%;
+  pointer-events: auto;
+}
+
+.range-slider input[type="range"]::-ms-thumb {
+  appearance: none;
+  height: 20px;
+  width: 20px;
+  cursor: pointer;
+  border-radius: 50%;
+  pointer-events: auto;
+  transition: all ease 0.3s;
+}
+.range-slider input[type="range"]:hover::-ms-thumb {
+  transition: all ease 0.3s;
+  box-shadow: 0px 0px 0px 3px rgba(var(--color-button-bg-rgb), 0.16);
+}
+
+.range-slider input[type="range"]:active::-webkit-slider-thumb {
+  transition: all ease 0.3s;
+  box-shadow: 0px 0px 0px 3px rgba(var(--color-button-bg-rgb), 0.16);
+}
+
+.range-slider input[type="range"]:hover::-webkit-slider-thumb {
+  transition: all ease 0.3s;
+  box-shadow: 0px 0px 0px 3px rgba(var(--color-button-bg-rgb), 0.16);
+}
+
+.filter-variant-swatch {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-gap: 32px 16px;
+}
+
+.filter-form__item .product-swatches {
+  position: relative;
+  width: 24px;
+  height: 24px;
+  border: 1px solid var(--color-divider);
+}
+
+.filter-form__radio:checked + .form__label .product-swatches {
+  box-shadow: 0 0 0 2px #fff, 0 0 0 3px rgb(var(--color-button-bg-rgb));
+}
+.filter-form--disabled label {
+  text-decoration: line-through;
+  color: var(--color-disabled-text);
+}
+.filter-form--disabled .product-swatches {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.filter-form--disabled .product-swatches:before {
+  content: "";
+  display: block;
+  position: absolute;
+  width: 100%;
+  height: 1px;
+  top: 10px;
+  left: 0;
+  background: rgba(var(--color-normal-text-rgb), 0.6);
+}
+
+.filter-form--disabled .product-swatches-label {
+  text-decoration: line-through;
+  color: rgb(210 210 210 / 60%);
+}
+.filter-form__active-filters .filter__clear__all:only-child {
+  display: none;
+}
+.filter-form__rerult-count__sorting {
+  justify-content: space-between;
+}
+@media (min-width: 459px) {
+  .filter-form-container {
+    margin-bottom: 36px;
+  }
+}
+@media (min-width: 769px) {
+  .filter-form-container {
+    margin-bottom: 40px;
+  }
+  .filter-drawer-open button {
+    width: auto;
+  }
+  .layout--horizontal .filter-form__rerult-count__sorting {
+    justify-content: flex-end;
+  }
+  .layout--vertical .filter-form__rerult-count__sorting {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+}
+@media (min-width: 1025px) {
+  .filter-form-container {
+    margin-bottom: 64px;
+  }
+  .layout--vertical {
+    row-gap: 36px;
+  }
+  .layout--vertical .filter-form-container {
+    position: sticky;
+    top: calc(var(--spacing) * 4);
+  }
+}
+@media (min-width: 1681px) {
+  .filter-form-container {
+    margin-bottom: 96px;
+  }
+}

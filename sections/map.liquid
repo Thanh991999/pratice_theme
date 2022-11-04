@@ -1,56 +1,72 @@
-<div class="map" data-ui-component="Map Section">
-	<div class="map__container">
-		<div class="map__content">
-      <h2 class="map__heading"></h2>
-      <div class="map__info"></div>
-		</div>
-    <div class="map__canvas">
-      <sht-map data-zoom="14" data-type="roadmap" data-location="{{ section.settings.map_address }}">
-        <iframe defer class="map__iframe js-map-iframe" loading="lazy" scrolling="no" title="Google Map" src="" srcdoc="loading..."></iframe>
-      </sht-map>
+{%- liquid
+  assign placeholder = 'image' | placeholder_svg_tag: 'placeholder media of-cover w-100 h-100'
+  assign media = placeholder
+  assign media_alt = section.settings.image.alt | default: section.settings.image.image | split: '/' | last
+  assign media = section.settings.image | image_url: width: section.settings.image.width, height: section.settings.image.height | image_tag: widths: '350, 450, 550, 750, 950, 1024, 1200, 1400, 1600, 1800, 2000', sizes: "(min-width: 361px) calc(100vw/2), calc(100vw/3)", alt: media_alt, class: 'js-image-lazy media of-cover w-100 h-100'
+  assign map_address = section.settings.map_address
+  assign map_media_width = '--w-xs:12'
+-%}
+
+<div class="section" data-ui-component="Map Section">
+  <div class="ctnr">
+    <div class="rw row-gap-48 row-gap-64-sm">
+      {% if section.blocks.size != 0 %}
+        {% assign map_media_width = '--w-xs:12;--w-md:7' %}
+        {%- for block in section.blocks -%}
+          <div class="clm" style="--w-xs:12;--w-md:5" {{ section.shopify_attributes }}>
+            {% render 'section-header',
+              classes: 'p-sides',
+              subheading: block.settings.subheading,
+              heading: block.settings.heading,
+              description: block.settings.description,
+              section: section
+            %}
+            {% unless map_address == blank or block.settings.button_text == blank %}
+              <div class="s-footer-sm p-sides">
+                <a href="{{ map_address | url_encode | prepend: 'https://www.google.com/maps/place/' }}" target="_blank" class="button button--primary button--small">
+                  {{- block.settings.button_text | escape -}}
+                </a>
+              </div>
+            {% endunless %}
+          </div>
+        {%- endfor -%}
+      {% endif %}
+      <div class="clm" style="{{ map_media_width }}">
+        <div class="map-media{% if section.blocks.size != 0 %} mr-minus ml-minus ml-md-0{% endif %}" style="--h-xs:35vh;--h-lg:70vh">
+          {% if section.settings.image != blank or section.settings.image == blank and map_address == blank %}
+            <div class="h-100">
+              {% render 'image',
+                image_item: media,
+                src: section.settings.image.src,
+                image_wrap_classes: 'h-100',
+                image_classes: 'h-100',
+              %}
+            </div>
+          {% else %}
+            <sht-map data-zoom="14" data-type="roadmap" data-location="{{ map_address }}">
+              <iframe defer class="js-map-iframe w-100 h-100 d-block" loading="lazy" scrolling="no" title="Google Map" src="" srcdoc="loading..."></iframe>
+            </sht-map>
+          {% endif %}
+        </div>
+      </div>
     </div>
-	</div>
+  </div>
 </div>
-{%- assign files = "map.js" | split: ', ' -%}
-{%- render 'js-loader', files: files, type: 'inline' -%}
+{%-liquid
+   assign files = "map.js" | split: ', '
+   render 'js-loader', files: files
+-%}
 
 {% schema %}
 {
   "name": "t:sections.map.name",
   "settings": [
     {
-      "type": "select",
-      "id": "color_scheme",
-      "label": "t:general.settings.color_scheme.label",
-      "default": "cs-background cs-background-1",
-      "options": [
-        {
-          "value": "cs-accent cs-accent-1",
-          "label": "t:settings_schema.colors.settings.colors_accent_1.label"
-        },
-        {
-          "value": "cs-accent cs-accent-2",
-          "label": "t:settings_schema.colors.settings.colors_accent_2.label"
-        },
-        {
-          "value": "cs-background cs-background-1",
-          "label": "t:settings_schema.colors.settings.colors_background_1.label"
-        },
-        {
-          "value": "cs-background cs-background-2",
-          "label": "t:settings_schema.colors.settings.colors_background_2.label"
-        }
-      ]
-    },
-    {
-      "type": "header",
-      "content": "t:sections.map.settings.headers.header_map.content"
-    },
-    {
       "type": "text",
       "id": "map_address",
       "label": "t:sections.map.settings.map_address.label",
-      "info": "t:sections.map.settings.map_address.info"
+      "info": "t:sections.map.settings.map_address.info",
+      "default": "Brooklyn, NY, USA"
     },
     {
       "type": "image_picker",
@@ -59,45 +75,45 @@
       "info": "t:sections.map.settings.custom_map_image.info"
     }
   ],
-  "blocks":[
+  "blocks": [
     {
-      "type": "heading",
-      "name": "t:general.settings.heading.label",
+      "type": "content",
+      "name": "t:general.settings.headers.header_content.content",
       "limit": 1,
-      "settings":[
+      "settings": [
+        {
+          "type": "header",
+          "content": "t:general.settings.headers.header_text.content"
+        },
+        {
+          "type": "text",
+          "id": "subheading",
+          "label": "t:general.settings.subheading.label"
+        },
         {
           "type": "text",
           "id": "heading",
           "label": "t:general.settings.heading.label",
-          "default": "Heading"
-        }
-      ]
-    },
-    {
-      "type": "description",
-      "name": "t:general.settings.description.label",
-      "limit": 1,
-      "settings":[
+          "default": "Visit us"
+        },
         {
           "type": "richtext",
           "id": "description",
-          "label": "t:general.settings.description.label"
-        }
-      ]
-    },
-    {
-      "type": "direction_button",
-      "name": "t:sections.map.blocks.direction_button.name",
-      "limit": 1,
-      "settings":[
+          "label": "t:general.settings.description.label",
+          "default": "<p> Brooklyn, NY, USA <br><br> Mon-Fri, 8:30am - 10:30pm <br> Saturday, 8:30am - 10:30pm <br> Sunday, 8:30am - 10:30pm </p>"
+        },
+        {
+          "type": "header",
+          "content": "t:general.settings.headers.header_button.content"
+        },
         {
           "type": "paragraph",
-          "content": "t:sections.map.blocks.paragraph.content"
+          "content": "t:general.settings.headers.header_direction_button.content"
         },
         {
           "type": "text",
-          "id": "button_label",
-          "label": "t:general.settings.button_label.label",
+          "id": "button_text",
+          "label": "t:general.settings.label.label",
           "default": "Get direction"
         }
       ]
@@ -105,7 +121,12 @@
   ],
   "presets": [
     {
-      "name": "t:sections.map.name"
+      "name": "t:sections.map.name",
+      "blocks": [
+        {
+          "type": "content"
+        }
+      ]
     }
   ]
 }
