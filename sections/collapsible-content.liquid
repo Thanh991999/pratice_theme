@@ -1,46 +1,148 @@
+{%- liquid
+  assign media = 'image' | placeholder_svg_tag: 'js-image-lazy placeholder'
+  assign media_alt  = section.settings.image.alt | default: section.settings.image.image | split: '/' | last
+  assign media = section.settings.image | image_url: width: section.settings.image.width | image_tag: widths: '350, 450, 550, 750, 950, 1024, 1200', sizes: "(min-width: 361px) calc(100vw/2), calc(100vw/3)", alt: media_alt, class: 'js-image-lazy media of-cover w-100'
+  assign section_id = section.id | md5 | truncate: 12, ""
+  assign content_align = section.settings.content_alignment
+  capture icon_plus
+    render "icon-plus", class: 'accordion__icon--plus p-absolute'
+  endcapture
 
+  capture icon_minus
+    render "icon-minus", class: 'accordion__icon--minus p-absolute'
+  endcapture
+-%}
+<link rel="stylesheet" href="{{ 'section-collapsible-content.css' | asset_url }}" media="all">
+<div class="section" data-ui-component="Collapsible Content Section">
+  <div class="ctnr">
+    {% render 'section-header',
+      content_align: content_align,
+      subheading: section.settings.subheading,
+      heading: section.settings.heading,
+      description: section.settings.description,
+      section: section
+    %}
+    <div class="s-content">
+      <sht-accordion data-properties='{"multiple": true, "openFistItem": {{ section.settings.expand_first_item_initially }}}'>
+        <div class="rw row-gap-48 row-gap-64-sm {{ content_align | replace: 'ta-left', 'start-xs' | replace: 'ta-center m-auto', 'center-xs' }} {{ section.settings.content_ordering | replace: 'image_first', 'fd-row-reverse' }}">
+          <div class="clm" style="--w-xs:12;--w-sm:12;--w-md:8;--w-xl:8">
+            <div class="accordion p-sides">
+              {% for block in section.blocks limit: section.blocks.size %}
+                <div class="accordion__item js-accordion-item" {{ block.shopify_attributes }}>
+                  <div class="accordion__header wb-break-word">
+                    <a href="#ac-{{ forloop.index }}-{{ section_id }}" role="button" class="js-accordion-trigger d-flex middle-xs p-relative pt-16 pb-16" id="acdnTgr-{{ forloop.index }}-{{ section_id }}" aria-expanded="false" aria-controls="acdnCtt-{{ forloop.index }}-{{ section_id }}">
+                      {% unless section.settings.show_icon == false or block.settings.icon == 'none' %}
+                        {% render 'icon-loader', icon: block.settings.icon, class: 'mr-12' %}
+                      {% endunless %}
+                      <span class="hdg-6 mb-0 fg-1 pr-12">
+                        {{ block.settings.block_heading }}
+                      </span>
+                      <span class="zi-1 button button--small button--icon">
+                        {{ icon_plus }}
+                        {{ icon_minus }}
+                      </span>
+                    </a>
+                  </div>
+                  <span id="ac-{{ forloop.index }}-{{ section_id }}" hidden></span>
+                  <div class="accordion__content pt-0 {% if section.settings.show_icon and block.settings.icon != 'none' %}pl-36{% endif %} pr-36 pb-40 rte js-accordion-content ac-{{ forloop.index }}-{{ section_id }}" id="acdnCtt-{{ forloop.index }}-{{ section_id }}" role="region" aria-describedby="acdnTgr-{{ forloop.index }}-{{ section_id }}" tabindex="-1" hidden>
+                    {{ block.settings.description }}
+                    {{ block.settings.page.content }}
+                  </div>
+                  <noscript>
+                    <style>
+                      #ac-{{ forloop.index }}-{{ section_id }}:target ~ .ac-{{ forloop.index }}-{{ section_id }} {
+                        display: block !important;
+                      }
+                    </style>
+                  </noscript>
+                </div>
+              {% endfor %}
+            </div>
+          </div>
+          {% if section.settings.image != blank %}
+            <div class="clm" style="--w-xs: 12;--w-sm: 12;--w-md: 4;--w-lg: 4;--w-xl: 4">
+              <div class="p-relative">
+                {% render 'image',
+                  ratio: section.settings.image_ratio,
+                  image_item: media,
+                  src: section.settings.image.src
+                %}
+              </div>
+            </div>
+        {% endif %}
+        </div>
+      </sht-accordion>
+    </div>
+    <div class="s-footer p-sides {{ content_align }} {{ section.settings.btn_text | default: 'd-none' | replace: section.settings.btn_text, '' }}">
+      <a class="button button--primary button--large hide-empty" href="{{ section.settings.btn_link | default: '#' }}">
+        {{- section.settings.btn_text -}}
+      </a>
+    </div>
+  </div>
+</div>
+{%- liquid
+  assign files = "accordion.js" | split: ', '
+  render 'js-loader', files: files
+-%}
 {% schema %}
 {
   "name": "t:sections.collapsible_content.name",
   "settings": [
     {
-      "type": "select",
-      "id": "color_scheme",
-      "label": "t:general.settings.color_scheme.label",
-      "default": "cs-background cs-background-1",
-      "options": [
-        {
-          "value": "cs-accent cs-accent-1",
-          "label": "t:settings_schema.colors.settings.colors_accent_1.label"
-        },
-        {
-          "value": "cs-accent cs-accent-2",
-          "label": "t:settings_schema.colors.settings.colors_accent_2.label"
-        },
-        {
-          "value": "cs-background cs-background-1",
-          "label": "t:settings_schema.colors.settings.colors_background_1.label"
-        },
-        {
-          "value": "cs-background cs-background-2",
-          "label": "t:settings_schema.colors.settings.colors_background_2.label"
-        }
-      ]
+      "type": "header",
+      "content": "t:general.settings.headers.header_general.content"
     },
     {
-      "type": "header",
-      "content": "t:general.settings.headers.header_content.content"
+      "type": "text",
+      "label": "t:general.settings.section_subheading.label",
+      "id": "subheading"
     },
     {
       "type": "text",
       "id": "heading",
-      "label": "t:general.settings.heading.label",
-      "default": "Frequently asked questions"
+      "label": "t:general.settings.section_heading.label",
+      "default": "Collapsible content"
     },
     {
-      "type": "checkbox",
-      "label": "t:sections.collapsible_content.settings.nest_heading.label",
-      "id": "content_checkbox"
+      "type": "text",
+      "id": "description",
+      "label": "t:general.settings.section_description.label"
+    },
+    {
+      "type": "header",
+      "content": "t:general.settings.headers.header_layout.content"
+    },
+    {
+      "type": "select",
+      "id": "content_alignment",
+      "label": "t:general.settings.content_alignment.label",
+      "default": "ta-left",
+      "options": [
+        {
+          "value": "ta-left",
+          "label": "t:general.settings.content_alignment.options.option_left.label"
+        },
+        {
+          "value": "ta-center m-auto",
+          "label": "t:general.settings.content_alignment.options.option_center.label"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "content_ordering",
+      "label": "t:general.settings.content_ordering.label",
+      "default": "text_first",
+      "options": [
+        {
+          "value": "text_first",
+          "label": "t:general.settings.content_ordering.options.option_text_first.label"
+        },
+        {
+          "value": "image_first",
+          "label": "t:general.settings.content_ordering.options.option_image_first.label"
+        }
+      ]
     },
     {
       "type": "header",
@@ -48,48 +150,47 @@
     },
     {
       "type": "image_picker",
+      "id": "image",
       "label": "t:general.settings.image.label",
-      "id": "image"
-    },
-    {
-      "type": "select",
-      "id": "Image_position",
-      "label": "t:sections.collapsible_content.settings.image_layout.label",
-      "default": "left",
-      "options": [
-        {
-          "value": "left",
-          "label": "t:sections.collapsible_content.settings.image_layout.options.option_left.label"
-        },
-        {
-          "value": "right",
-          "label": "t:sections.collapsible_content.settings.image_layout.options.option_right.label"
-        }
-      ]
+      "info": "t:general.settings.image.info"
     },
     {
       "type": "select",
       "id": "image_ratio",
       "label": "t:general.settings.image_ratio.label",
-      "default": "adapt",
+      "default": "2/3",
       "options": [
         {
-          "value": "adapt",
-          "label": "t:general.settings.image_ratio.options.option_adapt.label"
-        },
-        {
-          "value": "square",
+          "value": "1/1",
           "label": "t:general.settings.image_ratio.options.option_square.label"
         },
         {
-          "value": "portrait",
+          "value": "2/3",
+          "label": "t:general.settings.image_ratio.options.option_portrait.label"
+        },
+        {
+          "value": "3/2",
           "label": "t:general.settings.image_ratio.options.option_landscape.label"
         },
         {
-          "value": "landscape",
-          "label": "t:general.settings.image_ratio.options.option_portrait.label"
+          "value": "auto",
+          "label": "t:general.settings.image_ratio.options.option_adapt.label"
         }
       ]
+    },
+    {
+      "type": "header",
+      "content": "t:general.settings.headers.header_button.content"
+    },
+    {
+      "type": "text",
+      "id": "btn_text",
+      "label": "t:general.settings.label.label"
+    },
+    {
+      "type": "url",
+      "id": "btn_link",
+      "label": "t:general.settings.link.label"
     },
     {
       "type": "header",
@@ -98,47 +199,62 @@
     {
       "type": "checkbox",
       "id": "show_icon",
-      "label": "t:sections.collapsible_content.settings.show_icon.label"
+      "label": "t:sections.collapsible_content.settings.show_icon.label",
+      "default": true
     },
     {
-      "type": "header",
-      "content": "t:general.settings.headers.header_button.content"
-    },
-    {
-      "type": "text",
-      "id": "btn_label",
-      "label": "t:general.settings.button_label.label",
-      "placeholder": "Enter label text"
-    },
-    {
-      "type": "url",
-      "id": "btn_link",
-      "label": "t:general.settings.button_link.label"
+      "type": "checkbox",
+      "id": "expand_first_item_initially",
+      "label": "t:sections.collapsible_content.settings.expand_first_item_initially.label",
+      "default": true
     }
   ],
   "blocks": [
     {
       "type": "content",
       "name": "t:sections.collapsible_content.settings.headers.header_collapsible_items.content",
-      "limit": 5,
       "settings": [
         {
           "type": "select",
           "id": "icon",
           "label": "t:general.settings.icon.label",
-          "default": "check-mark",
+          "default": "check",
           "options": [
             {
               "value": "none",
               "label": "None"
             },
             {
+              "value": "3d-model",
+              "label": "3d model"
+            },
+            {
+              "value": "addresses",
+              "label": "Addresses"
+            },
+            {
+              "value": "arrow-down",
+              "label": "Arrow down"
+            },
+            {
+              "value": "arrow-left",
+              "label": "Arrow left"
+            },
+            {
+              "value": "arrow-right",
+              "label": "Arrow right"
+            },
+            {
+              "value": "arrow-up",
+              "label": "Arrow up"
+            },
+            {
               "value": "bar-chart",
               "label": "Bar chart"
             },
             {
-              "value": "bar-code",
-              "label": "Bar code"
+              "value": "barcode",
+              "label": "Barcode"
             },
             {
               "value": "bookmark",
@@ -157,16 +273,44 @@
               "label": "Calendar"
             },
             {
+              "value": "cart",
+              "label": "Cart"
+            },
+            {
               "value": "chat-bubble",
               "label": "Chat bubble"
             },
             {
               "value": "check-mark",
+              "label": "Check mark"
+            },
+            {
+              "value": "check",
               "label": "Check"
+            },
+            {
+              "value": "chevron-down",
+              "label": "Chevron down"
+            },
+            {
+              "value": "chevron-left",
+              "label": "Chevron left"
+            },
+            {
+              "value": "chevron-right",
+              "label": "Chevron right"
+            },
+            {
+              "value": "chevron-up",
+              "label": "Chevron up"
             },
             {
               "value": "clock",
               "label": "Clock"
+            },
+            {
+              "value": "close",
+              "label": "Close"
             },
             {
               "value": "credit-card",
@@ -181,24 +325,68 @@
               "label": "Dress"
             },
             {
+              "value": "edit",
+              "label": "Edit"
+            },
+            {
+              "value": "error",
+              "label": "Error"
+            },
+            {
               "value": "eye",
               "label": "Eye"
+            },
+            {
+              "value": "facebook",
+              "label": "Facebook"
             },
             {
               "value": "file",
               "label": "File"
             },
             {
+              "value": "filter",
+              "label": "Filter"
+            },
+            {
+              "value": "fullscreen-exit",
+              "label": "Fullscreen exit"
+            },
+            {
+              "value": "fullscreen",
+              "label": "Fullscreen"
+            },
+            {
               "value": "gift",
               "label": "Gift"
             },
             {
-              "value": "globe",
-              "label": "Globe"
+              "value": "global",
+              "label": "Global"
             },
             {
               "value": "half-star",
               "label": "Half star"
+            },
+            {
+              "value": "hamburger-menu",
+              "label": "Hamburger menu"
+            },
+            {
+              "value": "heart",
+              "label": "Heart"
+            },
+            {
+              "value": "home",
+              "label": "Home"
+            },
+            {
+              "value": "info",
+              "label": "Info"
+            },
+            {
+              "value": "instagram",
+              "label": "Instagram"
             },
             {
               "value": "iron",
@@ -213,20 +401,52 @@
               "label": "Leather"
             },
             {
-              "value": "lock-off",
-              "label": "Lock off"
+              "value": "link",
+              "label": "Link"
             },
             {
               "value": "lock-on",
               "label": "Lock on"
             },
             {
-              "value": "map-pin",
-              "label": "Map pin"
+              "value": "lock",
+              "label": "Lock"
+            },
+            {
+              "value": "login",
+              "label": "Login"
+            },
+            {
+              "value": "logout",
+              "label": "Logout"
+            },
+            {
+              "value": "mail",
+              "label": "Mail"
+            },
+            {
+              "value": "map-pin-location",
+              "label": "Map pin location"
+            },
+            {
+              "value": "minus",
+              "label": "Minus"
             },
             {
               "value": "money",
               "label": "Money"
+            },
+            {
+              "value": "newsletter",
+              "label": "Newsletter"
+            },
+            {
+              "value": "order",
+              "label": "Order"
+            },
+            {
+              "value": "page",
+              "label": "Page"
             },
             {
               "value": "pant",
@@ -237,12 +457,32 @@
               "label": "Paper plan"
             },
             {
+              "value": "pause",
+              "label": "Pause"
+            },
+            {
               "value": "persons",
               "label": "Persons"
             },
             {
+              "value": "phone",
+              "label": "Phone"
+            },
+            {
+              "value": "pinterest",
+              "label": "Pinterest"
+            },
+            {
+              "value": "play",
+              "label": "Play"
+            },
+            {
+              "value": "plus",
+              "label": "Plus"
+            },
+            {
               "value": "price-tag",
-              "label": "Price-tag"
+              "label": "Price tag"
             },
             {
               "value": "protect",
@@ -253,16 +493,28 @@
               "label": "Question mark"
             },
             {
-              "value": "question-mark-1",
-              "label": "Question mark 1"
+              "value": "quick-shop",
+              "label": "Quick shop"
+            },
+            {
+              "value": "quote",
+              "label": "Quote"
             },
             {
               "value": "receipt",
               "label": "Receipt"
             },
             {
+              "value": "remove",
+              "label": "Remove"
+            },
+            {
               "value": "return",
               "label": "Return"
+            },
+            {
+              "value": "RSS",
+              "label": "Rss"
             },
             {
               "value": "ruler",
@@ -277,8 +529,16 @@
               "label": "Scan"
             },
             {
+              "value": "search",
+              "label": "Search"
+            },
+            {
               "value": "settings",
               "label": "Settings"
+            },
+            {
+              "value": "share",
+              "label": "Share"
             },
             {
               "value": "shirt",
@@ -297,20 +557,64 @@
               "label": "Smile"
             },
             {
+              "value": "snapchat",
+              "label": "Snapchat"
+            },
+            {
+              "value": "sort",
+              "label": "Sort"
+            },
+            {
+              "value": "sport",
+              "label": "Sport"
+            },
+            {
               "value": "star",
               "label": "Star"
+            },
+            {
+              "value": "subscription",
+              "label": "Subscription"
             },
             {
               "value": "support",
               "label": "Support"
             },
             {
+              "value": "three-dots",
+              "label": "Three dots"
+            },
+            {
               "value": "thumb-up",
               "label": "Thumb up"
             },
             {
+              "value": "tiktok",
+              "label": "Tiktok"
+            },
+            {
               "value": "truck",
               "label": "Truck"
+            },
+            {
+              "value": "tumblr",
+              "label": "Tumblr"
+            },
+            {
+              "value": "twitter",
+              "label": "Twitter"
+            },
+            {
+              "value": "user",
+              "label": "User"
+            },
+            {
+              "value": "vimeo",
+              "label": "Vimeo"
+            },
+            {
+              "value": "voucher",
+              "label": "Voucher"
             },
             {
               "value": "wallet",
@@ -319,6 +623,30 @@
             {
               "value": "washing",
               "label": "Washing"
+            },
+            {
+              "value": "weather-1",
+              "label": "Weather 1"
+            },
+            {
+              "value": "weather-2",
+              "label": "Weather 2"
+            },
+            {
+              "value": "youtube",
+              "label": "Youtube"
+            },
+            {
+              "value": "zoom-in",
+              "label": "Zoom in"
+            },
+            {
+              "value": "zoom-out",
+              "label": "Zoom out"
+            },
+            {
+              "value": "linkedin",
+              "label": "Linkedin"
             }
           ]
         },
@@ -326,24 +654,43 @@
           "type": "text",
           "id": "block_heading",
           "label": "t:general.settings.heading.label",
-          "placeholder": "Enter name"
+          "placeholder": "t:sections.collapsible_content.settings.enter_name.label",
+          "default": "Free shipping"
         },
         {
           "type": "richtext",
           "id": "description",
-          "label": "t:general.settings.description.label"
+          "label": "t:general.settings.description.label",
+          "default": "<p>Free worldwide shipping and returns - customs and duties taxes included</p>"
         },
         {
           "type": "page",
           "id": "page",
-          "label": "t:sections.collapsible_content.blocks.settings.content_from_page"
+          "label": "t:sections.collapsible_content.blocks.settings.content_from_page.label"
         }
       ]
     }
   ],
   "presets": [
     {
-      "name": "t:sections.collapsible_content.name"
+      "name": "t:sections.collapsible_content.name",
+      "blocks": [
+        {
+          "type": "content"
+        },
+        {
+          "type": "content"
+        },
+        {
+          "type": "content"
+        },
+        {
+          "type": "content"
+        },
+        {
+          "type": "content"
+        }
+      ]
     }
   ]
 }

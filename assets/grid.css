@@ -1,0 +1,20 @@
+.htspt-grids svg .grid-number-left {
+  text-anchor: end;
+}
+.htspt-grids svg .grid-number {
+  font-family: "Helvetica Neue";
+  font-size: 12px;
+  line-height: 12px;
+}
+.htspt-grids svg:not(:root) {
+  overflow: visible;
+}
+.htspt-grids svg {
+  max-width: 100%;
+}
+.htspt-grids svg .grid-line {
+  stroke-width: 2px;
+}
+.htspt-grids svg .gutter-line {
+  stroke-width: 1px;
+}
