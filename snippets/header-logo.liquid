@@ -1,0 +1,31 @@
+<div class="header-logo {% if request.page_type == 'index' and section.settings.enable_transparent and section.settings.logo_transparent != blank %} header-logo--transparent {% endif %}">
+  {% assign logo_alt = section.settings.logo.alt | default: shop.name | escape %}
+  {%- if request.page_type == 'index' -%}
+    <h1 class="header__heading m-zero wb-break-word">
+  {%- endif -%}
+    <a href="{{ routes.root_url }}" aria-label="{{ logo_alt }}"
+      class="header__logo-link js-header-logo-link d-block hdg-4 p-relative wb-break-word">
+      {%- if section.settings.logo != blank -%}
+        {%- assign image_size_2x = section.settings.logo_width | times: 2 | at_most: 5760 -%}
+          <img
+            srcset="{{ section.settings.logo | image_url: width: section.settings.logo_width }}, {{ section.settings.logo | image_url: width: image_size_2x }} 2x"
+            src="{{ section.settings.logo | image_url: width: 400 }}" loading="lazy"
+            class="header__logo-img logo__main-logo logo" width="{{ section.settings.logo.width }}"
+            height="{{ section.settings.logo.height }}"
+            alt="{{ section.settings.logo.alt | default: shop.name | escape }}" />
+          {%- if section.settings.enable_transparent == true and section.settings.logo_transparent != blank and request.page_type == 'index' -%}
+            <img
+              srcset="{{ section.settings.logo_transparent | image_url: width: section.settings.logo_width }}, {{ section.settings.logo_transparent | image_url: width: image_size_2x }} 2x"
+              src="{{ section.settings.logo | image_url: width: 400 }}" loading="lazy"
+              class="header__logo-img logo logo--transparent" width="{{ section.settings.logo_transparent.width }}"
+              height="{{ section.settings.logo_transparent.height }}"
+              alt="{{ section.settings.logo_transparent.alt | default: shop.name | escape }}" />
+          {%- endif -%}
+      {%- else -%}
+        <span>{{ shop.name }}</span>
+      {%- endif -%}
+    </a>
+  {%- if request.page_type == 'index' -%}
+    </h1>
+  {%- endif -%}
+</div>
