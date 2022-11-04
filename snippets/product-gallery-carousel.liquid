@@ -1,0 +1,39 @@
+<sht-carousel-wrapper data-on-mobile-only="true" data-css-class-on-container="d-flex p-zero m-zero ox-auto p-relative disable-scrollbars fw-nowrap scrollable scrollable-x{{ carousel_class | default: '' }}" data-css-class-on-item="w-100 p-relative scrollable-aln-start ta-center d-flex aln-itm-ctr fg-1 fs-0{{ carousel_item_class | default: '' }}">
+  <sht-carousel class="p-relative d-block" id="productGalleryCarousel-{{ section.id }}" data-section-id="{{ section.id }}">
+    <div class="product-slideshow__items js-product-slideshow js-carousel-items" role="list" aria-label="{{ 'accessibility.slider' | t }}">
+      {%-liquid
+        assign product_media_index = 1
+        if product.selected_or_first_available_variant.featured_media != null
+          assign featured_media = product.selected_or_first_available_variant.featured_media
+          assign is_first_image = true
+          render 'product-slideshow-image', xr_button: true, section: section, media: featured_media, is_first_image: is_first_image, product: product, place_holder: place_holder, product_media_index: product_media_index, is_first_item: true, rand: rand, hide_variant_image: hide_variant_image, open_zoom_modal: open_zoom_modal
+        endif
+        for media in product.media
+          unless media.id == product.selected_or_first_available_variant.featured_media.id
+            if forloop.first and is_first_image == false
+              assign is_first_image = true
+            else
+              assign is_first_image = false
+            endif
+            assign product_media_index = product_media_index | plus: 1
+            render 'product-slideshow-image', xr_button: true, section: section, media: media, is_first_image: is_first_image, product: product, place_holder: place_holder, product_media_index: product_media_index, is_first_item: forloop.first, rand: rand, hide_variant_image: hide_variant_image, open_zoom_modal: open_zoom_modal
+          endunless
+        endfor
+      -%}
+    </div>
+    <div class="carousel-pagination js-carousel-pagination center-xs d-none-md no-js-hidden">
+      <button type="button" data-step="1" class="carousel__button p-absolute middle-y zi-1 left-0 ml-12 js-carousel-prev-btn button button--primary button--small button--icon {{ nav_mobile }}" aria-label="{{ 'accessibility.previous_slide' | t }}" name="previous">
+        {% render 'icon-chevron-left', size: 24 %}
+      </button>
+      <div class="carousel__counter zi-1 p-absolute button--secondary pe-none {{ pg_mobile }}">
+        <span class="js-carousel-counter-current"></span>
+        <span aria-hidden="true"> / </span>
+        <span class="visually-hidden">{{ "accessibility.of" | t }}</span>
+        <span class="js-carousel-counter-total"></span>
+      </div>
+      <button type="button" data-step="1" class="carousel__button p-absolute middle-y zi-1 right-0 mr-12 js-carousel-next-btn button button--primary button--small button--icon {{ nav_mobile }}" aria-label="{{ 'accessibility.next_slide' | t }}" name="next">
+        {% render 'icon-chevron-right', size: 24 %}
+      </button>
+    </div>
+  </sht-carousel>
+</sht-carousel-wrapper>

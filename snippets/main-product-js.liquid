@@ -1,0 +1,47 @@
+<script data-asset="script">
+  SHTLoad.push(function () {
+    if (!document.querySelector(`#content-deferred-js-file`)) {
+      let content_deferred = document.createElement("script");
+      content_deferred.setAttribute('src', `{{ 'content-deferred.js' | asset_url }}`);
+      content_deferred.setAttribute('id', 'content-deferred-js-file');
+      document.body.appendChild(content_deferred);
+    }
+    if (!document.querySelector(`#zoom-js-file`)) {
+      let zoom = document.createElement("script");
+      zoom.setAttribute('src', `{{ 'zoom.js' | asset_url }}`);
+      zoom.setAttribute('id', 'zoom-js-file');
+      document.body.appendChild(zoom);
+    }
+    if (!document.querySelector(`#gallery-js-file`)) {
+      let gallery = document.createElement("script");
+      gallery.setAttribute('src', `{{ 'gallery.js' | asset_url }}`);
+      gallery.setAttribute('id', 'gallery-js-file');
+      document.body.appendChild(gallery);
+    }
+    if (!document.querySelector(`#product-slideshow-js-file`)) {
+      let product_slideshow = document.createElement("script");
+      product_slideshow.setAttribute('src', `{{ 'product-slideshow.js' | asset_url }}`);
+      product_slideshow.setAttribute('id', 'product-slideshow-js-file');
+      document.body.appendChild(product_slideshow);
+    }
+    if (!document.querySelector(`#details-exposal-js-file`)) {
+      let details_exposal = document.createElement("script");
+      details_exposal.setAttribute('src', `{{ 'details-exposal.js' | asset_url }}`);
+      details_exposal.setAttribute('id', 'details-exposal-js-file');
+      document.body.appendChild(details_exposal);
+    }
+    if (!document.querySelector(`#quantity-input-js-file`)) {
+      let quantity_input = document.createElement("script");
+      quantity_input.setAttribute('src', `{{ 'quantity-input.js' | asset_url }}`);
+      quantity_input.setAttribute('id', 'quantity-input-js-file');
+      document.body.appendChild(quantity_input);
+    }
+
+    if (!document.querySelector(`#product-deferred-video-js-file`)) {
+      let product_deferred_video = document.createElement("script");
+      product_deferred_video.setAttribute('src', `{{ 'product-deferred-video.js' | asset_url }}`);
+      product_deferred_video.setAttribute('id', 'product-deferred-video-js-file');
+      document.body.appendChild(product_deferred_video);
+    }
+  });
+</script>
