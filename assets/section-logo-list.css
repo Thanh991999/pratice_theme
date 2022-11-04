@@ -1,0 +1,12 @@
+.media {
+  max-height: var(--size);
+}
+.logo-list.none-color {
+  padding-top: 0;
+  padding-bottom: 0;
+}
+@media (min-width: 769px) {
+  .logo-list {
+    padding: 64px 48px;
+  }
+}
