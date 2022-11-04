@@ -1,0 +1,25 @@
+{%- comment -%}
+{% render 'card-collection',
+  collection: collection,
+  media_ratio: '1/1'
+  show_product_count: settings.show_product_count
+%}
+{%- endcomment -%}
+{%- liquid
+  assign collection_image = 'collection-1' | placeholder_svg_tag: 'placeholder media of-cover js-image-lazy w-100'
+  assign collection_image = collection.products.first.featured_image | image_url: width: section.settings.hero_image.width | image_tag: widths: '350, 450, 550, 750, 950, 1024', sizes: '(min-width: 361px) calc(100vw/2), calc(100vw/3)', alt: collection.title, class: 'media of-cover js-image-lazy w-100'
+  assign collection_image = collection.image | image_url: width: section.settings.hero_image.width | image_tag: widths: '350, 450, 550, 750, 950, 1024', sizes: '(min-width: 361px) calc(100vw/2), calc(100vw/3)', alt: collection.title, class: 'media of-cover js-image-lazy w-100'
+-%}
+<div class="card w-100 p-relative mah-100 mask o-hidden">
+  <a aria-label="{{ collection.title }}" href="{{ collection.url }}" class="d-block card__media">
+    {% render 'image',
+      image_item: collection_image,
+      src: collection_image.src,
+      ratio: media_ratio
+    %}
+  </a>
+  <div class="card__content card__content--inner p-absolute bottom-0 w-100 zi-1 pe-none wb-break-word">
+    <h3 class="hdg-6 m-zero card__heading">{{ collection.title }}</h3>
+    <span class="td-underline button button--link button--small {{ show_product_count | default: ' d-none-important' | replace: 'true', '' }}">{{ 'general.collection.view_collection' | t: count: collection.products.size }}</span>
+  </div>
+</div>
