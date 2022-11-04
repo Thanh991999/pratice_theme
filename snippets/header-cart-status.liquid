@@ -1,0 +1,4 @@
+{%- render 'icon-cart' , width: 24, height: 24 -%}
+<span class="visually-hidden">{{ 'sections.header.cart_label' | t }}</span>
+<span class="header__cart-count p-absolute d-flex middle-xs center-xs fs-sm color-accent-1 ws-nowrap">{{ cart.item_count }}</span>
+<span class="visually-hidden">{{ 'sections.header.cart_count.other' | t: count: cart.item_count }}</span>
