@@ -1,0 +1,10 @@
+.accordion__header:hover {
+  color: rgb(var(--color-button-bg-rgb))
+}
+.accordion__item {
+  border-top: 1px solid var(--color-divider);
+  border-bottom: 1px solid var(--color-divider);
+}
+.accordion__item + .accordion__item  {
+  border-top: 0;
+}
