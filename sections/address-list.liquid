@@ -1,89 +1,340 @@
+{%- liquid
+  assign hide_element_on_compact_information_css = ''
+  assign hide_element_on_no_compact_information_css = 'd-none'
+  assign button_on_compact_information_css = 'button--link'
+  assign sizes = "(min-width: 361px) calc(100vw/2), calc(100vw/3)"
+  assign content_align = section.settings.content_align
+
+  assign xlg = 3
+  assign md = 4
+  assign icon = ''
+  if content_align == 'diagonal d-grid'
+    assign xlg = 6
+    assign md = 6
+    assign s_button = section.settings.button_main_text
+  endif
+
+  if section.settings.show_address_description
+    assign hide_element_on_compact_information_css = 'd-none'
+    assign hide_element_on_no_compact_information_css = ''
+    assign button_on_compact_information_css = 'button--primary w-100'
+  endif
+
+  assign max_items_to_show = section.settings.max_items_to_show
+  assign number_items_to_show = 0
+  if max_items_to_show > 0
+    assign max_items_to_show_modulo = max_items_to_show | modulo: 3
+    if max_items_to_show_modulo > 0
+        assign number_items_to_show = max_items_to_show | minus: max_items_to_show_modulo
+    endif
+  else
+    assign max_items_to_show = nil
+  endif
+-%}
+{% capture icon %}
+  {%- render 'icon-arrow-right', class: 'ml-8' -%}
+{% endcapture %}
+<div class="section" data-ui-component="Address List Section">
+  <div class="ctnr {{ content_align }}">
+    {%- render 'section-header',
+      content_align: content_align,
+      subheading: section.settings.subheading,
+      heading: section.settings.heading,
+      description: section.settings.description,
+      badge_text: section.settings.badge_text,
+      badge_position: section.settings.badge_position,
+      badge_shape: section.settings.badge_shape,
+      badge_color: section.settings.badge_color,
+      button_main_text: s_button,
+      button_main_link: section.settings.button_main_link,
+      section: section
+    -%}
+    <div class="s-content">
+      <div class="rw gap-unequal">
+        {% for block in section.blocks limit: max_items_to_show %}
+          {% liquid
+            assign media = 'image' | placeholder_svg_tag: 'placeholder media js-image-lazy'
+            assign media_alt  = block.settings.image.alt | default: block.settings.image.image | split: '/' | last
+            assign media = block.settings.image | image_url: width: block.settings.image.width | image_tag: widths: '350, 450, 550, 750, 950, 1024, 1200, 1400, 1600', sizes: sizes, alt: media_alt, class: 'js-image-lazy media of-cover w-100'
+
+            assign hide_class = ""
+            if number_items_to_show > 0 and forloop.index > number_items_to_show
+              assign hide_class= " d-none-md d-block-xl"
+            endif
+          %}
+          <div class="clm {{ hide_class }}" style="--w-xs:12;;--w-sm:6;--w-md:{{ md }};--w-xl:{{ xlg }};" {{ block.shopify_attributes }}>
+            <sht-drawer-trigger class="card" data-drawer-id="drawer{{ section.id }}">
+              <div class="js-drawer-trigger-media card__media">
+                {% render 'image',
+                  image_item: media,
+                  src: block.settings.image.src,
+                  ratio: '3/2'
+                %}
+              </div>
+              <div class="card__content card__content--outer wb-break-word ta-left">
+                <h3 class="js-drawer-trigger-heading hide-empty hdg-5 mb-12">{{ block.settings.heading }}</h3>
+                <div class="js-drawer-trigger-content mb-12"><p>{{ block.settings.address }}</p></div>
+                <div class="js-drawer-trigger-content hide-empty rte {{ hide_element_on_compact_information_css }}">{{- block.settings.text -}}</div>
+                <div class="js-drawer-trigger-footer hide-empty mb-12 {{ hide_element_on_compact_information_css }}">
+                  {%- if block.settings.address_link != blank -%}
+                    <a href="{{- block.settings.address_link | default: '' -}}" class="button {{ button_on_compact_information_css }} button button--large js-drawer-trigger-footer-button hide-empty" target="_blank">
+                      {{- block.settings.button_text -}}
+                      {{- section.settings.show_address_description | default: '' | replace: 'true', icon -}}
+                    </a>
+                  {%- endif -%}
+                </div>
+                <div class="adrs-lt__cta {{ hide_element_on_no_compact_information_css }}">
+                  <button type="button" aria-haspopup="true" class="js-drawer-trigger b-zero button button--link button--large">
+                    {{ 'sections.address_list.button.view_details' | t }}
+                  </button>
+                </div>
+              </div>
+            </sht-drawer-trigger>
+          </div>
+        {% endfor %}
+      </div>
+      <div class="s-footer p-sides {{ content_align | replace: 'diagonal d-grid', "d-none" | replace: content_align, '' }} {{ section.settings.button_main_text | default: 'd-none' | replace: section.settings.button_main_text, '' }}">
+        <a class="button button--primary button--large hide-empty" href="{{- section.settings.button_main_link | default: '#' -}}">
+          {{- section.settings.button_main_text -}}
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+{% if section.settings.show_address_description %}
+  <sht-drawer class="drawer drawer--480 no-focus-visible" id="drawer{{ section.id }}" aria-hidden="true" hidden tabindex="-1">
+    <div class="drawer__overlay js-drawer-overlay"></div>
+    <div class="drawer__wrapper drawer__wrapper--adrs-lt js-drawer-wrapper p-relative" role="dialog" aria-modal="true" aria-label="{{ 'sections.address_list.title' | t }}">
+      <div class="drawer__header d-flex between-xs middle-xs">
+        <h2 class="drawer__heading js-drawer-heading hdg-5 mb-0 m-zero"></h2>
+        <button class="drawer__btn-close js-drawer-btn-close b-zero button--icon button--large button--plain button" type="button" aria-label="{{ 'accessibility.close' | t }}">{%- render 'icon-close', class: 'd-block' width: 24, height: 24 -%}</button>
+      </div>
+      <div class="drawer__body oy-scroll flex-1">
+        <div class="drawer__media p-relative js-drawer-media mb-20"></div>
+        <div class="drawer__content js-drawer-content rte"></div>
+      </div>
+      <div class="drawer__footer drawer__footer--adrs-lt js-drawer-footer w-100 p-absolute bottom-0 hide-empty"></div>
+    </div>
+  </sht-drawer>
+{% endif %}
 {% schema %}
 {
-  "name": "Address list",
+  "name": "t:sections.address_list.name",
   "settings": [
     {
-      "type": "select",
-      "id": "color_scheme",
-      "label": "Color scheme",
-      "default": "cs-background cs-background-2",
-      "options": [
-        {
-          "value": "cs-accent cs-accent-1",
-          "label": "Accent 1"
-        },
-        {
-          "value": "cs-accent cs-accent-2",
-          "label": "Accent 2"
-        },
-        {
-          "value": "cs-background cs-background-1",
-          "label": "Background 1"
-        },
-        {
-          "value": "cs-background cs-background-2",
-          "label": "Background 2"
-        }
-      ]
+      "type": "header",
+      "content": "t:general.settings.headers.header_general.content"
     },
     {
-      "type": "header",
-      "content": "content"
+      "type": "text",
+      "id": "subheading",
+      "label": "t:general.settings.section_subheading.label"
     },
     {
       "type": "text",
       "id": "heading",
-      "label": "Heading",
-      "default": "Heading"
+      "label": "t:general.settings.section_heading.label",
+      "default": "Address list"
     },
     {
-      "type": "header",
-      "content": "Image"
-    },
-    {
-      "type": "image_picker",
-      "label": "Image",
-      "id": "image",
-      "info": "1200 x 700px .png recommended."
+      "type": "text",
+      "id": "description",
+      "label": "t:general.settings.section_description.label"
     },
     {
       "type": "checkbox",
-      "id": "enable_fluid",
-      "label": "Enable full-width layout"
+      "id": "show_address_description",
+      "label": "t:sections.address_list.settings.show_address_description.label",
+      "default": true
     },
     {
       "type": "header",
-      "content": "layout"
+      "content": "t:general.settings.headers.header_layout.content"
+    },
+    {
+      "type": "range",
+      "id": "max_items_to_show",
+      "min": 0,
+      "max": 48,
+      "step": 4,
+      "default": 4,
+      "label": "t:general.settings.max_items_to_show.label",
+      "info": "t:general.settings.max_items_to_show.info"
     },
     {
       "type": "select",
-      "id": "content_order",
-      "label": "Content ordering",
-      "default": "text",
+      "id": "content_align",
+      "label": "t:general.settings.content_alignment.label",
+      "default": "ta-left",
       "options": [
         {
-          "value": "text",
-          "label": "Text first"
+          "value": "ta-left",
+          "label": "t:general.settings.content_alignment.options.option_left.label"
         },
         {
-          "value": "image",
-          "label": "Image first"
+          "value": "ta-center",
+          "label": "t:general.settings.content_alignment.options.option_center.label"
+        },
+        {
+          "value": "diagonal d-grid",
+          "label": "t:general.settings.content_alignment.options.option_diagonal.label"
         }
       ]
     },
     {
-      "type": "range",
-      "id": "item_per_row",
-      "min": 0,
-      "max": 2,
-      "step": 1,
-      "label": "Items per row",
-      "default": 1
+      "type": "header",
+      "content": "t:general.settings.headers.header_button.content"
+    },
+    {
+      "type": "text",
+      "id": "button_main_text",
+      "label": "t:general.settings.label.label"
+    },
+    {
+      "type": "url",
+      "id": "button_main_link",
+      "label": "t:general.settings.link.label"
+    },
+    {
+      "type": "header",
+      "content": "t:general.settings.headers.header_prominent_badge.content"
+    },
+    {
+      "type": "select",
+      "id": "badge_color",
+      "label": "t:general.settings.color_scheme.label",
+      "default": "color-accent-2",
+      "options": [
+        {
+          "value": "color-accent-1",
+          "label": "t:general.settings.accent_scheme.options.option_main_accent.label"
+        },
+        {
+          "value": "color-accent-2",
+          "label": "t:general.settings.accent_scheme.options.option_extra_accent.label"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "badge_position",
+      "label": "t:general.settings.badge_position.label",
+      "default": "p-badge--top-right",
+      "options": [
+        {
+          "value": "p-badge--top-left",
+          "label": "t:general.settings.badge_position.options.option_left.label"
+        },
+        {
+          "value": "p-badge--top-right",
+          "label": "t:general.settings.badge_position.options.option_right.label"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "badge_shape",
+      "label": "t:general.settings.badge_shape.label",
+      "default": "badge--star",
+      "options": [
+        {
+          "value": "badge--star",
+          "label": "t:general.settings.badge_shape.options.option_star.label"
+        },
+        {
+          "value": "badge--diamond",
+          "label": "t:general.settings.badge_shape.options.option_diamond.label"
+        },
+        {
+          "value": "badge--asterisk",
+          "label": "t:general.settings.badge_shape.options.option_asterisk.label"
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "id": "badge_text",
+      "label": "t:general.settings.text.label"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "address_item",
+      "name": "t:sections.address_list.blocks.address_item.name",
+      "limit": 6,
+      "settings": [
+        {
+          "type": "header",
+          "content": "t:general.settings.headers.header_image.content"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "t:general.settings.image.label",
+          "info": "t:sections.address_list.blocks.address_item.settings.image.info"
+        },
+        {
+          "type": "header",
+          "content": "t:general.settings.headers.header_text.content"
+        },
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "t:general.settings.heading.label",
+          "default": "Store name"
+        },
+        {
+          "type": "text",
+          "id": "address",
+          "label": "t:sections.address_list.blocks.address_item.settings.address.label",
+          "default": "Street, City, Country, State"
+        },
+        {
+          "type": "richtext",
+          "id": "text",
+          "label": "t:general.settings.description.label",
+          "default": "<p>Talk about your shop.</p>"
+        },
+        {
+          "type": "header",
+          "content": "t:general.settings.headers.header_button.content"
+        },
+        {
+          "type": "paragraph",
+          "content": "t:general.settings.headers.header_direction_button.content"
+        },
+        {
+          "type": "text",
+          "id": "address_link",
+          "label": "t:sections.address_list.blocks.address_item.settings.google_maps_link.label",
+          "default": "https://goo.gl/maps/thGUGLRtaPqkWbBH6"
+        },
+        {
+          "type": "text",
+          "id": "button_text",
+          "label": "t:general.settings.label.label",
+          "default": "Get direction"
+        }
+      ]
     }
   ],
   "presets": [
     {
-      "name": "Address List"
+      "name": "t:sections.address_list.name",
+      "blocks": [
+        {
+          "type": "address_item"
+        },
+        {
+          "type": "address_item"
+        },
+        {
+          "type": "address_item"
+        },
+        {
+          "type": "address_item"
+        }
+      ]
     }
   ]
 }

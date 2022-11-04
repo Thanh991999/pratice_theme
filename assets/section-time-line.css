@@ -1,0 +1,74 @@
+.timeline__item::before {
+  content: "";
+  position: absolute;
+  background: #fff;
+  height: 12px;
+  width: 12px;
+  border-radius: 50%;
+  border: 8px solid var(--color-tle);
+  z-index: 1;
+  left: var(--gutter);
+}
+.timeline__item::after {
+  left: calc(var(--gutter) + 12px);
+  top: 28px;
+  width: 4px;
+  height: calc(100% + 4px);
+  content: "";
+  position: absolute;
+  background: var(--color-tle);
+}
+.timeline__content {
+  padding-left: 52px;
+}
+.timeline__date {
+  border-radius: 24px;
+}
+.timeline__content .open svg{
+  transform: rotate(180deg);
+}
+.timeline__content .open ~ .collapsible-region__content{
+  display: block;
+}
+@media (min-width: 769px) {
+  .timeline {
+    overflow-x: auto;
+    padding-top: 12px;
+    grid-gap: 0;
+    scroll-padding-left: var(--gutter-container);
+    margin: 0 calc(var(--gutter-container) * -1);
+    padding-left: calc(var(--gutter-container) + 20px);
+  }
+  .timeline::-webkit-scrollbar {
+    height: 10px;
+  }
+  .timeline::-webkit-scrollbar-track {
+    background: var(--color-divider);
+    border-radius: 50px;
+  }
+  .timeline::-webkit-scrollbar-thumb {
+    background: rgba(var(--color-normal-text-rgb), 0.24);
+    border-radius: 50px;
+  }
+  .timeline::-webkit-scrollbar-button:horizontal:start:increment,
+  .timeline::-webkit-scrollbar-button:horizontal:end:increment {
+    width: var(--gutter-container);
+  }
+  .timeline__item {
+    --grid-ratio: (100% - 62px) / 12;
+    padding: 40px calc(var(--gutter) * 2) 48px 0;
+  }
+  .timeline__content {
+    padding-left: 0;
+  }
+  .timeline__item:before {
+    top: -12px;
+    left: 0;
+  }
+  .timeline__item::after {
+    height: 4px;
+    width: 100%;
+    top: 0;
+    left: 0;
+  }
+}

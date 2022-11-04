@@ -1,0 +1,23 @@
+<h3 class="hdg-6 m-zero {{ class }}">{{ 'general.password_page.contact_us' | t }}</h3>
+<ul class="contact__list d-inline-flex fd-column middle-xs center-xs ta-center hide-empty fs-sm">
+  {%- if settings.phone_number != blank -%}
+    <li class="contact__item ls-none mb-12">
+      <a href="{{ 'tel:' | append: settings.phone_number }}" class="d-flex middle-xs">
+        <span class="icon icon--small bs-none color-accent-2 flx-auto mr-8">
+          {% render 'icon-phone', size: 16 %}
+        </span>
+        {{ settings.phone_number }}
+      </a>
+    </li>
+  {%- endif -%}
+  {%- if settings.email_address != blank -%}
+    <li class="contact__item ls-none">
+      <a href="{{ 'mailto:' | append: settings.email_address }}" class="d-flex middle-xs">
+        <span class="icon icon--small bs-none color-accent-2 flx-auto mr-8">
+          {% render 'icon-mail', size: 16 %}
+        </span>
+        {{ settings.email_address }}
+      </a>
+    </li>
+  {%- endif -%}
+</ul>

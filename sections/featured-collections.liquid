@@ -1,78 +1,228 @@
+{%- liquid
+  assign tab_label_placeholder = 'general.collection.label' | t
+  assign rand = "now" | date: "%N"
+  assign tab_aria_controls_prefix = "products-tabs-tabs-" | append: rand
+  assign tab_id = "products-tabs-tab-" | append: rand
+  assign tab_clone = ''
+  assign tab_clone_css = ''
+  assign column_mobile = 12 | divided_by: section.settings.items_per_row_on_mobile
+
+  assign max_items_to_show = section.settings.max_items_to_show
+  assign number_items_to_show = 0
+  if max_items_to_show > 0
+    assign max_items_to_show_modulo = max_items_to_show | modulo: 3
+    if max_items_to_show_modulo > 0
+        assign number_items_to_show = max_items_to_show | minus: max_items_to_show_modulo
+    endif
+  else
+    assign max_items_to_show = nil
+  endif
+-%}
+
+<div class="section" data-ui-component="Featured Collections Section">
+  <div class="ctnr">
+    {% render 'section-header',
+      subheading: section.settings.subheading,
+      heading: section.settings.heading,
+      description: section.settings.description,
+      content_align: section.settings.content_alignment,
+      badge_text: section.settings.badge_text,
+      badge_position: section.settings.badge_position,
+      badge_shape: section.settings.badge_shape,
+      badge_color: section.settings.badge_color,
+      section: section
+    %}
+    <div class="s-content">
+      <sht-tabs>
+        {% if section.blocks.size > 1 %}
+          <ul class="tab__header p-relative ox-auto ls-none ws-nowrap d-flex" role="tablist">
+            {% for block in section.blocks limit: section.blocks.size %}
+              <li class="tab__item d-inline-block" {{ block.shopify_attributes }} role="presentation">
+                <a class="tab__link hdg-6 mb-0 d-block p-relative color--light {% if forloop.first %}tab__link--active{% endif %} js-tab-link" role="tab" id="{{ tab_id }}-{{ forloop.index }}" href="#{{ tab_aria_controls_prefix }}-{{ forloop.index }}" aria-controls="{{ tab_aria_controls_prefix }}-{{ forloop.index }}">
+                  {{ block.settings.heading | default: block.settings.collection.title | default: tab_label_placeholder }}
+                </a>
+              </li>
+              {% capture tab_clone %}
+                {{ tab_clone }}
+                <span id="{{ tab_aria_controls_prefix }}-{{ forloop.index }}" hidden></span>
+              {% endcapture %}
+              {% capture tab_clone_css %}
+                {{ tab_clone_css }}
+                #{{ tab_aria_controls_prefix }}-{{ forloop.index }}:target ~ .tab__panel--active {display:none}
+                #{{ tab_aria_controls_prefix }}-{{ forloop.index }}:target ~ .{{ tab_aria_controls_prefix }}-{{ forloop.index }} {
+                  display: block !important;
+                }
+              {% endcapture %}
+            {% endfor %}
+          </ul>
+        {% endif %}
+        <div class="tab__content {{ block.shopify_attributes }}">
+          {{ tab_clone }}
+          {% for block in section.blocks limit: section.blocks.size %}
+            {%-liquid
+              assign collection = collections[block.settings.collection]
+              assign products = collection.products
+              assign is_first = forloop.first
+            -%}
+            <div class="tab__panel {% if forloop.first %} tab__panel--active d-block {% else %} d-none {% endif %} {{ block.type }} js-tab-panel {{ tab_aria_controls_prefix }}-{{- forloop.index }}" data-tab-content-id="{{ tab_aria_controls_prefix }}-{{- forloop.index }}" aria-labelledby="{{ tab_id }}-{{ forloop.index }}" role="tabpanel">
+              <sht-carousel-wrapper
+                data-on-mobile-only="{{ section.settings.enable_carousel }}"
+                data-css-class-on-container="carousel m-zero ox-auto p-relative fw-nowrap scrollable scrollable-x disable-scrollbars"
+                data-css-class-on-item="carousel__item p-zero p-relative scrollable-aln-start d-flex fg-1 fs-0">
+                <sht-carousel class="p-relative d-block" data-section-id="{{ section.id }}">
+                  <div class="rw gap-unequal js-carousel-items" role="list" aria-label="{{ 'accessibility.slider' | t }}">
+                    {% for product in products limit: max_items_to_show %}
+                      {%- liquid
+                        assign hide_class = ""
+                        if number_items_to_show > 0 and forloop.index > number_items_to_show
+                          assign hide_class= " d-none-md d-block-xl"
+                        endif
+                      -%}
+                      <sht-carousel-item
+                        role="listitem"
+                        class="clm js-carousel-item{{ hide_class }}"
+                        style="--w-xs:{{ column_mobile }};--w-md:4;--w-xl:3;--w-sm:6;">
+                        {% render 'card-product',
+                          product: product,
+                          show_rating: settings.show_product_rating,
+                          show_vendor: settings.show_product_vendor,
+                          show_color_swatch: settings.show_color_swatches,
+                          show_sale_badge: settings.show_sale_badge,
+                          enable_quick_buy: settings.enable_quick_buy,
+                          ratio: settings.product_card_image_ratio,
+                          show_second_image: settings.show_second_image,
+                          is_first: is_first,
+                          item_per_row: max_items_to_show,
+                          card_content_inner: false
+                        %}
+                      </sht-carousel-item>
+                    {% else %}
+                      {%- for i in (1..4) limit: max_items_to_show -%}
+                        {%- liquid
+                          assign hide_class = ""
+                          if number_items_to_show > 0 and forloop.index > number_items_to_show
+                            assign hide_class= " d-none-md d-block-xl"
+                          endif
+                        -%}
+                        <sht-carousel-item role="listitem" class="clm js-carousel-item{{ hide_class }}" style="--w-xs: {{ column_mobile }};--w-md: 4; --w-xl: 3; --w-sm: 6;">
+                          {% render 'card-product-placeholder' ,
+                            ratio: settings.product_card_image_ratio,
+                            show_vendor: settings.show_product_vendor
+                          %}
+                        </sht-carousel-item>
+                      {%- endfor -%}
+                    {% endfor %}
+                  </div>
+                  <div class="carousel-pagination js-carousel-pagination center-xs d-none-md no-js-hidden {% if section.settings.show_navigation == false or section.settings.enable_carousel == false %} d-none {% endif %}">
+                    <button type="button" data-step="1" class="js-carousel-prev-btn button button--primary button--icon button--small p-absolute middle-y left-0 " aria-label="{{ 'accessibility.previous_slide' | t }}" name="previous" disabled>{% render 'icon-chevron-left' %}</button>
+                    <button type="button" data-step="1" class="js-carousel-next-btn button button--primary button--icon button--small p-absolute middle-y right-0" aria-label="{{ 'accessibility.next_slide' | t }}" name="next" disabled>{% render 'icon-chevron-right' %}</button>
+                  </div>
+                </sht-carousel>
+                {% if block.settings.collection.products_count >= section.settings.max_items_to_show and section.settings.enable_view_more %}
+                  <div class="s-footer p-sides {{ section.settings.content_alignment }} {{ section.settings.button_text | default: 'd-none' | replace: section.settings.button_text, '' }}">
+                    <a href="{{- collection.url | default: "#" -}}" class="button button--primary button--large hide-empty">
+                      {{- section.settings.button_text -}}
+                    </a>
+                  </div>
+                {% endif %}
+              </sht-carousel-wrapper>
+            </div>
+          {%- endfor -%}
+        </div>
+      </sht-tabs>
+    </div>
+  </div>
+</div>
+<noscript>
+  <style>
+    {{ tab_clone_css }}
+  </style>
+</noscript>
+{%- liquid
+  assign files = "tabs.js" | split: ', '
+  render 'js-loader', files: files
+-%}
 {% schema %}
 {
   "name": "t:sections.featured_collection.name",
   "settings": [
     {
       "type": "header",
-      "content": "t:general.settings.headers.header_content.content"
-    },
-    { 
-      "type": "text",
-      "id": "heading",
-      "label": "t:general.settings.heading.label",
-      "default" : "Featured collections"
+      "content": "t:general.settings.headers.header_text.content"
     },
     {
-      "type": "select",
-      "id": "color_scheme",
-      "label": "t:general.settings.color_scheme.label",
-      "default": "cs-background cs-background-1",
-      "options": [
-        {
-          "value": "cs-accent cs-accent-1",
-          "label": "t:settings_schema.colors.settings.colors_accent_1.label"
-        },
-        {
-          "value": "cs-accent cs-accent-2",
-          "label": "t:settings_schema.colors.settings.colors_accent_2.label"
-        },
-        {
-          "value": "cs-background cs-background-1",
-          "label": "t:settings_schema.colors.settings.colors_background_1.label"
-        },
-        {
-          "value": "cs-background cs-background-2",
-          "label": "t:settings_schema.colors.settings.colors_background_2.label"
-        }
-      ]
+      "type": "text",
+      "label": "t:general.settings.section_subheading.label",
+      "id": "subheading"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "t:general.settings.section_heading.label",
+      "default": "Featured collection"
+    },
+    {
+      "type": "text",
+      "id": "description",
+      "label": "t:general.settings.section_description.label"
     },
     {
       "type": "header",
       "content": "t:general.settings.headers.header_layout.content"
     },
     {
-      "type": "range",
-      "id": "product_to_show",
-      "label": "t:sections.featured_collection.settings.product_to_show.label",
-      "min": 1,
-      "max": 12,
-      "step": 1,
-      "default": 4
+      "type": "select",
+      "id": "content_alignment",
+      "label": "t:general.settings.content_alignment.label",
+      "default": "ta-left",
+      "options": [
+        {
+          "value": "ta-left",
+          "label": "t:general.settings.content_alignment.options.option_left.label"
+        },
+        {
+          "value": "ta-center",
+          "label": "t:general.settings.content_alignment.options.option_center.label"
+        }
+      ]
     },
     {
       "type": "range",
-      "id": "product_per_show",
-      "label": "t:sections.featured_collection.settings.product_per_show.label",
-      "min": 1,
-      "max": 6,
-      "step": 1,
-      "default": 4
+      "id": "max_items_to_show",
+      "min": 0,
+      "max": 48,
+      "step": 4,
+      "default": 4,
+      "label": "t:general.settings.max_items_to_show.label",
+      "info": "t:general.settings.max_items_to_show.info"
     },
     {
-      "type": "header",
-      "content": "t:general.settings.headers.header_mobile_layout.content"
-    },
-    {
-      "type": "checkbox",
-      "id": "show_products_mobile",
-      "label": "t:sections.featured_collection.settings.show_2_products_per_show.label",
-      "default": true
+      "type": "select",
+      "id": "items_per_row_on_mobile",
+      "label": "t:general.settings.items_per_row_on_mobile.label",
+      "default": "1",
+      "options": [
+        {
+          "value": "1",
+          "label": "t:general.settings.items_per_row_on_mobile.options.option_one.label"
+        },
+        {
+          "value": "2",
+          "label": "t:general.settings.items_per_row_on_mobile.options.option_two.label"
+        }
+      ]
     },
     {
       "type": "checkbox",
       "id": "enable_carousel",
-      "label": "t:general.settings.enable_carousel.label",
-      "default": false
+      "label": "t:general.settings.enable_carousel_on_mobile.label",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_navigation",
+      "label": "t:general.settings.show_navigation_on_mobile.label",
+      "default": true
     },
     {
       "type": "header",
@@ -82,14 +232,75 @@
       "type": "checkbox",
       "id": "enable_view_more",
       "label": "t:sections.featured_collection.settings.enable_view_more.label",
-      "default": false,
-      "info": "t:sections.featured_collection.settings.enable_view_more.info"
+      "info": "t:sections.featured_collection.settings.enable_view_more.info",
+      "default": true
     },
     {
       "type": "text",
       "id": "button_text",
       "label": "t:settings_schema.colors.settings.colors_button_text.label",
       "default": "View collection"
+    },
+    {
+      "type": "header",
+      "content": "t:general.settings.headers.header_prominent_badge.content"
+    },
+    {
+      "type": "select",
+      "id": "badge_color",
+      "label": "t:general.settings.color_scheme.label",
+      "default": "color-accent-2",
+      "options": [
+        {
+          "value": "color-accent-1",
+          "label": "t:general.settings.accent_scheme.options.option_main_accent.label"
+        },
+        {
+          "value": "color-accent-2",
+          "label": "t:general.settings.accent_scheme.options.option_extra_accent.label"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "badge_position",
+      "label": "t:general.settings.badge_position.label",
+      "default": "p-badge--top-right",
+      "options": [
+        {
+          "value": "p-badge--top-left",
+          "label": "t:general.settings.badge_position.options.option_left.label"
+        },
+        {
+          "value": "p-badge--top-right",
+          "label": "t:general.settings.badge_position.options.option_right.label"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "badge_shape",
+      "label": "t:general.settings.badge_shape.label",
+      "default": "badge--star",
+      "options": [
+        {
+          "value": "badge--star",
+          "label": "t:general.settings.badge_shape.options.option_star.label"
+        },
+        {
+          "value": "shape--diamond",
+          "label": "t:general.settings.badge_shape.options.option_diamond.label"
+        },
+        {
+          "value": "shape--asterisk",
+          "label": "t:general.settings.badge_shape.options.option_asterisk.label"
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "id": "badge_text",
+      "label": "t:general.settings.text.label"
     }
   ],
   "blocks": [
@@ -101,25 +312,26 @@
         {
           "type": "collection",
           "id": "collection",
-          "label": "t:sections.featured_collection.blocks.collection.settings.collection.label"
+          "label": "t:general.settings.collection.label"
         },
         {
           "type": "text",
           "id": "heading",
           "label": "t:general.settings.heading.label",
-          "info": "t:sections.featured_collection.blocks.collection.settings.heading.info"
+          "info": "t:sections.featured_collection.blocks.collection.settings.heading.info",
+          "default": "Collection"
         }
       ]
     }
   ],
-  "presets":[
+  "presets": [
     {
-      "name" : "t:sections.featured_collection.name",
+      "name": "t:sections.featured_collection.name",
       "blocks": [
         {
           "type": "collection"
         }
-      ] 
+      ]
     }
   ]
 }

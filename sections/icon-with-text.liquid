@@ -1,84 +1,120 @@
+{%- liquid
+  assign xl = 3
+  assign md = 4
+  assign content_align = section.settings.content_align
+  assign icon_classes = section.settings.color_scheme | append: ' icon--square'
 
+  if content_align == 'diagonal d-grid-md'
+    assign xl = 6
+    assign md = 6
+    assign s_button = section.settings.button_main_text
+  endif
 
+  assign max_items_to_show = section.settings.max_items_to_show
+  assign number_items_to_show = 0
+  if max_items_to_show > 0
+    assign max_items_to_show_modulo = max_items_to_show | modulo: 3
+    if max_items_to_show_modulo > 0
+        assign number_items_to_show = max_items_to_show | minus: max_items_to_show_modulo
+    endif
+  else
+    assign max_items_to_show = nil
+  endif
+-%}
+<div class="section" data-ui-component="Icon With Text Section">
+  <div class="ctnr {{ content_align }}">
+    {% render 'section-header',
+      content_align: content_align,
+      subheading: section.settings.subheading,
+      heading: section.settings.heading,
+      description: section.settings.description,
+      button_main_text: s_button,
+      button_main_link: section.settings.button_main_link,
+      badge_text: section.settings.badge_text,
+      badge_position: section.settings.badge_position,
+      badge_shape: section.settings.badge_shape,
+      badge_color: section.settings.badge_color,
+      section: section
+    %}
+    <div class="s-content">
+      <sht-carousel-wrapper
+        data-on-mobile-only="{{ section.settings.enable_carousel }}"
+        data-css-class-on-container="carousel m-zero ox-auto p-relative fw-nowrap scrollable scrollable-x disable-scrollbars"
+        data-css-class-on-item="carousel__item p-zero p-relative scrollable-aln-start d-flex fg-1 fs-0">
+        <sht-carousel class="p-relative d-block" data-section-id="{{ section.id }}">
+          <div class="rw gap-unequal js-carousel-items" role="list" aria-label="{{ 'accessibility.slider' | t }}">
+            {%- for block in section.blocks limit: max_items_to_show -%}
+              {%- liquid
+                assign hide_class = ""
+                if number_items_to_show > 0 and forloop.index > number_items_to_show
+                  assign hide_class= " d-none-md d-block-xl"
+                endif
+              -%}
+              <sht-carousel-item role="listitem" tabindex="-1" class="clm js-carousel-item{{ hide_class }}" style="--w-xs:12;--w-sm:6;--w-md:{{- md -}};--w-xl:{{- xl -}};" {{ block.shopify_attributes }}>
+                <div class="p-sides">
+                  {% render 'icon-loader', icon: block.settings.options_icon, size: 36, class: icon_classes %}
+                  <h3 class="m-zero hdg-5 mb-12 mt-16 hide-empty">{{- block.settings.heading -}}</h3>
+                  <div class="rte hide-empty" tabindex="-1">{{- block.settings.description -}}</div>
+                </div>
+              </sht-carousel-item>
+            {%- endfor -%}
+          </div>
+          <div class="carousel-pagination middle-y w-100 p-absolute d-none-md no-js-hidden zi-1 {% if section.settings.show_navigation == false or section.settings.enable_carousel == false %} d-none {% endif %}">
+            <button type="button" data-step="1" class="js-carousel-prev-btn button button--primary button--icon button--small p-absolute middle-y zi-1 left-0" aria-label="{{ 'accessibility.previous_slide' | t }}" name="previous" disabled>{% render 'icon-chevron-left', size: 24 %}</button>
+            <button type="button" data-step="1" class="js-carousel-next-btn button button--primary button--icon button--small p-absolute middle-y zi-1 right-0" aria-label="{{ 'accessibility.next_slide' | t }}" name="next" disabled>{% render 'icon-chevron-right', size: 24 %}</button>
+          </div>
+        </sht-carousel>
+      </sht-carousel-wrapper>
+      <div class="s-footer p-sides {{ content_align | replace: 'diagonal d-grid-md', "d-none" | replace: content_align, '' }} {{ section.settings.button_main_text | default: 'd-none' | replace: section.settings.button_main_text, '' }}">
+        <a class="button button--primary button--large hide-empty" href="{{- section.settings.button_main_link | default: '#' -}}">
+          {{- section.settings.button_main_text -}}
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
 {% schema %}
 {
   "name": "t:sections.icon_with_text.name",
   "settings": [
     {
-      "type": "select",
-      "id": "color_scheme",
-      "label": "t:general.settings.color_scheme.label",
-      "default": "cs-background cs-background-1",
-      "options": [
-        {
-          "value": "cs-accent cs-accent-1",
-          "label": "t:settings_schema.colors.settings.colors_accent_1.label"
-        },
-        {
-          "value": "cs-accent cs-accent-2",
-          "label": "t:settings_schema.colors.settings.colors_accent_2.label"
-        },
-        {
-          "value": "cs-background cs-background-1",
-          "label": "t:settings_schema.colors.settings.colors_background_1.label"
-        },
-        {
-          "value": "cs-background cs-background-2",
-          "label": "t:settings_schema.colors.settings.colors_background_2.label"
-        }
-      ]
+      "type": "header",
+      "content": "t:general.settings.headers.header_general.content"
     },
     {
-      "type": "header",
-      "content": "t:general.settings.headers.header_content.content"
+      "type": "text",
+      "id": "subheading",
+      "label": "t:general.settings.section_subheading.label"
     },
     {
       "type": "text",
       "id": "heading",
-      "label": "t:general.settings.heading.label",
-      "default": "Heading"
+      "label": "t:general.settings.section_heading.label"
+    },
+    {
+      "type": "text",
+      "id": "description",
+      "label": "t:general.settings.section_description.label"
     },
     {
       "type": "header",
-      "content": "t:sections.icon_with_text.settings.headers.icon_with_text_items.content"
+      "content": "t:sections.icon_with_text.settings.headers.header_icon.content"
     },
     {
       "type": "select",
-      "id": "content_alignment",
-      "label": "t:general.settings.content_alignment.label",
-      "default": "left",
-      "options":[
+      "id": "color_scheme",
+      "label": "t:general.settings.accent_scheme.label",
+      "default": "color-normal-1",
+      "options": [
         {
-          "value": "left",
-          "label": "t:general.settings.content_alignment.options.option_left.label"
+          "value": "color-normal-1",
+          "label": "t:general.settings.accent_scheme.options.option_main_accent.label"
         },
         {
-          "value": "center",
-          "label": "t:general.settings.content_alignment.options.option_center.label"
+          "value": "color-normal-2",
+          "label": "t:general.settings.accent_scheme.options.option_extra_accent.label"
         }
       ]
-    },
-    {
-      "type": "select",
-      "id": "icon_position",
-      "label": "t:sections.icon_with_text.settings.icon_position.label",
-      "default": "top",
-      "options":[
-        {
-          "value": "top",
-          "label": "t:sections.icon_with_text.settings.icon_position.options.option_top.label"
-        },
-        {
-          "value": "left",
-          "label": "t:sections.icon_with_text.settings.icon_position.options.option_left.label"
-        }
-      ]
-    },
-    {
-      "type": "checkbox",
-      "id": "show_content_bgc",
-      "label": "t:general.settings.show_content_background.label",
-      "default": false
     },
     {
       "type": "header",
@@ -86,19 +122,43 @@
     },
     {
       "type": "range",
-      "id": "item_per_row",
-      "label": "t:general.settings.item_per_row.label",
-      "min": 2,
-      "max": 6,
-      "step": 1,
-      "default": 4
+      "id": "max_items_to_show",
+      "min": 0,
+      "max": 48,
+      "step": 4,
+      "default": 4,
+      "label": "t:general.settings.max_items_to_show.label",
+      "info": "t:general.settings.max_items_to_show.info"
+    },
+    {
+      "type": "select",
+      "id": "content_align",
+      "label": "t:general.settings.content_alignment.label",
+      "default": "ta-center",
+      "options": [
+        {
+          "value": "ta-left",
+          "label": "t:general.settings.content_alignment.options.option_left.label"
+        },
+        {
+          "value": "ta-center",
+          "label": "t:general.settings.content_alignment.options.option_center.label"
+        },
+        {
+          "value": "diagonal d-grid-md",
+          "label": "t:general.settings.content_alignment.options.option_diagonal.label"
+        }
+      ]
     },
     {
       "type": "checkbox",
-      "id": "carousel",
-      "label": "t:general.settings.enable_carousel_on_mobile.label",
-      "info": "Show the content list as a carousel instead of rows",
-      "default": false
+      "id": "enable_carousel",
+      "label": "t:general.settings.enable_carousel_on_mobile.label"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_navigation",
+      "label": "t:general.settings.show_navigation_on_mobile.label"
     },
     {
       "type": "header",
@@ -106,14 +166,75 @@
     },
     {
       "type": "text",
-      "id": "button_label",
-      "label": "t:general.settings.button_label.label",
-      "placeholder": "t:general.settings.enter_label_text.label"
+      "id": "button_main_text",
+      "label": "t:general.settings.label.label"
     },
     {
       "type": "url",
-      "id": "button_link",
-      "label": "t:general.settings.button_link.label"
+      "id": "button_main_link",
+      "label": "t:general.settings.link.label"
+    },
+    {
+      "type": "header",
+      "content": "t:general.settings.headers.header_prominent_badge.content"
+    },
+    {
+      "type": "select",
+      "id": "badge_color",
+      "label": "t:general.settings.color_scheme.label",
+      "default": "color-accent-2",
+      "options": [
+        {
+          "value": "color-accent-1",
+          "label": "t:general.settings.accent_scheme.options.option_main_accent.label"
+        },
+        {
+          "value": "color-accent-2",
+          "label": "t:general.settings.accent_scheme.options.option_extra_accent.label"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "badge_position",
+      "label": "t:general.settings.badge_position.label",
+      "default": "p-badge--bottom-right",
+      "options": [
+        {
+          "value": "p-badge--bottom-left",
+          "label": "t:general.settings.badge_position.options.option_left.label"
+        },
+        {
+          "value": "p-badge--bottom-right",
+          "label": "t:general.settings.badge_position.options.option_right.label"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "badge_shape",
+      "label": "t:general.settings.badge_shape.label",
+      "default": "badge--star",
+      "options": [
+        {
+          "value": "badge--star",
+          "label": "t:general.settings.badge_shape.options.option_star.label"
+        },
+        {
+          "value": "badge--diamond",
+          "label": "t:general.settings.badge_shape.options.option_diamond.label"
+        },
+        {
+          "value": "badge--asterisk",
+          "label": "t:general.settings.badge_shape.options.option_asterisk.label"
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "id": "badge_text",
+      "label": "t:general.settings.text.label",
+      "default": "Your title"
     }
   ],
   "blocks": [
@@ -127,208 +248,445 @@
           "label": "t:general.settings.icon.label",
           "default": "check-mark",
           "options": [
-          {
-            "value": "bar-chart",
-            "label": "Bar chart"
-          },
-          {
-            "value": "bar-code",
-            "label": "Bar code"
-          },
-          {
-            "value": "bookmark",
-            "label": "Bookmark"
-          },
-          {
-            "value": "box",
-            "label": "Box"
-          },
-          {
-            "value": "building",
-            "label": "Building"
-          },
-          {
-            "value": "calendar",
-            "label": "Calendar"
-          },
-          {
-            "value": "chat-bubble",
-            "label": "Chat bubble"
-          },
-          {
-            "value": "check-mark",
-            "label": "Check"
-          },
-          {
-            "value": "clock",
-            "label": "Clock"
-          },
-          {
-            "value": "credit-card",
-            "label": "Credit card"
-          },
-          {
-            "value": "document",
-            "label": "Document"
-          },
-          {
-            "value": "dress",
-            "label": "Dress"
-          },
-          {
-            "value": "eye",
-            "label": "Eye"
-          },
-          {
-            "value": "file",
-            "label": "File"
-          },
-          {
-            "value": "gift",
-            "label": "Gift"
-          },
-          {
-            "value": "globe",
-            "label": "Globe"
-          },
-          {
-            "value": "half-star",
-            "label": "Half star"
-          },
-          {
-            "value": "iron",
-            "label": "Iron"
-          },
-          {
-            "value": "leaf",
-            "label": "Leaf"
-          },
-          {
-            "value": "leather",
-            "label": "Leather"
-          },
-          {
-            "value": "lock-off",
-            "label": "Lock off"
-          },
-          {
-            "value": "lock-on",
-            "label": "Lock on"
-          },
-          {
-            "value": "map-pin",
-            "label": "Map pin"
-          },
-          {
-            "value": "money",
-            "label": "Money"
-          },
-          {
-            "value": "pant",
-            "label": "Pant"
-          },
-          {
-            "value": "paper-plan",
-            "label": "Paper plan"
-          },
-          {
-            "value": "persons",
-            "label": "Persons"
-          },
-          {
-            "value": "price-tag",
-            "label": "Price-tag"
-          },
-          {
-            "value": "protect",
-            "label": "Protect"
-          },
-          {
-            "value": "question-mark",
-            "label": "Question mark"
-          },
-          {
-            "value": "question-mark-1",
-            "label": "Question mark 1"
-          },
-          {
-            "value": "receipt",
-            "label": "Receipt"
-          },
-          {
-            "value": "return",
-            "label": "Return"
-          },
-          {
-            "value": "ruler",
-            "label": "Ruler"
-          },
-          {
-            "value": "sale-off",
-            "label": "Sale off"
-          },
-          {
-            "value": "scan",
-            "label": "Scan"
-          },
-          {
-            "value": "settings",
-            "label": "Settings"
-          },
-          {
-            "value": "shirt",
-            "label": "Shirt"
-          },
-          {
-            "value": "shoe",
-            "label": "Shoe"
-          },
-          {
-            "value": "shop",
-            "label": "Shop"
-          },
-          {
-            "value": "smile",
-            "label": "Smile"
-          },
-          {
-            "value": "star",
-            "label": "Star"
-          },
-          {
-            "value": "support",
-            "label": "Support"
-          },
-          {
-            "value": "thumb-up",
-            "label": "Thumb up"
-          },
-          {
-            "value": "truck",
-            "label": "Truck"
-          },
-          {
-            "value": "wallet",
-            "label": "Wallet"
-          },
-          {
-            "value": "washing",
-            "label": "Washing"
-          }
+            {
+              "value": "3d-model",
+              "label": "3d model"
+            },
+            {
+              "value": "addresses",
+              "label": "Addresses"
+            },
+            {
+              "value": "arrow-down",
+              "label": "Arrow down"
+            },
+            {
+              "value": "arrow-left",
+              "label": "Arrow left"
+            },
+            {
+              "value": "arrow-right",
+              "label": "Arrow right"
+            },
+            {
+              "value": "arrow-up",
+              "label": "Arrow up"
+            },
+            {
+              "value": "bar-chart",
+              "label": "Bar chart"
+            },
+            {
+              "value": "barcode",
+              "label": "Barcode"
+            },
+            {
+              "value": "bookmark",
+              "label": "Bookmark"
+            },
+            {
+              "value": "box",
+              "label": "Box"
+            },
+            {
+              "value": "building",
+              "label": "Building"
+            },
+            {
+              "value": "calendar",
+              "label": "Calendar"
+            },
+            {
+              "value": "cart",
+              "label": "Cart"
+            },
+            {
+              "value": "chat-bubble",
+              "label": "Chat bubble"
+            },
+            {
+              "value": "check-mark",
+              "label": "Check mark"
+            },
+            {
+              "value": "check",
+              "label": "Check"
+            },
+            {
+              "value": "chevron-down",
+              "label": "Chevron down"
+            },
+            {
+              "value": "chevron-left",
+              "label": "Chevron left"
+            },
+            {
+              "value": "chevron-right",
+              "label": "Chevron right"
+            },
+            {
+              "value": "chevron-up",
+              "label": "Chevron up"
+            },
+            {
+              "value": "clock",
+              "label": "Clock"
+            },
+            {
+              "value": "close",
+              "label": "Close"
+            },
+            {
+              "value": "credit-card",
+              "label": "Credit card"
+            },
+            {
+              "value": "document",
+              "label": "Document"
+            },
+            {
+              "value": "dress",
+              "label": "Dress"
+            },
+            {
+              "value": "edit",
+              "label": "Edit"
+            },
+            {
+              "value": "error",
+              "label": "Error"
+            },
+            {
+              "value": "eye",
+              "label": "Eye"
+            },
+            {
+              "value": "facebook",
+              "label": "Facebook"
+            },
+            {
+              "value": "file",
+              "label": "File"
+            },
+            {
+              "value": "filter",
+              "label": "Filter"
+            },
+            {
+              "value": "fullscreen-exit",
+              "label": "Fullscreen exit"
+            },
+            {
+              "value": "fullscreen",
+              "label": "Fullscreen"
+            },
+            {
+              "value": "gift",
+              "label": "Gift"
+            },
+            {
+              "value": "global",
+              "label": "Global"
+            },
+            {
+              "value": "half-star",
+              "label": "Half star"
+            },
+            {
+              "value": "hamburger-menu",
+              "label": "Hamburger menu"
+            },
+            {
+              "value": "heart",
+              "label": "Heart"
+            },
+            {
+              "value": "home",
+              "label": "Home"
+            },
+            {
+              "value": "info",
+              "label": "Info"
+            },
+            {
+              "value": "instagram",
+              "label": "Instagram"
+            },
+            {
+              "value": "iron",
+              "label": "Iron"
+            },
+            {
+              "value": "leaf",
+              "label": "Leaf"
+            },
+            {
+              "value": "leather",
+              "label": "Leather"
+            },
+            {
+              "value": "link",
+              "label": "Link"
+            },
+            {
+              "value": "lock-on",
+              "label": "Lock on"
+            },
+            {
+              "value": "lock",
+              "label": "Lock"
+            },
+            {
+              "value": "login",
+              "label": "Login"
+            },
+            {
+              "value": "logout",
+              "label": "Logout"
+            },
+            {
+              "value": "mail",
+              "label": "Mail"
+            },
+            {
+              "value": "map-pin-location",
+              "label": "Map pin location"
+            },
+            {
+              "value": "minus",
+              "label": "Minus"
+            },
+            {
+              "value": "money",
+              "label": "Money"
+            },
+            {
+              "value": "newsletter",
+              "label": "Newsletter"
+            },
+            {
+              "value": "order",
+              "label": "Order"
+            },
+            {
+              "value": "page",
+              "label": "Page"
+            },
+            {
+              "value": "pant",
+              "label": "Pant"
+            },
+            {
+              "value": "paper-plan",
+              "label": "Paper plan"
+            },
+            {
+              "value": "pause",
+              "label": "Pause"
+            },
+            {
+              "value": "persons",
+              "label": "Persons"
+            },
+            {
+              "value": "phone",
+              "label": "Phone"
+            },
+            {
+              "value": "pinterest",
+              "label": "Pinterest"
+            },
+            {
+              "value": "play",
+              "label": "Play"
+            },
+            {
+              "value": "plus",
+              "label": "Plus"
+            },
+            {
+              "value": "price-tag",
+              "label": "Price tag"
+            },
+            {
+              "value": "protect",
+              "label": "Protect"
+            },
+            {
+              "value": "question-mark",
+              "label": "Question mark"
+            },
+            {
+              "value": "quick-shop",
+              "label": "Quick shop"
+            },
+            {
+              "value": "quote",
+              "label": "Quote"
+            },
+            {
+              "value": "receipt",
+              "label": "Receipt"
+            },
+            {
+              "value": "remove",
+              "label": "Remove"
+            },
+            {
+              "value": "return",
+              "label": "Return"
+            },
+            {
+              "value": "RSS",
+              "label": "Rss"
+            },
+            {
+              "value": "ruler",
+              "label": "Ruler"
+            },
+            {
+              "value": "sale-off",
+              "label": "Sale off"
+            },
+            {
+              "value": "scan",
+              "label": "Scan"
+            },
+            {
+              "value": "search",
+              "label": "Search"
+            },
+            {
+              "value": "settings",
+              "label": "Settings"
+            },
+            {
+              "value": "share",
+              "label": "Share"
+            },
+            {
+              "value": "shirt",
+              "label": "Shirt"
+            },
+            {
+              "value": "shoe",
+              "label": "Shoe"
+            },
+            {
+              "value": "shop",
+              "label": "Shop"
+            },
+            {
+              "value": "smile",
+              "label": "Smile"
+            },
+            {
+              "value": "snapchat",
+              "label": "Snapchat"
+            },
+            {
+              "value": "sort",
+              "label": "Sort"
+            },
+            {
+              "value": "sport",
+              "label": "Sport"
+            },
+            {
+              "value": "star",
+              "label": "Star"
+            },
+            {
+              "value": "subscription",
+              "label": "Subscription"
+            },
+            {
+              "value": "support",
+              "label": "Support"
+            },
+            {
+              "value": "three-dots",
+              "label": "Three dots"
+            },
+            {
+              "value": "thumb-up",
+              "label": "Thumb up"
+            },
+            {
+              "value": "tiktok",
+              "label": "Tiktok"
+            },
+            {
+              "value": "truck",
+              "label": "Truck"
+            },
+            {
+              "value": "tumblr",
+              "label": "Tumblr"
+            },
+            {
+              "value": "twitter",
+              "label": "Twitter"
+            },
+            {
+              "value": "user",
+              "label": "User"
+            },
+            {
+              "value": "vimeo",
+              "label": "Vimeo"
+            },
+            {
+              "value": "voucher",
+              "label": "Voucher"
+            },
+            {
+              "value": "wallet",
+              "label": "Wallet"
+            },
+            {
+              "value": "washing",
+              "label": "Washing"
+            },
+            {
+              "value": "weather-1",
+              "label": "Weather 1"
+            },
+            {
+              "value": "weather-2",
+              "label": "Weather 2"
+            },
+            {
+              "value": "youtube",
+              "label": "Youtube"
+            },
+            {
+              "value": "zoom-in",
+              "label": "Zoom in"
+            },
+            {
+              "value": "zoom-out",
+              "label": "Zoom out"
+            },
+            {
+              "value": "linkedin",
+              "label": "Linkedin"
+            }
           ]
         },
         {
           "type": "text",
           "id": "heading",
           "label": "t:general.settings.heading.label",
-          "placeholder": "t:general.settings.enter_name.label"
+          "default": "Heading"
         },
         {
           "type": "richtext",
           "id": "description",
-          "label": "t:general.settings.description.label"
+          "label": "t:general.settings.description.label",
+          "default": "<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.</p>"
         }
-      ]      
+      ]
     }
   ],
   "presets": [
@@ -336,16 +694,36 @@
       "name": "t:sections.icon_with_text.name",
       "blocks": [
         {
-          "type": "item"
+          "type": "item",
+          "settings": {
+            "options_icon": "subscription",
+            "heading": "Free returns",
+            "description": "<p>Returns within 30 days receive a full refund.</p>"
+          }
         },
         {
-          "type": "item"
+          "type": "item",
+          "settings": {
+            "options_icon": "global",
+            "heading": "Worldwide shipping",
+            "description": "<p>Ship anywhere, rates available at checkout.</p>"
+          }
         },
         {
-          "type": "item"
+          "type": "item",
+          "settings": {
+            "options_icon": "support",
+            "heading": "24/7 support",
+            "description": "<p>Available from monday to friday to answer your questions</p>"
+          }
         },
         {
-          "type": "item"
+          "type": "item",
+          "settings": {
+            "options_icon": "gift",
+            "heading": "Redeem gifts",
+            "description": "<p>24/7 support</p>"
+          }
         }
       ]
     }
