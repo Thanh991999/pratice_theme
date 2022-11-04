@@ -1,0 +1,97 @@
+.cart-content__wrapper{
+  padding-bottom: 50px;
+}
+.cart-content__headings {
+  grid-template-columns: repeat(4, 1fr);
+  column-gap: calc(var(--gutter) * 2);
+}
+.cart__heading--product-info {
+  grid-column: 1 / span 3;
+}
+.cart-item {
+  grid-template-columns: 70px 1fr 70px;
+  grid-template-areas:
+    "product product price"
+    " . quantity . ";
+  row-gap: 16px;
+}
+.cart-item__product {
+  display: grid;
+  grid-template-columns: 80px 1fr;
+  grid-column-gap: 16px;
+  grid-area: product;
+  align-items: start;
+}
+.cart-item__quantity {
+  grid-area: quantity;
+  margin-left: 16px;
+}
+.cart-item__price {
+  grid-area: price;
+}
+.cart-item__price-group {
+  word-break: break-all;
+}
+.cart-item {
+  padding: 24px 0;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.show_vendor .cart-item__product-vendor {
+  display: block;
+}
+.dynamic-checkout__content .shopify-cleanslate li {
+  flex-basis: 100%!important;
+  border-radius: 100px;
+  overflow: hidden;
+}
+.cart-content--is-empty .cart-warnings {
+  display: block;
+}
+@media (min-width: 769px) {
+  .cart-content__headings {
+    display: grid;
+  }
+  .cart-content__headings{
+    border-bottom: 1px solid var(--color-border);
+    padding-bottom: 16px;
+  }
+  .cart-item {
+    grid-template-areas: "product product quantity price";
+    grid-template-columns: repeat(4, 1fr);
+    column-gap: calc(var(--gutter) * 2);
+    align-items: center;
+  }
+  .cart-item__product {
+    grid-template-columns: 85px 1fr;
+    grid-column-gap: 24px;
+    align-items: center;
+  }
+  .cart-item__quantity {
+    margin-left: 0px;
+  }
+  .cart__note {
+    width: 62.5%;
+    margin-top: 32px;
+  }
+  .cart-amount {
+    --pd-sides: 32px;
+  }
+  .cart__heading--product-info {
+    grid-column: 1 / span 2;
+  }
+  .cart-drawer__product-vendor {
+    margin-bottom: 8;
+  }
+  .cart-item__product-title{
+    margin-bottom: 16px;
+  }
+  .cart-item__quantity .field_quantity{
+    margin-inline-end: 16px;
+  }
+}
+@media(min-width: 459px) and (max-width:768px){
+  .cart-item {
+    grid-template-columns: 70px 1fr 150px;
+  }
+}

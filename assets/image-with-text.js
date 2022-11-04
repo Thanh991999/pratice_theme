@@ -1,0 +1,1 @@
+if(!customElements.get("sht-image-with-text")){class a extends HTMLElement{constructor(){super(),this.container=this.querySelector(".js-image-with-text-container"),this.content=this.querySelector(".js-image-with-text-content")}connectedCallback(){this.init()}init(){this.container.style.minHeight=this.content.offsetHeight+"px"}}customElements.define("sht-image-with-text",a)}

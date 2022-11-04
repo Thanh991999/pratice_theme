@@ -1,3 +1,115 @@
+.no-js [style*="--ratio"] noscript > .pa {
+  object-fit: cover;
+  left: 0;
+  top: 0;
+}
+.no-js sht-product-media-item .product__media-label,
+.no-js .product__xr-button {
+  display: none !important;
+}
+.no-js .product__media-slider {
+  opacity: 1;
+  left: 100%;
+}
+.no-js .product__media-slider .product__media--item {
+  opacity: 0;
+  left: -100%;
+  position: absolute;
+}
+.no-js .product__media-slider .product__media--item:first-child {
+  opacity: 1;
+  left: 0%;
+  position: relative;
+}
 html.no-js .no-js-hidden {
   display: none !important;
+}
+
+.no-js .section-atc-sticky {
+  transform: translateY(0)
+}
+.no-js .atc--ticky__button-wrapper {
+  flex-direction: row;
+}
+.no-js .product__quantity {
+  display: block!important;
+}
+}
+/* Menu */
+.submenu--dropdown {
+  opacity: 0;
+  visibility: hidden;
+}
+.grandchild.submenu--dropdown {
+  height: initial;
+  opacity: 1;
+  visibility: visible;
+  animation: menuOn .2s var(--ts-on) var(--in) both
+}
+.header__nav .menu__item:hover > .submenu--dropdown {
+  opacity: 1;
+  visibility: visible;
+  display: block;
+  top: 100%;
+  height: auto !important;
+  pointer-events: all;
+  transform: translateY(0);
+}
+.header__nav .menu__item:hover .submenu--dropdown .submenu__item {
+  animation: menuOn .2s var(--ts-on) var(--out) both
+}
+
+.submenu__item:hover .submenu--dropdown {
+  height: initial;
+  opacity: 1;
+  visibility: visible;
+}
+.submenu--dropdown .submenu__item {
+  opacity: 1 !important;
+}
+
+/* slider */
+
+.slideshow__item__content .col > * {
+  opacity: 1 !important;
+  transform: none;
+  transition: none;
+}
+.no-js .faq__accordion .accordion__item,
+.no-js .product__accordion .accordion__item {
+  padding: 5px 0;
+}
+.no-js .faq__accordion summary,
+.no-js .product__accordion summary {
+  cursor: pointer;
+  min-height: 44px;
+  display: flex;
+  margin: 5px 0;
+}
+.no-js .faq__accordion .accordion__info,
+.no-js .product__accordion .accordion__info {
+  padding-top: 5px;
+  padding-left: 5px;
+}
+.no-js-search-form {
+  background: #fff;
+  height: auto;
+  left: 0;
+  top: 0;
+}
+.no-js-search-form sht-predictive-search {
+  margin: 0 auto;
+  padding: 16px;
+}
+.no-js-search-form .search__field-input {
+  border: none;
+  font-size: 1.25rem;
+}
+details.no-js-search[open] > summary.no-js-button > svg {
+  display: none;
+}
+details.no-js-search[open] > summary.no-js-button:before {
+  content: "X";
+  width: 20px;
+  height: 20px;
 }
