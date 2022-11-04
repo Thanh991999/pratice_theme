@@ -1,14 +1,20 @@
-<script>
-  SHTDefer.push(function () {
-    {%- for file in files -%}
-      {%- assign id = file | replace: ".js", "-js" | strip | append: "-file" -%}
-      {%- assign fileName = id | replace: "-", "_" -%}
-        if (!document.querySelector(`#{{ id }}`)) {
+{% if request.design_mode %}
+  <script data-asset="script">
+    SHTDefer.push(function () {
+      {%- for file in files -%}
+        {%- assign id = file | replace: ".js", "-js" | strip | append: "-file" -%}
+        {%- assign fileName = id | replace: "-", "_" -%}
+          if (!document.querySelector(`#{{ id }}`)) {
             let {{ fileName }} = document.createElement("script");
             {{ fileName }}.setAttribute('src', `{{ file | asset_url }}`);
             {{ fileName }}.setAttribute('id', '{{ id }}');
             document.body.appendChild({{ fileName }});
-        }
-    {%- endfor -%}
-  });
-</script>   
+          }
+      {%- endfor -%}
+    });
+  </script>
+{% else %}
+  {%- for file in files -%}
+    <script src="{{ file | asset_url }}" defer="defer"></script>
+  {%- endfor -%}
+{% endif %}

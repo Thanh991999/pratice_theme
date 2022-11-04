@@ -1,0 +1,131 @@
+<link rel="stylesheet" href="{{ 'section-404.css' | asset_url }}" media="all">
+{% liquid
+  assign image = section.settings.image
+  assign media_alt  = section.settings.image.alt | default: ssection.settings.image.image | split: '/' | last
+  assign media = image | image_url: width: section.settings.image.width | image_tag: widths: '350, 450, 550, 750, 950, 1024, 1200, 1400, 1600, 1800, 2000', sizes: '(min-width: 361px) calc(100vw/2), calc(100vw/3)', alt: media_alt, class: 'w-100 h-100 of-cover js-image-lazy media'
+  assign form_align = 'm-auto ml-md-0'
+  assign content_style = '--gc-xs:1/13;--gc-md:1/ span 8;--gr-xs:2;--gr-md:1'
+  assign content_class = 'ta-center ta-left-md zi-1'
+  if section.settings.image == blank
+    assign content_style = '--gc-xs:1/13;--gc-md:3/11;--gr-xs:2;--gr-md:1'
+    assign content_class = content_class | remove: 'ta-left-md '
+    assign form_align = 'm-auto'
+  endif
+%}
+<div class="section" data-ui-component="Main 404">
+  <div class="ctnr d-grid d-grid-12 gap">
+    <div class="{{ content_class }}" style="{{ content_style }}">
+      {% render 'section-header',
+        subheading: section.settings.subheading,
+        heading: section.settings.heading,
+        description: section.settings.description,
+        heading_classes: 'hdg-1 ts-default',
+        section: section
+      %}
+      <div class="s-content p-sides">
+        {% if section.settings.enable_search %}
+          <div class="section-404__form p-relative w-100 {{ form_align }}">
+            <form action="{{ routes.search_url }}">
+              <input type="text"
+                placeholder="{{ 'general.search.search_the_site' | t }}"
+                name="q"
+                value="{{ search.terms | escape }}"
+                class="field__text field--focus field--hover w-100"
+              >
+              <button type="submit" aria-label="{{ "accessibility.search" | t }}" class="button button--icon button--plain button--large p-absolute zi-1 right-0">
+                {% render 'icon-search', size: 20 %}
+              </button>
+            </form>
+          </div>
+        {% endif %}
+        <div class="s-header__buttons button-group d-inline-flex fd-column fd-row-xl fw-wrap center-xs hide-empty">
+          {%- if section.settings.home_page_link_text != blank -%}
+            <a href="{{- routes.root_url -}}" class="button button--large button--secondary hide-empty">
+              {% render 'icon-home', size: 20, class: 'mr-8' %}
+              {{- section.settings.home_page_link_text -}}
+            </a>
+          {%- endif -%}
+          {%- if section.settings.catalogue_link_text != blank -%}
+            <a href="{{- routes.all_products_collection_url -}}" class="button button--large button--secondary hide-empty">
+              {% render 'icon-shop', size: 20, class: 'mr-8' %}
+              {{- section.settings.catalogue_link_text -}}
+            </a>
+          {%- endif -%}
+        </div>
+      </div>
+    </div>
+    {% if image %}
+      <div class="p-relative mr-minus ml-minus ml-md-0" style="--gc-xs:1/13;--gc-md:7/13;--gr-xs:1;--h-xs:30vh;--h-md:calc(100vh - (var(--header-height) + var(--announcement-height)))">
+        {% render 'image',
+          image_item: media,
+          src: image.src,
+          image_wrap_classes: 'h-100',
+          image_classes: 'h-100'
+        %}
+      </div>
+    {% endif %}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "t:sections.main_404.name",
+  "settings": [
+    {
+      "type": "header",
+      "content": "t:general.settings.headers.header_text.content"
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "t:general.settings.subheading.label",
+      "default": "404—Page not found"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "t:general.settings.heading.label",
+      "default": "We're sorry, this page is not available"
+    },
+    {
+      "type": "richtext",
+      "id": "description",
+      "label": "t:general.settings.description.label",
+      "default": "<p>The page URL might be outdated or contain typo errors</p>"
+    },
+    {
+      "type": "header",
+      "content": "t:general.settings.headers.header_image.content"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "t:general.settings.image.label"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.main_404.settings.headers.header_functions.content"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_search",
+      "label": "t:sections.main_404.settings.enable_search.label",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "home_page_link_text",
+      "label": "t:sections.main_404.settings.home_page_link_text.label",
+      "info": "t:sections.main_404.settings.general.link_text.info",
+      "default": "Visit our home page"
+    },
+    {
+      "type": "text",
+      "id": "catalogue_link_text",
+      "label": "t:sections.main_404.settings.catalogue_link_text.label",
+      "info": "t:sections.main_404.settings.general.link_text.info",
+      "default": "Browse all products"
+    }
+  ]
+}
+{% endschema %}
