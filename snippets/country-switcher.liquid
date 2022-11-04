@@ -1,0 +1,67 @@
+{% liquid
+  assign currencies_switcher_no_script = ''
+  assign rand = "now" | date: "%N"
+  assign form_id = "CountrySwitcher-" | append: rand
+  capture check_mark
+    render 'icon-check-mark', size: 16
+  endcapture
+%}
+{% assign rand = "now" | date: "%N" %}
+<sht-country-switcher>
+  {%- form 'localization', id: form_id, class: 'country-switcher__form js-country-switcher-form' -%}
+    <div class="country-switcher__container no-js-hidden">
+      <h2 class="country-switcher__heading visually-hidden" id="CountrySwitcherLabel-{{ rand }}">{{ 'localization.country_label' | t }}</h2>
+      <div class="country-switcher__wrapper p-relative">
+        <button type="button" class="country-switcher__button js-country-switcher-button button-localization d-flex between-xs middle-xs w-100 ta-left field__text field--focus field--hover" aria-expanded="false" aria-controls="CountrySwitcherCountryList-{{ rand }}" aria-describedby="CountrySwitcherLabel-{{ rand }}">
+          {{ localization.country.name }} ({{ localization.country.currency.iso_code }} {{ localization.country.currency.symbol }})
+          {% render 'icon-chevron-down' %}
+        </button>
+        <ul role="list" id="CountrySwitcherCountryList-{{ rand }}" class="country-switcher__country-list js-country-switcher-country-list localization-list ls-none" hidden="true">
+          {%- for country in localization.available_countries -%}
+            {% liquid
+              assign is_active = ''
+              assign active_class = ''
+              assign active_attrs = ''
+              if country.iso_code == localization.country.iso_code
+                  assign is_active = ' selected'
+                  assign active_class = 'link--active fw-700'
+                  assign active_attrs = 'aria-current="true"'
+              endif
+            %}
+            <li class="country-switcher__country-item" tabindex="-1">
+              <a class="country-switcher__country-item__link js-country-switcher-country-item-link d-block {{ active_class }}" href="#" {{ active_attrs }} data-value="{{ country.iso_code }}">
+                {{ country.name }} <span class="country-switcher__country-item__code">({{ country.currency.iso_code }} {{ country.currency.symbol }})</span>
+              </a>
+            </li>
+            {% capture currencies_switcher_no_script %}
+              {{ currencies_switcher_no_script }}
+              <option value="{{ country.iso_code }}" {{ is_active }}>
+                {{ country }} ({{ country.currency.iso_code }} {{ country.currency.symbol }})
+              </option>
+            {% endcapture %}
+          {%- endfor -%}
+        </ul>
+      </div>
+      <input type="hidden" class="js-country-switcher-country-code-field" name="country_code" value="{{ localization.country.iso_code }}">
+    </div>
+    <noscript>
+      <div class="currency-switcher__container">
+        <h2 class="country-switcher__heading visually-hidden" id="CountrySwitcherLabel-{{ rand }}">{{ 'localization.country_label' | t }}</h2>
+        <select class="country-switcher__form__select w-100 h-100 field__text field--focus field--hover" name="country_code" aria-labelledby="CountrySwitcherLabel-{{ rand }}">
+          {{ currencies_switcher_no_script }}
+        </select>
+      </div>
+      <button class="button button--primary button--small center-xs ta-center w-100 mt-4">{{ 'localization.update_country' | t }}</button>
+    </noscript>
+  {%- endform -%}
+</sht-country-switcher>
+<script data-asset="script">
+  SHTLoad.push(function () {
+    if (!document.querySelector(`#country-switcher-js-file`)) {
+      let country_switcher = document.createElement("script");
+      country_switcher.setAttribute('src', `{{ 'country-switcher.js' | asset_url }}`);
+      country_switcher.setAttribute('id', 'country-switcher-js-file');
+      document.body.appendChild(country_switcher);
+    }
+  });
+</script>
