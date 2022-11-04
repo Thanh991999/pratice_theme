@@ -1,0 +1,379 @@
+{{ "section-content-collage.css" | asset_url | stylesheet_tag: preload: true }}
+{%- liquid
+  assign fullwidth      = section.settings.enable_full_width_content
+  assign content_align  = section.settings.content_alignment
+  assign items_order    = section.settings.items_ordering
+  assign stacked_layout = section.settings.enable_stacked_layout
+  assign media_ratio    = section.settings.image_ratio
+  assign block_size     = section.blocks.size
+  assign show_button    = section.settings.show_items_button
+
+  unless items_order == 'equal'
+    if block_size == 2
+      assign stacked_class = ' unstacked-2'
+    endif
+
+    if block_size == 3
+      if stacked_layout
+        assign stacked_class = ' stacked'
+      else
+        assign stacked_class = ' unstacked'
+      endif
+    endif
+  else
+    assign size_style = block_size | prepend: '--size:'
+  endunless
+-%}
+<div class="section" data-ui-component="Content Collage Section">
+  <div class="ctnr">
+    {% render 'section-header',
+      content_align: content_align,
+      subheading: section.settings.subheading,
+      heading: section.settings.heading,
+      description: section.settings.description,
+      badge_text: section.settings.badge_text,
+      badge_position: section.settings.badge_position,
+      badge_shape: section.settings.badge_shape,
+      badge_color: section.settings.badge_color,
+      section: section
+    %}
+  {% if fullwidth %}</div>{% endif %}
+    <div class="s-content d-grid gap-1 ctclg--{{ items_order }}{{ stacked_class }}" {% if size_style %}style="{{ size_style }}"{% endif %}>
+      {%- for block in section.blocks -%}
+        {% case block.type %}
+          {% when 'collection' %}
+            {% liquid
+              assign collection = collections[block.settings.collection]
+              assign collection_image = 'collection-1' | placeholder_svg_tag: 'js-image-lazy placeholder media w-100 h-100'
+              assign collection_image = collection.featured_image | image_url: width: collection.featured_image.width | image_tag: widths: '350, 450, 550, 750, 950, 1024', sizes: "(min-width: 361px) calc(100vw/2), calc(100vw/3)", alt: collection.featured_image.alt, class: 'js-image-lazy media of-cover w-100 h-100'
+              assign collection_title = 'sections.content_collage.collection.collection_title' | t
+              assign view_details_btn = 'sections.content_collage.collection.view_product' | t
+              if block.settings.show_number_of_products
+                assign view_details_btn = 'sections.content_collage.collection.view_count_product' | t: count: collection.products.size
+              endif
+            %}
+            <div class="p-relative o-hidden mask index-{{ forloop.index }}" {{ block.shopify_attributes }}>
+              <a aria-label="{{ collection.title | escape }}" href="{{ collection.url | default: '#' }}" class="d-block h-100">
+                {% render 'image',
+                  image_item: collection_image,
+                  ratio: media_ratio,
+                  image_wrap_classes: 'h-100',
+                  image_classes: 'h-100'
+                %}
+              </a>
+              <div class="card__content card__content--inner wb-break-word zi-1 bottom-0 p-absolute pe-none w-100 {{ content_align }}">
+                <h3 class="hdg-6 mb-8">{{ collection.title | default: collection_title }}</h3>
+                <a href="{{ collection.url }}" class="{{ show_button | default: 'd-none' | replace: 'true', 'td-underline button button--link button--small' }}">{{ view_details_btn }}</a>
+              </div>
+            </div>
+          {% when 'product' %}
+            {% liquid
+              assign product = all_products[block.settings.product]
+              assign product_featured_image = 'product-1' | placeholder_svg_tag: 'js-image-lazy placeholder w-100 h-100 media'
+              assign product_featured_image = product.featured_image | image_url: width: product.featured_image.image.width | image_tag: widths: '350, 450, 550, 750, 950, 1024', sizes: "(min-width: 361px) calc(100vw/2), calc(100vw/3)", alt: product.title, class: 'js-image-lazy media of-cover w-100 h-100'
+              if product.title == ''
+                assign product_title = "sections.content_collage.collection.view_product" | t
+              else
+                assign product_title = product.title
+              endif
+            %}
+            <div class="p-relative o-hidden mask color-inverse index-{{ forloop.index }}" {{ block.shopify_attributes }}>
+              <a aria-label="{{ product.title | escape }}" href="{{ product.url | default: '#' }}" class="d-block h-100">
+                {% render 'image',
+                  image_item: product_featured_image,
+                  src: block.settings.featured_image.src,
+                  ratio: media_ratio,
+                  image_wrap_classes: 'h-100',
+                  image_classes: 'h-100'
+                %}
+              </a>
+              <div class="card__content card__content--inner wb-break-word zi-1 bottom-0 p-absolute pe-none w-100 {{ content_align }}">
+                <h3 class="hdg-6 mb-8">{{ product_title }}</h3>
+                {% render 'product-price' product: product, price_placeholder: true %}
+                <a href="{{ product.url }}" class="{{ show_button | default: 'd-none' | replace: 'true', 'td-underline button button--link button--small' }}">
+                  {{ "sections.content_collage.collection.view_product" | t }}
+                </a>
+              </div>
+            </div>
+          {% when 'image' %}
+            {% liquid
+                assign collage_image = 'image' | placeholder_svg_tag: 'js-image-lazy placeholder w-100 h-100 media'
+                assign collage_image_alt  = block.settings.heading | default: block.settings.image.image | split: '/' | last
+                assign collage_image = block.settings.image | image_url: width: block.settings.image.width | image_tag: widths: '350, 450, 550, 750, 950, 1024', sizes: "(min-width: 361px) calc(100vw/2), calc(100vw/3)", alt: collage_image_alt , class: 'js-image-lazy media of-cover w-100 h-100'
+              %}
+            <div class="p-relative o-hidden mask index-{{ forloop.index }}" {{ block.shopify_attributes }}>
+              <a aria-label="{{ collage_image_alt }}" href="{{ block.settings.button_link | default: '#' }}" class="d-block h-100">
+                {% render 'image',
+                  image_item: collage_image,
+                  src: block.settings.image.src,
+                  ratio: media_ratio,
+                  image_wrap_classes: 'h-100',
+                  image_classes: 'h-100'
+                %}
+              </a>
+              <div class="card__content card__content--inner wb-break-word zi-1 bottom-0 p-absolute pe-none w-100 {{ content_align }}">
+                <h3 class="hdg-6 mb-8">{{ block.settings.heading }}</h3>
+                <a href="{{ block.settings.button_link }}" class="{{ show_button | default: 'd-none' | replace: 'true', 'td-underline button button--link button--small' }}">
+                  {{ block.settings.button_text }}
+                </a>
+              </div>
+            </div>
+        {% endcase %}
+      {%- endfor -%}
+    </div>
+  {% unless fullwidth %}</div>{% endunless %}
+</div>
+
+{% schema %}
+{
+  "name": "t:sections.content_collage.name",
+  "max_blocks": 3,
+  "settings": [
+    {
+      "type": "header",
+      "content": "t:general.settings.headers.header_general.content"
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "t:general.settings.section_subheading.label"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "t:general.settings.section_heading.label",
+      "default": "Content collage"
+    },
+    {
+      "type": "text",
+      "id": "description",
+      "label": "t:general.settings.section_description.label"
+    },
+    {
+      "type": "header",
+      "content": "t:general.settings.headers.header_layout.content"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_full_width_content",
+      "label": "t:sections.content_collage.settings.enable_full_width_content.label",
+      "default": false
+    },
+    {
+      "type": "select",
+      "id": "content_alignment",
+      "label": "t:general.settings.content_alignment.label",
+      "default": "ta-left",
+      "options": [
+        {
+          "value": "ta-left",
+          "label": "t:general.settings.content_alignment.options.option_left.label"
+        },
+        {
+          "value": "ta-center",
+          "label": "t:general.settings.content_alignment.options.option_center.label"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "items_ordering",
+      "label": "t:sections.content_collage.settings.items_ordering.label",
+      "default": "equal",
+      "options": [
+        {
+          "value": "equal",
+          "label": "t:sections.content_collage.settings.items_ordering.options.option_equal.label"
+        },
+        {
+          "value": "big-first",
+          "label": "t:sections.content_collage.settings.items_ordering.options.option_main_item_first.label"
+        },
+        {
+          "value": "big-last",
+          "label": "t:sections.content_collage.settings.items_ordering.options.option_main_item_last.label"
+        }
+      ]
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_stacked_layout",
+      "label": "t:sections.content_collage.settings.enable_stacked_layout.label",
+      "info": "t:sections.content_collage.settings.enable_stacked_layout.info",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "t:sections.content_collage.settings.headers.header_items.content"
+    },
+    {
+      "type": "select",
+      "id": "image_ratio",
+      "label": "t:general.settings.image_ratio.label",
+      "info": "t:general.settings.image_ratio.info",
+      "default": "1/1",
+      "options": [
+        {
+          "value": "1/1",
+          "label": "t:general.settings.image_ratio.options.option_square.label"
+        },
+        {
+          "value": "4/5",
+          "label": "t:sections.content_collage.settings.options.option_portrait.label"
+        }
+      ]
+    },
+    {
+      "type": "checkbox",
+      "id": "show_items_button",
+      "label": "t:sections.content_collage.settings.show_items_button.label",
+      "info": "t:sections.content_collage.settings.show_items_button.info",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "t:general.settings.headers.header_prominent_badge.content"
+    },
+    {
+      "type": "select",
+      "id": "badge_color",
+      "label": "t:general.settings.color_scheme.label",
+      "default": "color-accent-2",
+      "options": [
+        {
+          "value": "color-accent-1",
+          "label": "t:general.settings.accent_scheme.options.option_main_accent.label"
+        },
+        {
+          "value": "color-accent-2",
+          "label": "t:general.settings.accent_scheme.options.option_extra_accent.label"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "badge_position",
+      "label": "t:general.settings.badge_position.label",
+      "default": "p-badge--bottom-right",
+      "options": [
+        {
+          "value": "p-badge--bottom-left",
+          "label": "t:general.settings.badge_position.options.option_left.label"
+        },
+        {
+          "value": "p-badge--bottom-right",
+          "label": "t:general.settings.badge_position.options.option_right.label"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "badge_shape",
+      "label": "t:general.settings.badge_shape.label",
+      "default": "badge--star",
+      "options": [
+        {
+          "value": "badge--star",
+          "label": "t:general.settings.badge_shape.options.option_star.label"
+        },
+        {
+          "value": "badge--diamond",
+          "label": "t:general.settings.badge_shape.options.option_diamond.label"
+        },
+        {
+          "value": "badge--asterisk",
+          "label": "t:general.settings.badge_shape.options.option_asterisk.label"
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "id": "badge_text",
+      "label": "t:general.settings.text.label",
+      "default": "Get ready"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "collection",
+      "name": "t:sections.content_collage.blocks.collection.name",
+      "settings": [
+        {
+          "type": "collection",
+          "id": "collection",
+          "label": "t:general.settings.collection.label"
+        },
+        {
+          "type": "checkbox",
+          "id": "show_number_of_products",
+          "label": "t:sections.content_collage.blocks.collection.settings.show_number_of_products.label",
+          "default": true
+        }
+      ]
+    },
+    {
+      "type": "product",
+      "name": "t:sections.content_collage.blocks.product.name",
+      "settings": [
+        {
+          "type": "product",
+          "id": "product",
+          "label": "t:general.settings.product.label"
+        }
+      ]
+    },
+    {
+      "type": "image",
+      "name": "t:sections.content_collage.blocks.image.name",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "t:general.settings.image.label"
+        },
+        {
+          "type": "header",
+          "content": "t:general.settings.headers.header_content.content"
+        },
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "t:general.settings.heading.label",
+          "default": "Heading"
+        },
+        {
+          "type": "header",
+          "content": "t:general.settings.headers.header_button.content"
+        },
+        {
+          "type": "text",
+          "id": "button_text",
+          "label": "t:general.settings.label.label",
+          "default": "Check now"
+        },
+        {
+          "type": "url",
+          "id": "button_link",
+          "label": "t:general.settings.link.label"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:sections.content_collage.name",
+      "blocks": [
+        {
+          "type": "collection"
+        },
+        {
+          "type": "product"
+        },
+        {
+          "type": "image"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
