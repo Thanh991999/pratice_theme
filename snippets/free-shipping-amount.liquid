@@ -1,0 +1,19 @@
+{% liquid
+  assign free_shipping = settings.cart_minimum_order_price_for_free_shipping | times: 100
+  assign shipping_remaining_amount = free_shipping | minus: cart.total_price
+  assign shipping_remaining_amount_currency = shipping_remaining_amount | money_with_currency
+  assign rand = "now" | date: "%N" | md5
+%}
+{% if shipping_remaining_amount > 0 %}
+  <span class="free-shipping__message mb-8 d-block">
+    {{ 'sections.cart.free_shipping_notification_html' | t: remaining_amount: shipping_remaining_amount_currency }}
+  </span>
+{% else %}
+  <span class="free-shipping__message mb-8 d-block">
+    {{ 'sections.cart.free_shipping_notification_qualified' | t }}
+  </span>
+{% endif %}
+<span class="cart-freeship-progress d-flex middle-xs w-100 subtext">
+<progress id="cartFreeShippingProgress-{{ section.id | default: rand }}" class="freeship-progress d-block flex-1 mr-8" value="{{ cart.total_price }}" max="{{ free_shipping }}"></progress>
+{{ free_shipping | money_with_currency }}
+</span>

@@ -1,0 +1,8 @@
+.section-404__form .field__text {
+  padding-right: 56px;
+}
+@media (min-width: 459px) {
+  .section-404__form {
+    max-width: 400px;
+  }
+}

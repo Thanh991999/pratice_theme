@@ -1,129 +1,268 @@
+{%- liquid
+  assign column_mobile = 12 | divided_by: section.settings.items_per_row_on_mobile
+
+  assign content_align = section.settings.content_align
+  assign xlg = 3
+  assign md = 4
+  if content_align == 'diagonal d-grid'
+    assign xlg = 6
+    assign md = 6
+    if section.settings.enable_view_all
+      assign s_button = section.settings.button_main_text
+    endif
+  endif
+
+  assign max_items_to_show = section.settings.max_items_to_show
+  assign number_items_to_show = 0
+  if max_items_to_show > 0
+    assign max_items_to_show_modulo = max_items_to_show | modulo: 3
+    if max_items_to_show_modulo > 0
+        assign number_items_to_show = max_items_to_show | minus: max_items_to_show_modulo
+    endif
+  else
+    assign max_items_to_show = nil
+  endif
+-%}
+<div class="section" data-ui-component="Collection List Section">
+  <div class="ctnr {{ content_align }}">
+    {% render 'section-header',
+      content_align: content_align,
+      subheading: section.settings.subheading,
+      heading: section.settings.heading,
+      description: section.settings.description,
+      button_main_text: s_button,
+      button_main_link: routes.collections_url,
+      badge_text: section.settings.badge_text,
+      badge_position: section.settings.badge_position,
+      badge_shape: section.settings.badge_shape,
+      badge_color: section.settings.badge_color,
+      section: section
+    %}
+    <div class="s-content">
+      <sht-carousel-wrapper
+        data-on-mobile-only="{{ section.settings.enable_carousel }}"
+        data-css-class-on-container="carousel d-flex p-zero m-zero ox-auto p-relative disable-scrollbars fw-nowrap scrollable scrollable-x"
+        data-css-class-on-item="carousel__item p-relative scrollable-aln-start d-flex middle-xs fg-1 fs-0">
+        <sht-carousel class="p-relative d-block" data-section-id="{{ section.id }}">
+          <div class="rw gap-equal js-carousel-items" role="list" aria-label="{{ 'accessibility.slider' | t }}">
+            {% for collection in section.settings.collection_list limit: max_items_to_show %}
+              {%- liquid
+                assign hide_class = ""
+                if number_items_to_show > 0 and forloop.index > number_items_to_show
+                  assign hide_class= " d-none-md d-block-xl"
+                endif
+              -%}
+              <sht-carousel-item role="listitem" tabindex="-1" class="clm js-carousel-item{{ hide_class }}" style="--w-xs:{{ column_mobile }};--w-sm: 6;--w-md: {{- md -}};--w-xl: {{- xlg -}};">
+                {% render 'card-collection',
+                  collection: collection,
+                  media_ratio: settings.collection_image_ratio,
+                  show_product_count: settings.show_product_count
+                %}
+              </sht-carousel-item>
+            {% else %}
+              {%- for i in (1..4) limit: max_items_to_show -%}
+                {%- liquid
+                  assign hide_class = ""
+                  if number_items_to_show > 0 and forloop.index > number_items_to_show
+                    assign hide_class= " d-none-md d-block-xl"
+                  endif
+                -%}
+                <sht-carousel-item role="listitem" tabindex="-1" class="clm js-carousel-item{{ hide_class }}" style="--w-xs:{{ column_mobile }};--w-sm: 6;--w-md: {{- md -}};--w-xl: {{- xlg -}};">
+                  {% render
+                    'card-collection-placeholder',
+                    media_ratio: settings.collection_image_ratio,
+                    show_product_count: settings.show_product_count
+                  %}
+                </sht-carousel-item>
+              {%- endfor -%}
+            {% endfor %}
+          </div>
+          <div class="carousel-pagination middle-y w-100 p-absolute d-none-md no-js-hidden zi-1 {% if section.settings.show_navigation == false or section.settings.enable_carousel == false %} d-none-important {% endif %}">
+            <button type="button" data-step="1" class="js-carousel-prev-btn button button--primary button--icon button--small p-absolute middle-y zi-1 left-0" aria-label="{{ 'accessibility.previous_slide' | t }}" name="previous" disabled>{% render 'icon-chevron-left', size: 24 %}</button>
+            <button type="button" data-step="1" class="js-carousel-next-btn button button--primary button--icon button--small p-absolute middle-y zi-1 right-0" aria-label="{{ 'accessibility.next_slide' | t }}" name="next" disabled>{% render 'icon-chevron-right', size: 24 %}</button>
+          </div>
+        </sht-carousel>
+      </sht-carousel-wrapper>
+      <div class="s-footer p-sides {{ section.settings.enable_view_all | default: 'd-none' | replace: 'true', '' }} {{ content_align | replace: 'diagonal d-grid', "d-none" | replace: content_align, '' }} {{ section.settings.button_main_text | default: 'd-none' | replace: section.settings.button_main_text, '' }}">
+        <a class="button button--primary button--large hide-empty" href="{{- routes.collections_url -}}">
+          {{- section.settings.button_main_text -}}
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
 {% schema %}
 {
   "name": "t:sections.collection_list.name",
   "settings": [
     {
       "type": "header",
-      "content": "t:general.settings.headers.header_content.content"
+      "content": "t:general.settings.headers.header_general.content"
     },
-    { 
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "t:general.settings.section_subheading.label"
+    },
+    {
       "type": "text",
       "id": "heading",
-      "label": "t:general.settings.heading.label",
-      "default" : "Our Collections"
+      "label": "t:general.settings.section_heading.label",
+      "default": "Collections list"
     },
     {
-      "type": "richtext",
-      "id": "description",
-      "label": "t:general.settings.description.label"
-    },
-    {
-      "type": "select",
-      "id": "color_scheme",
-      "label": "t:general.settings.color_scheme.label",
-      "default": "cs-background cs-background-1",
-      "options": [
-        {
-          "value": "cs-accent cs-accent-1",
-          "label": "t:settings_schema.colors.settings.colors_accent_1.label"
-        },
-        {
-          "value": "cs-accent cs-accent-2",
-          "label": "t:settings_schema.colors.settings.colors_accent_2.label"
-        },
-        {
-          "value": "cs-background cs-background-1",
-          "label": "t:settings_schema.colors.settings.colors_background_1.label"
-        },
-        {
-          "value": "cs-background cs-background-2",
-          "label": "t:settings_schema.colors.settings.colors_background_2.label"
-        }
-      ]
-    },
-    {
-      "type": "checkbox",
-      "id": "enable_view_more",
-      "label": "t:sections.collection_list.settings.enable_view_all_collections.label",
-      "info": "t:sections.collection_list.settings.enable_view_all_collections.info",
-      "default": false
-    },
-    { 
       "type": "text",
-      "id": "button_text",
-      "label": "t:settings_schema.colors.settings.colors_button_text.label",
-      "default" : "View all collections"
+      "id": "description",
+      "label": "t:general.settings.section_description.label"
     },
     {
       "type": "header",
-      "content": "t:sections.collection_list.settings.headers.collection_items.content"
-    },
-    {
-      "type": "select",
-      "id": "content_alignment",
-      "label": "t:general.settings.content_alignment.label",
-      "default": "center",
-      "options":[
-        {
-          "value": "center",
-          "label": "t:general.settings.content_alignment.options.option_center.label"
-        },
-        {
-          "value": "left",
-          "label": "t:general.settings.content_alignment.options.option_left.label"
-        }
-      ]
-    },
-    {
-      "type": "select",
-      "id": "image_ratio",
-      "label": "t:general.settings.image_ratio.label",
-      "default": "square",
-      "options":[
-        {
-          "value": "square",
-          "label": "t:general.settings.image_ratio.options.option_square.label"
-        },
-        {
-          "value": "landscape",
-          "label": "t:general.settings.image_ratio.options.option_landscape.label"
-        },
-        {
-          "value": "portrait",
-          "label": "t:general.settings.image_ratio.options.option_portrait.label"
-        }
-      ]
+      "content": "t:general.settings.headers.header_layout.content"
     },
     {
       "type": "range",
-      "id": "collection_per_row",
-      "label": "t:sections.collection_list.settings.collection_per_row.label",
-      "min": 1,
-      "max": 6,
-      "step": 1,
-      "default": 4
+      "id": "max_items_to_show",
+      "min": 0,
+      "max": 48,
+      "step": 4,
+      "default": 4,
+      "label": "t:general.settings.max_items_to_show.label",
+      "info": "t:general.settings.max_items_to_show.info"
     },
     {
-      "type": "checkbox",
-      "id": "show_product_count",
-      "label": "t:sections.collection_list.settings.show_product_count.label",
-      "default": false
+      "type": "select",
+      "id": "content_align",
+      "label": "t:general.settings.content_alignment.label",
+      "default": "ta-left",
+      "options": [
+        {
+          "value": "ta-left",
+          "label": "t:general.settings.content_alignment.options.option_left.label"
+        },
+        {
+          "value": "ta-center m-auto",
+          "label": "t:general.settings.content_alignment.options.option_center.label"
+        },
+        {
+          "value": "diagonal d-grid",
+          "label": "t:general.settings.content_alignment.options.option_diagonal.label"
+        }
+      ]
     },
     {
-      "type": "header",
-      "content": "t:general.settings.headers.header_mobile_layout.content"
-    },
-    {
-      "type": "checkbox",
-      "id": "show_columns_mobile",
-      "label": "t:sections.collection_list.settings.show_product_count.label",
-      "default": true
+      "type": "select",
+      "id": "items_per_row_on_mobile",
+      "label": "t:general.settings.items_per_row_on_mobile.label",
+      "default": "2",
+      "options": [
+        {
+          "value": "1",
+          "label": "t:general.settings.items_per_row_on_mobile.options.option_one.label"
+        },
+        {
+          "value": "2",
+          "label": "t:general.settings.items_per_row_on_mobile.options.option_two.label"
+        }
+      ]
     },
     {
       "type": "checkbox",
       "id": "enable_carousel",
-      "label": "t:general.settings.enable_carousel.label",
+      "label": "t:general.settings.enable_carousel_on_mobile.label",
       "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "show_navigation",
+      "label": "t:general.settings.show_navigation_on_mobile.label",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "t:general.settings.headers.header_collection_items.content"
+    },
+    {
+      "type": "collection_list",
+      "id": "collection_list",
+      "label": "t:general.settings.selected_collections.label"
+    },
+    {
+      "type": "header",
+      "content": "t:general.settings.headers.header_button.content"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_view_all",
+      "label": "t:sections.collection_list.settings.show_view_all_button.label",
+      "default": false
+    },
+    {
+      "type": "text",
+      "id": "button_main_text",
+      "label": "t:general.settings.text.label",
+      "default": "View all collections"
+    },
+    {
+      "type": "header",
+      "content": "t:general.settings.headers.header_prominent_badge.content"
+    },
+    {
+      "type": "select",
+      "id": "badge_color",
+      "label": "t:general.settings.color_scheme.label",
+      "default": "color-accent-2",
+      "options": [
+        {
+          "value": "color-accent-1",
+          "label": "t:general.settings.accent_scheme.options.option_main_accent.label"
+        },
+        {
+          "value": "color-accent-2",
+          "label": "t:general.settings.accent_scheme.options.option_extra_accent.label"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "badge_position",
+      "label": "t:general.settings.badge_position.label",
+      "default": "p-badge--bottom-right",
+      "options": [
+        {
+          "value": "p-badge--bottom-left",
+          "label": "t:general.settings.badge_position.options.option_left.label"
+        },
+        {
+          "value": "p-badge--bottom-right",
+          "label": "t:general.settings.badge_position.options.option_right.label"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "badge_shape",
+      "label": "t:general.settings.badge_shape.label",
+      "default": "badge--star",
+      "options": [
+        {
+          "value": "badge--star",
+          "label": "t:general.settings.badge_shape.options.option_star.label"
+        },
+        {
+          "value": "badge--diamond",
+          "label": "t:general.settings.badge_shape.options.option_diamond.label"
+        },
+        {
+          "value": "badge--asterisk",
+          "label": "t:general.settings.badge_shape.options.option_asterisk.label"
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "id": "badge_text",
+      "label": "t:general.settings.text.label",
+      "default": "Get ready"
     }
   ],
   "presets": [
