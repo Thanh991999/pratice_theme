@@ -1,0 +1,112 @@
+{%- liquid
+  assign btn_class = 'button button--plain button--small button--icon no-js-hidden d-none-' | append: section.blocks.size
+
+  -%}
+{%- if section.blocks.size > 0 -%}
+  <div class="anmb p-relative zi-3 {{ section.settings.color_scheme }}" data-ui-component="Announcement Bar Section">
+    <div class="ctnr pt-12 pb-12">
+      <sht-announcement-bar role="region" aria-label="{{ 'accessibility.announcement' | t }}" aria-roledescription="Carousel" class="d-flex middle-xs o-hidden" data-props='{"autoPlay":{{ section.settings.enable_autoplay }},"duration":{{ section.settings.duration | times: 1000 }}}'>
+        <button aria-label="{{ 'accessibility.previous_slide' | t }}" name="previous" disabled class="js-anmb-control-prev {{ btn_class | replace: 'd-none-1', 'd-none-important' }}" type="button" style="--form-field-sm:24px" disable>
+          {% render 'icon-chevron-left', width: 24, height: 24 %}
+        </button>
+        <div aria-live="polite" aria-atomic="true" class="js-anmb-items ox-auto disable-scrollbars d-flex middle-xs scrollable scrollable-x w-100 ml-4 mr-4">
+          {% for block in section.blocks %}
+            <div {{ block.shopify_attributes }} role="group" aria-roledescription="Slide" aria-label="{{ 'accessibility.slide' | t }} {{ forloop.index }} {{ 'accessibility.of' | t }} {{ forloop.length }}" class="js-anmb-item fs-0 scrollable-aln-start w-100 ta-center" data-item-index="{{ forloop.index }}">
+                <a href="{{ block.settings.message_link | default: "#" }}" class="td-underline js-anmb-link-items hide-no-link" tabindex="-1" target="_blank">
+                  {{ block.settings.message_text }}
+                </a>
+                <span>{{ block.settings.message_text }}</span>
+            </div>
+          {% endfor %}
+        </div>
+        <button aria-label="{{ 'accessibility.next_slide' | t }}" name="next" class="js-anmb-control-next {{ btn_class | replace: 'd-none-1', 'd-none-important' }}" type="button" style="--form-field-sm:24px">
+          {% render 'icon-chevron-right', width: 24, height: 24 %}
+        </button>
+      </sht-announcement-bar>
+    </div>
+  </div>
+  {%- liquid
+    assign files = "announcement-bar.js" | split: ', '
+    render 'js-loader', files: files
+  -%}
+{%- endif -%}
+{% schema %}
+{
+  "name": "t:sections.announcement_bar.name",
+  "settings": [
+    {
+      "type": "header",
+      "content": "t:general.settings.headers.header_general.content"
+    },
+    {
+      "type": "select",
+      "id": "color_scheme",
+      "label": "t:general.settings.accent_scheme.label",
+      "default": "color-accent-1",
+      "options": [
+        {
+          "value": "color-accent-1",
+          "label": "t:general.settings.accent_scheme.options.option_main_accent.label"
+        },
+        {
+          "value": "color-accent-2",
+          "label": "t:general.settings.accent_scheme.options.option_extra_accent.label"
+        }
+      ]
+    },
+    {
+      "type": "header",
+      "content": "t:general.settings.headers.header_messages.content"
+    },
+    {
+      "type": "checkbox",
+      "label": "t:sections.announcement_bar.settings.enable_message_autoplay.label",
+      "id": "enable_autoplay",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "duration",
+      "min": 3,
+      "max": 10,
+      "step": 1,
+      "label": "t:sections.announcement_bar.settings.change_message_every.label",
+      "default": 5,
+      "unit": "s"
+    }
+  ],
+  "blocks": [
+    {
+      "name": "t:sections.announcement_bar.blocks.message.name",
+      "type": "message",
+      "limit": 6,
+      "settings": [
+        {
+          "type": "text",
+          "label": "t:general.settings.text.label",
+          "id": "message_text",
+          "default": "Welcome to our store"
+        },
+        {
+          "type": "url",
+          "label": "t:general.settings.link.label",
+          "id": "message_link"
+        }
+      ]
+    }
+  ],
+  "default": {
+    "blocks": [
+      {
+        "type": "message"
+      },
+      {
+        "type": "message"
+      },
+      {
+        "type": "message"
+      }
+    ]
+  }
+}
+{% endschema %}
