@@ -1,0 +1,137 @@
+{%- liquid
+  assign column_mobile = 12 | divided_by: section.settings.items_per_row_on_mobile
+
+  assign max_items_to_show = section.settings.max_items_to_show
+  assign number_items_to_show = 0
+  if max_items_to_show > 0
+    assign max_items_to_show_modulo = max_items_to_show | modulo: 3
+    if max_items_to_show_modulo > 0
+        assign number_items_to_show = max_items_to_show | minus: max_items_to_show_modulo
+    endif
+  else
+    assign max_items_to_show = nil
+  endif
+-%}
+<div class="section" data-ui-component="Product Recommendations Section">
+  <div class="ctnr">
+    <sht-product-recommendations class="product-recommendations" data-url="{{ routes.product_recommendations_url }}?section_id={{ section.id }}&product_id={{ product.id }}&limit={{ section.settings.max_items_to_show }}">
+      {%- if recommendations.performed and recommendations.products_count > 0 -%}
+        {% render 'section-header',
+          content_align: 'ta-center',
+          heading: section.settings.heading,
+          section: section
+        %}
+        <div class="s-content">
+          <sht-carousel-wrapper
+            data-on-mobile-only="{{ section.settings.enable_carousel }}"
+            data-css-class-on-container="carousel d-flex p-zero m-zero ox-auto p-relative disable-scrollbars fw-nowrap scrollable scrollable-x"
+            data-css-class-on-item="carousel__item p-relative scrollable-aln-start d-flex middle-xs fg-1 fs-0">
+            <sht-carousel class="p-relative d-block" data-section-id="{{ section.id }}" role="region" aria-roledescription="Carousel" aria-labelledby="sectionHeading-{{ section.id | md5 | truncate: 12, "" }}">
+              <div class="rw gap-unequal js-carousel-items" aria-atomic="true" aria-label="{{ 'accessibility.slider' | t }}">
+                {% for recommendation in recommendations.products limit: max_items_to_show %}
+                  {%- liquid
+                    assign hide_class = ""
+                    if number_items_to_show > 0 and forloop.index > number_items_to_show
+                      assign hide_class= " d-none-md d-block-xl"
+                    endif
+                  -%}
+                  <sht-carousel-item
+                    role="group" aria-roledescription="Slide"
+                    aria-label="{{ 'accessibility.slide' | t }} {{ forloop.index }} {{ 'accessibility.of' | t }} {{ forloop.length }}"
+                    class="clm js-carousel-item{{ hide_class }}" style="--w-xs:{{ column_mobile }};--w-sm: 6;--w-md: 4;--w-xl: 3;">
+                    {% render 'card-product',
+                      product: recommendation,
+                      ratio: settings.product_card_image_ratio,
+                      show_second_image: settings.show_second_image,
+                      show_vendor: settings.show_product_vendor,
+                      show_rating: settings.show_product_rating,
+                      show_color_swatch: settings.show_color_swatches,
+                      show_sale_badge: settings.show_sale_badge,
+                      item_per_row: section.settings.item_per_row,
+                      enable_quick_buy: settings.enable_quick_buy,
+                      is_first: forloop.first,
+                      load_js_defer: true,
+                      card_content_inner: false
+                    %}
+                  </sht-carousel-item >
+                {% endfor %}
+              </div>
+              <div class="carousel-pagination middle-y w-100 p-absolute d-none-md no-js-hidden zi-1{% if section.settings.show_navigation == false or section.settings.enable_carousel == false %} d-none-important{% endif %}">
+                <button type="button" data-step="1" class="js-carousel-prev-btn button button--primary button--icon button--small p-absolute pstn-mdle zi-1 left-0" aria-label="{{ 'accessibility.previous_slide' | t }}" name="previous" disabled>{% render 'icon-chevron-left', size: 24 %}</button>
+                <button type="button" data-step="1" class="js-carousel-next-btn button button--primary button--icon button--small p-absolute pstn-mdle zi-1 right-0" aria-label="{{ 'accessibility.next_slide' | t }}" name="next" disabled>{% render 'icon-chevron-right', size: 24 %}</button>
+              </div>
+            </sht-carousel>
+          </sht-carousel-wrapper>
+        </div>
+      {%- endif -%}
+    </sht-product-recommendations>
+  </div>
+</div>
+</noscript>
+{%- liquid
+  assign files = "product-recommendations.js" | split: ', '
+  render 'js-loader', files: files
+-%}
+{% schema %}
+{
+  "name": "t:sections.product_recommendation.name",
+  "settings": [
+    {
+      "type": "header",
+      "content": "t:general.settings.headers.header_general.content"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:sections.product_recommendation.settings.paragraph.content"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "t:general.settings.heading.label",
+      "default": "You might also like"
+    },
+    {
+      "type": "header",
+      "content": "t:general.settings.headers.header_layout.content"
+    },
+    {
+      "type": "range",
+      "id": "max_items_to_show",
+      "min": 0,
+      "max": 48,
+      "step": 4,
+      "default": 4,
+      "label": "t:general.settings.max_items_to_show.label",
+      "info": "t:general.settings.max_items_to_show.info"
+    },
+    {
+      "type": "select",
+      "id": "items_per_row_on_mobile",
+      "label": "t:general.settings.items_per_row_on_mobile.label",
+      "default": "1",
+      "options": [
+        {
+          "value": "1",
+          "label": "t:general.settings.items_per_row_on_mobile.options.option_one.label"
+        },
+        {
+          "value": "2",
+          "label": "t:general.settings.items_per_row_on_mobile.options.option_two.label"
+        }
+      ]
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_carousel",
+      "label": "t:general.settings.enable_carousel_on_mobile.label",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_navigation",
+      "label": "t:general.settings.show_navigation_on_mobile.label",
+      "default": true
+    }
+  ]
+}
+{% endschema %}
