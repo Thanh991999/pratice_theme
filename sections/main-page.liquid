@@ -1,0 +1,32 @@
+<div class="section" data-ui-component="Main Page Section">
+  <div class="ctnr">
+    {% render 'breadcrumb' %}
+    {% if section.settings.show_page_title %}
+      {% render 'section-header',
+        heading: page.title,
+        content_align: 'ta-center'
+      %}
+    {% endif %}
+    <div class="s-content m-auto p-sides rte" style="--w-md:10">
+      {{ page.content }}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "t:sections.main_page.name",
+  "settings": [
+    {
+      "type": "header",
+      "content": "t:general.settings.headers.header_general.content"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_page_title",
+      "label": "t:sections.main_page.settings.show_page_title.label",
+      "default": true
+    }
+  ]
+}
+{% endschema %}
