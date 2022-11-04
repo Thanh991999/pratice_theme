@@ -1,0 +1,122 @@
+.section-footer{
+  padding-top: 48px;
+  padding-bottom: 84px;
+}
+.footer__logo{
+  max-width: var(--logo-width);
+}
+.footer-newsletter{
+  padding: 32px 24px 40px;
+  margin-top: 24px;
+  margin-bottom: 64px;
+}
+.footer-newsletter-form{
+  --color-normal-text: rgb(var(--color-normal-text-rgb));
+  --color-page-bg: rgb(var(--color-page-bg-rgb));
+  --color-disabled-text: rgba(var(--color-normal-text-rgb), 0.32);
+}
+.footer__nav__list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit,minmax(40%, 1fr));
+  column-gap: 16px;
+}
+.f-hd-mb-s {
+  font-size: var(--heading-4);
+}
+.footer__nav__link{
+  padding: 8px 0;
+}
+.footer__nav__link:hover {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  text-decoration-thickness: 2px;
+}
+.footer__socials {
+  max-width: 288px;
+  margin: 0 auto 32px;
+}
+.footer__socials .social__list {
+  gap: 16px;
+}
+.footer__localization {
+  margin-bottom: 64px;
+}
+.footer__localization sht-country-switcher,
+.footer__localization sht-language-switcher {
+  flex: 1 1 auto;
+}
+.footer__localization button svg {
+  margin-inline-start: 10px;
+}
+.footer__payment{
+  max-width: 312px;
+  justify-content: center;
+  margin-bottom: 24px;
+}
+.button--back-to-top {
+  margin-bottom: 64px;
+}
+.footer__nav__list button.open svg {
+  transform: rotate(180deg);
+}
+.collapsible-region__content.hidden {
+  padding-bottom: 0;
+}
+@media(min-width: 459px) {
+  .footer__nav__list {
+    column-gap: 24px;
+  }
+}
+@media(min-width: 769px) {
+  .button--back-to-top {
+    padding-top: 12px;
+    padding-bottom: 12px;
+  }
+  .footer__nav__list {
+    column-gap: calc(var(--gutter) * 2);
+    row-gap: 24px;
+  }
+  .footer-newsletter{
+    margin-top: 0;
+    margin-bottom: 32px;
+  }
+  .footer__content__bottom--left,
+  .footer__content__bottom {
+    flex-direction: row;
+    justify-content: space-between;
+  }
+  .footer__content__bottom {
+    margin-top: 64px;
+  }
+  .footer__localization{
+    margin-bottom: 0;
+    margin-right: 4px;
+  }
+  .footer__payment{
+    margin-bottom: 0;
+    margin-inline-start: 24px;
+    position: relative;
+  }
+  .footer__payment:before {
+    content: "";
+    position: absolute;
+    left: -24px;
+    top: 50%;
+    height: 40px;
+    width: 1px;
+    transform: translateY(-50%);
+    background: var(--color-divider);
+  }
+  .footer__copyright {
+    padding-right: 0;
+    padding-top: 12px;
+    padding-bottom: 12px;
+  }
+  .footer__socials{
+    margin: 0;
+    max-width: 100%;
+  }
+  .f-hd-mb-s {
+    font-size: var(--heading-6);
+  }
+}
