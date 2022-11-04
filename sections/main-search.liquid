@@ -1,0 +1,305 @@
+<link rel="stylesheet" href="{{ 'component-filter-drawer.css' | asset_url }}" media="print" onload="this.media='all'">
+<noscript>
+  <link rel="stylesheet" href="{{ 'component-filter-drawer.css' | asset_url }}" media="all">
+</noscript>
+{%-liquid
+  assign sort_by = search.sort_by | default: search.default_sort_by
+  assign terms = search.terms | escape
+  assign results_url = '?q=' | append: terms | append: '&options%5Bprefix%5D=last&sort_by=' | append: sort_by
+
+  assign col_mobile = 12 | divided_by: section.settings.items_per_row_on_mobile
+  assign filter_width = '--w-xs:12;'
+  assign content_width = '--w-xs:12;'
+  assign item_width = '--w-sm:6;--w-lg:4;--w-xl:3;'
+  if section.settings.desktop_filter_and_sort_layout == 'vertical' and search.results.size > 0
+    assign filter_width = '--w-xs:12;--w-md:4;'
+    assign content_width = '--w-xs:12;--w-md:8;'
+    assign item_width= '--w-sm:6;--w-lg:6;--w-xl:4;'
+  endif
+-%}
+<div class="section" data-ui-component="Main Search Section">
+  <div class="ctnr">
+    {% render 'breadcrumb' %}
+    <div class="s-header">
+      <h1 class="main-search__heading hdg-2 ta-center js-search-count-heading mb-32 v-mb-md" role="status" style="--v-mb-md: 24px">
+        {%- if search.performed -%}
+          {{ 'general.search.title' | t }}
+        {%- else -%}
+          {{ 'general.search.search' | t }}
+        {%- endif -%}
+      </h1>
+      <div class="main-search__search-form w-100 m-auto clm p-zero" style="--w-xs: 12; --w-sm: 8; --w-lg: 6;">
+        <form action="{{ routes.search_url }}" method="get" role="search" class="w-100 p-relative">
+          <input
+            class="field__text field--focus field--hover w-100"
+            id="searchInTemplate"
+            type="search"
+            name="q"
+            value="{{ search.terms | escape }}"
+            placeholder="{{ 'general.search.search' | t }}"
+          >
+          <input type="hidden" name="type" value="{{- settings.search_result_type -}}">
+          <input name="options[prefix]" type="hidden" value="last">
+          <button class="button button--icon button--plain button--large p-absolute middle-y right-0" aria-label="{{ "accessibility.search" | t }}">
+            {% render 'icon-search', size: 24 %}
+          </button>
+        </form>
+      </div>
+    </div>
+    <div class="s-content">
+      <div class="rw layout--{{- section.settings.desktop_filter_and_sort_layout }}">
+      {%- if search.performed -%}
+        {% if search.results.size > 0 %}
+          <div class="filter-form clm" style="{{ filter_width }}">
+            <div class="filter-form-container p-sides rw top-xs">
+              {% if section.settings.enable_filtering %}
+                <div class="clm" style="--w-xs: 12; {% unless section.settings.desktop_filter_and_sort_layout == 'vertical' %} --w-md:7; {% endunless %}">
+                  <sht-main-search-drawer-opener class="filter-drawer-open d-block no-js-hidden">
+                    <button type="button" aria-expanded="false" aria-label="{{ 'accessibility.filter' | t }}" aria-controls="filterDrawer" class="js-main-search-drawer-trigger button button--large button--secondary d-flex middle-xs center-xs w-100 {% if section.settings.enable_filtering == false %} d-none{% endif %}">
+                      {{ 'general.search.search_filter' | t }}
+                        {% render 'icon-filter', size: 20, class: 'ml-8' %}
+                    </button>
+                  </sht-main-search-drawer-opener>
+                  {%- if search.filters != empty -%}
+                    <div class="filter-form__active-filters js-active-filters mt-16 d-flex fw-wrap">
+                      {%- for filter in search.filters -%}
+                        {%- for value in filter.active_values -%}
+                          <sht-main-search-filter-form-reset class="tag">
+                            <a href="{{ value.url_to_remove }}" class="filter-form__reset-btn js-reset-form-btn">
+                                <span>{{ value.label | escape }}</span>
+                                {% render 'icon-close', size: 16 %}
+                                <span class="visually-hidden">{{ 'products.facets.clear_filter' | t }}</span>
+                            </a>
+                          </sht-main-search-filter-form-reset>
+                        {%- endfor -%}
+                        {% if filter.type == "price_range" %}
+                          {%- if filter.min_value.value != nil or filter.max_value.value != nil -%}
+                            <sht-main-search-filter-form-reset class="tag">
+                              <a href="{{ filter.url_to_remove }}" class="filter-form__reset-btn js-reset-form-btn mr-12 mb-16">
+                                  {%- if filter.min_value.value -%}{{ filter.min_value.value | money }}{%- else -%}{{ 0 | money }}{%- endif -%}-{%- if filter.max_value.value -%}{{ filter.max_value.value | money }}{%- else -%}{{ filter.range_max | money }}{%- endif -%}
+                                  {% render 'icon-close', size: 16 %}
+                                  <span class="visually-hidden">{{ 'sections.main_search.search.clear_filter' | t }}</span>
+                              </a>
+                            </sht-main-search-filter-form-reset>
+                          {%- endif -%}
+                        {% endif %}
+                      {%- endfor -%}
+                      <sht-main-search-filter-form-reset class="filter__clear__all">
+                        <a href="{{ results_url }}" class="filter-form__reset-btn js-reset-form-btn button--small button--link m-zero pdg-0 hdg-6">
+                          <span>{{ 'general.search.clear_all' | t }}</span>
+                        </a>
+                      </sht-main-search-filter-form-reset>
+                    </div>
+                  {%- endif -%}
+                </div>
+              {% endif %}
+              <div class="filter-form__rerult-count__sorting d-flex middle-xs clm" style="--w-xs: 12; {% unless section.settings.desktop_filter_and_sort_layout == 'vertical' %} --w-md:5;{% endunless %}">
+                <div class="filter-form__result-count mr-32" role="status">
+                  <p class="filter-form__result-count__text js-search-count">
+                    {%- if search.results_count -%}
+                      {{ 'sections.main_collection_product.filter_form.results_with_count' | t: terms: search.terms, count: search.results_count }}
+                    {%- elsif search.products_count == search.all_products_count -%}
+                      {{ 'sections.main_collection_product.filter_form.product_count_simple' | t: count: search.products_count }}
+                    {%- else -%}
+                    {{ 'sections.main_collection_product.filter_form.product_count' | t: product_count: search.products_count, count: search.all_products_count }}
+                    {%- endif -%}
+                  </p>
+                </div>
+                <div class="filter-form__sorting js-filter-form-sorting">
+                  <div class="field">
+                    <sht-main-search-sort-by-field class="field__select p-relative pdg-0">
+                      <select name="sort_by" aria-label="{{ 'accessibility.sort_by_label' | t }}" class="js-main-search-sort-by-field-select w-100 h-100 field__text field--focus field--hover" form="mainSearchFiltersForm" id="SortByField" aria-describedby="a11y-refresh-page-message">
+                        {%- for option in search.sort_options -%}
+                          {%-liquid
+                            assign option_selected = ''
+                            if option.value == sort_by
+                              assign option_selected = ' selected="selected"'
+                            endif
+                          -%}
+                          <option value="{{ option.value | escape }}"{{ option_selected }}>{{ option.name | escape }}</option>
+                        {%- endfor -%}
+                      </select>
+                      <span class="button button--large button--icon p-absolute right-0 pe-none">
+                        {% render 'icon-chevron-down' %}
+                      </span>
+                    </sht-main-search-sort-by-field>
+                  </div>
+                  <noscript>
+                    <button type="submit" class="button button--primary button--small w-100 mt-4" form="mainSearchFiltersForm">{{ 'general.search.sort_button' | t }}</button>
+                  </noscript>
+                </div>
+              </div>
+            </div>
+          </div>
+        {% endif %}
+        <div id="mainSearchContainer" class="clm" style="{{- content_width -}}">
+            <div class="results js-main-search-result-grid" data-id="{{ section.id }}">
+              {% paginate search.results by section.settings.item_per_page %}
+              <div class="rw gap-unequal">
+                {%- for item in search.results -%}
+                  {%- case item.object_type -%}
+                    {%- when 'product' -%}
+                        <div class="main-search_result main-search_result--{{ item.object_type }} js-main-search-result-{{- item.object_type }} clm" style="--w-xs: {{ col_mobile }}; {{ item_width }} ">
+                          {% render 'card-product',
+                            product: item,
+                            show_rating: settings.show_product_rating,
+                            show_vendor: settings.show_product_vendor,
+                            show_color_swatch: settings.show_color_swatches,
+                            show_sale_badge: settings.show_sale_badge,
+                            enable_quick_buy: settings.enable_quick_buy,
+                            show_second_image: settings.show_second_image,
+                            is_first: forloop.first
+                            ratio: settings.product_card_image_ratio,
+                            card_content_inner: false
+                          %}
+                        </div>
+                    {%- when 'article' -%}
+                      <div class="main-search_result main-search_result--{{ item.object_type }} js-main-search-result-{{- item.object_type }} clm" style="--w-xs: {{ col_mobile }}; {{ item_width }} ">
+                        {% render 'card-article',
+                          article: item,
+                          show_image: settings.article_card_show_featured_image,
+                          image_ratio: settings.article_card_featured_image_ratio,
+                          show_blog_tag: false,
+                          show_excerpt: settings.article_card_show_excerpt,
+                          show_published_date: settings.article_card_show_published_date,
+                          show_author: settings.article_card_show_author,
+                          show_read_more: settings.article_card_show_read_more
+                         %}
+                      </div>
+                    {%- when 'page' -%}
+                        <div class="main-search_result main-search_result--{{ item.object_type }} js-main-search-result-{{- item.object_type }} clm" style="--w-xs: {{ col_mobile }}; {{ item_width }} ">
+                          <div class="card card-page p-relative h-100">
+                            <div class="card__content card__content--inner wb-break-word p-absolute bottom-0 w-100">
+                              <div class="card__information">
+                                <h3 class="card__heading hdg-6">
+                                  <a href="{{ item.url }}">
+                                    {{ item.title | truncate: 50 | escape }}
+                                  </a>
+                                </h3>
+                              </div>
+                              <div class="card__badge tag">
+                                <a href="#" class="">{{ 'general.search.page' | t }}</a>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                  {%- endcase -%}
+                {%- endfor -%}
+                </div>
+                {%- if paginate.pages > 1 -%}
+                  <div class="s-footer">
+                    {%- render 'pagination', paginate: paginate -%}
+                  </div>
+                {%- endif -%}
+              {% endpaginate %}
+              {%- if search.results_count == 0 and search.filters == empty -%}
+                <p role="status" class="ta-center">{{ 'general.search.no_match_results_html' | t: terms: search.terms }}</p>
+              {%- endif -%}
+            </div>
+        </div>
+      </div>
+      {%- endif -%}
+    </div>
+  </div>
+</div>
+
+<sht-main-search-drawer aria-hidden="true" id="filterDrawer" class="drawer drawer--left js-main-search-drawer no-focus-visible" hidden tabindex="-1">
+  <div class="main-search-drawer drawer__container" id="mainSearchDrawer">
+    <div class="drawer__overlay js-main-search-drawer-overlay js-drawer-overlay"></div>
+    <div class="drawer__wrapper js-main-search-drawer-wrapper js-drawer-wrapper" role="dialog" aria-modal="true" aria-label="{{ 'general.search.search_filter' | t }}">
+      <div class="drawer__header d-flex middle-xs between-xs">
+        <h2 class="drawer__heading hdg-5 m-zero mr-16">{{ 'general.search.search_filter' | t }}</h2>
+        <button class="drawer__btn-close button button--circle button--small button--plain button--icon js-main-search-drawer-btn-close js-drawer-btn-close button button--large button--icon" type="button" aria-label="{{ 'accessibility.close' | t }}">
+          {% render 'icon-close', size: 24 %}
+        </button>
+
+      </div>
+      <div class="drawer__body oy-scroll flex-1 filters-toolbar js-main-search-drawer-body">
+        {% render 'main-search-filter-form', section: section, results: search, enable_filtering: section.settings.enable_filtering, enable_sorting: true %}
+      </div>
+      <div class="drawer__footer  p-sticky bottom-0 js-main-search-drawer-footer d-flex middle-xs">
+        <a href="{{ results_url }}" onclick="event.preventDefault();window.filterDrawer.clearFormFilters(event);" class="js-main-search-clear-all-btn  button button--secondary button--large w-100 mr-16 d-flex middle-xs center-xs">
+          {{ 'general.search.clear_all' | t }}
+        </a>
+        <button type="button" onclick="event.preventDefault();window.filterDrawer.closeDrawer();" class="js-main-search-done-btn button button--primary button--large w-100">
+          {{ 'general.search.done' | t }}
+        </button>
+      </div>
+    </div>
+  </div>
+</sht-main-search-drawer>
+<script src="{{ 'main-search-filter-form.js' | asset_url }}" defer="defer"></script>
+{% schema %}
+{
+  "name": "t:sections.main_search.name",
+  "settings": [
+    {
+      "type": "header",
+      "content": "t:general.settings.headers.header_layout.content"
+    },
+    {
+      "type": "select",
+      "id": "item_per_page",
+      "default": "24",
+      "label": "t:general.settings.item_per_page.label",
+      "options": [
+        {
+          "value": "12",
+          "label": "t:general.settings.item_per_page.options.option_1.label"
+        },
+        {
+          "value": "24",
+          "label": "t:general.settings.item_per_page.options.option_2.label"
+        },
+        {
+          "value": "36",
+          "label": "t:general.settings.item_per_page.options.option_3.label"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "items_per_row_on_mobile",
+      "label": "t:general.settings.items_per_row_on_mobile.label",
+      "default": "2",
+      "options": [
+        {
+          "value": "1",
+          "label": "t:general.settings.items_per_row_on_mobile.options.option_one.label"
+        },
+        {
+          "value": "2",
+          "label": "t:general.settings.items_per_row_on_mobile.options.option_two.label"
+        }
+      ]
+    },
+    {
+      "type": "header",
+      "content": "t:sections.main_search.settings.headers.header_filter.content"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_filtering",
+      "label": "t:general.settings.enable_filter.label",
+      "info": "t:general.settings.enable_filter.info",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "desktop_filter_and_sort_layout",
+      "label": "t:general.settings.desktop_filter_and_sort_layout.label",
+      "default": "vertical",
+      "options": [
+        {
+          "value": "vertical",
+          "label": "t:general.settings.desktop_filter_and_sort_layout.option_1.label"
+        },
+        {
+          "value": "horizontal",
+          "label": "t:general.settings.desktop_filter_and_sort_layout.option_2.label"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

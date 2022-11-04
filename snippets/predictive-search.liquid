@@ -1,0 +1,32 @@
+{% liquid
+  assign type_search = settings.search_result_type
+  %}
+<sht-predictive-search role="dialog" aria-modal="true" class="js-predictive-search {{ class }}" data-search-type="{{- type_search -}}" hidden>
+  <form action="{{ routes.search_url }}" method="get" role="search" class="predictive-search-form js-predictive-search-form">
+    <input type="hidden" name="type" value="{{- type_search -}}">
+    <input name="options[prefix]" type="hidden" value="last">
+    <div class="search__field d-flex ctnr">
+      <span class="icon--default d-flex middle-xs center-xs">
+        {% render 'icon-search' %}
+      </span>
+      <input type="search" name="q" aria-label="{{ 'accessibility.search' | t }}" value="" placeholder="{{ 'general.search.input_placeholder' | t }}" role="combobox" aria-expanded="false"
+        aria-owns="predictive-search-results-list" aria-controls="predictive-search-results-list"
+        aria-haspopup="listbox" aria-autocomplete="list" autocorrect="off" autocomplete="off" autocapitalize="off"
+        spellcheck="false" class="search__field-input js-predictive-search-input w-100 b-zero">
+
+      <button aria-label="{{ 'accessibility.close' | t }}" class="search__field-close button--plain icon--default js-predictive-search-close-trigger"
+        type="button">
+        {% render 'icon-close' %}
+      </button>
+    </div>
+    <div class="search__result js-predictive-search-results ctnr" tabindex="-1" hidden>
+      <div class="search__result-loading js-predictive-search-loading ta-center" hidden>
+        {% render 'icon-spinner' %}
+      </div>
+      <div class="search__result-empty js-predictive-search-message-placeholder ta-center color--light" hidden>
+        {{ "general.search.search_message_placeholder" | t }}
+      </div>
+      <div class="search-results__panel js-predictive-search-results-panel"></div>
+    </div>
+  </form>
+</sht-predictive-search>

@@ -1,73 +1,118 @@
 {%- liquid
-  assign image_placeholder = 'image' | placeholder_svg_tag: 'placeholder--svg placeholder--square-200'
--%}
+  assign xl = 3
+  assign md = 4
+  assign content_align = section.settings.content_align
+  if content_align == 'diagonal d-grid-md'
+    assign xl = 6
+    assign md = 6
+  endif
 
-<div class="testimonials dpy-flx flx-drtn-cln" data-ui-component="Product Testimonials Section">
-  <div class="testimonials__container ctnr">
-    <h2 class="testimonials__heading tt-aln-ctr hide-on-empty">{{ section.settings.heading }}</h2>
-    <p class="testimonials__description tt-aln-ctr hide-on-empty">{{ section.settings.description }}</p>
-    <div class="testimonials__list">
-      {% for block in section.blocks limit: section.blocks.size %}
-        {%- assign cover = image_placeholder -%}
-        {%- assign cover = block.settings.avatar | image_url: width: 200, height: 200 | image_tag: widths: '200', sizes: 'calc(100vw/1)', placeholder: "data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==", alt:  block.settings.name, class: 'js-lazy-loading-image-item' -%}
-        <div class="testimonial">
-          <div class="testimonial__cover">
-            {% render 'lazy-loading-image', image_item: cover, lazy_image_loading_image_css: "no-js-hidden dpy-blk pstn-rlte", lazy_image_loading_spinner_css: "js-lazy-loading-image-spinner aln-ctr-mde pstn-asle ptr-ne", replace_srcset: true, is_first: forloop.first %}
-          </div>
-          <div class="testimonial__content">
-            <h3 class="testimonial__title hide-on-empty">{{ block.settings.name }}</h3>
-            <p class="testimonial__sub-title hide-on-empty">{{ block.settings.job_title }}</p>
-            <div class="testimonial__social">{% render 'socials', settings: block.settings %}</div>
-            <div class="testimonial__text hide-on-empty">{{ block.settings.description }}</div>
-          </div>
+  assign text_style = 'v-pr'
+  if content_align == 'ta-center'
+    assign text_style = 'p-sides'
+  endif
+
+  capture icon_quote
+    render 'icon-quote', class: 'd-block', size: 48
+  endcapture
+
+  assign max_items_to_show = section.settings.max_items_to_show
+  assign number_items_to_show = 0
+  if max_items_to_show > 0
+    assign max_items_to_show_modulo = max_items_to_show | modulo: 3
+    if max_items_to_show_modulo > 0
+        assign number_items_to_show = max_items_to_show | minus: max_items_to_show_modulo
+    endif
+  else
+    assign max_items_to_show = nil
+  endif
+-%}
+<div class="section" data-ui-component="Testimonials Section">
+  <div class="ctnr {{ content_align }}">
+    {%- render 'section-header',
+      content_align: content_align,
+      subheading: section.settings.subheading,
+      heading: section.settings.heading,
+      description: section.settings.description,
+      badge_text: section.settings.badge_text,
+      badge_position: section.settings.badge_position,
+      badge_shape: section.settings.badge_shape,
+      badge_color: section.settings.badge_color,
+      section: section
+    -%}
+    <div class="s-content">
+      <sht-carousel class="p-relative d-block" role="region" aria-roledescription="Carousel" aria-labelledby="sectionHeading-{{ section.id | md5 | truncate: 12, "" }}"  data-section-id="{{ section.id }}" data-enable="{{ section.settings.enable_carousel }}">
+        <div aria-atomic="true"
+          class="rw gap-unequal {{ section.settings.enable_carousel | default: '' | replace: 'true', 'fw-nowrap carousel ox-auto p-relative scrollable scrollable-x disable-scrollbars js-carousel-items m-zero' }}">
+          {%- for block in section.blocks limit: max_items_to_show -%}
+            {%- liquid
+              assign cover = 'image' | placeholder_svg_tag: 'placeholder js-image-lazy of-cover'
+              assign cover = block.settings.avatar | image_url: width: block.settings.avatar.width | image_tag: widths: '360', sizes: 'calc(100vw/1)', placeholder: "data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==", alt: block.settings.name, class: 'js-image-lazy media of-cover'
+              assign hide_class = ""
+              if number_items_to_show > 0 and forloop.index > number_items_to_show
+                assign hide_class= " d-none-md d-block-xl"
+              endif
+            -%}
+            <sht-carousel-item
+            class="clm{{ hide_class }} {{ section.settings.enable_carousel | default: '' | replace: 'true', 'carousel__item js-carousel-item p-relative scrollable-aln-start d-flex fd-column middle-xs fg-1 fs-0 p-zero' }}"
+            style="--w-xs:12;--w-sm:6;--w-md:{{- md -}};--w-xl:{{- xl -}};"
+            id="carousel-item-{{ forloop.index }}--{{ section.id }}"
+            role="group" aria-roledescription="Slide"
+            aria-label="{{ 'accessibility.slide' | t }} {{ forloop.index }} {{ 'accessibility.of' | t }} {{ forloop.length }}"
+            data-item-index="{{ forloop.index }}">
+              <div class="card p-sides" {{ block.shopify_attributes }}>
+                <div class="card__avatar card__media mask o-hidden p-relative zi-m-1 mb-16 br-50p btlr-0 {{ content_align | replace: 'ta-center', 'm-auto' | replace: 'diagonal d-grid-md', 'ta-left' }}">
+                  {% render 'image',
+                    image_item: cover,
+                    ratio: '1/1',
+                    src: block.settings.avatar.src
+                  %}
+                  <span class="quote p-absolute zi-1 {{ section.settings.icon_color }}">
+                    {{ icon_quote }}
+                  </span>
+                </div>
+                <div class="p-zero {{ text_style }}" style="--v-pr: calc(var(--pd-sides, 0) * 2);">
+                  <h3 class="hdg-6 m-zero hide-empty mb-8">{{- block.settings.name | escape -}}</h3>
+                  <p class="m-zero fs-sm hide-empty color--light mb-16">{{- block.settings.job_title | escape -}}</p>
+                  <p class="m-zero hide-empty">{{- block.settings.text | escape -}}</p>
+                </div>
+              </div>
+            </sht-carousel-item>
+          {% endfor %}
         </div>
-      {% endfor %}
+        <div class="carousel-pagination middle-y w-100 p-absolute no-js-hidden {% if section.settings.enable_carousel == false or  section.settings.show_navigation == false %} d-none {% endif %}">
+          <button type="button" data-step="1" class="js-carousel-prev-btn button button--primary button--icon button--small p-absolute middle-y zi-1 left-0" aria-label="{{ 'accessibility.previous_slide' | t }}" name="previous" disabled>{% render 'icon-chevron-left', size: 24 %}</button>
+          <button type="button" data-step="1" class="js-carousel-next-btn button button--primary button--icon button--small p-absolute middle-y zi-1 right-0" aria-label="{{ 'accessibility.next_slide' | t }}" name="next" disabled>{% render 'icon-chevron-right', size: 24 %}</button>
+        </div>
+      </sht-carousel>
     </div>
   </div>
 </div>
+
 {% schema %}
 {
   "name": "t:sections.testimonials.name",
   "settings": [
     {
-      "type": "select",
-      "id": "color_scheme",
-      "label": "t:general.settings.color_scheme.label",
-      "default": "cs-background cs-background-1",
-      "options": [
-        {
-          "value": "cs-accent cs-accent-1",
-          "label": "t:settings_schema.colors.settings.colors_accent_1.label"
-        },
-        {
-          "value": "cs-accent cs-accent-2",
-          "label": "t:settings_schema.colors.settings.colors_accent_2.label"
-        },
-        {
-          "value": "cs-background cs-background-1",
-          "label": "t:settings_schema.colors.settings.colors_background_1.label"
-        },
-        {
-          "value": "cs-background cs-background-2",
-          "label": "t:settings_schema.colors.settings.colors_background_2.label"
-        }
-      ]
+      "type": "header",
+      "content": "t:general.settings.headers.header_general.content"
     },
     {
-      "type": "header",
-      "content": "t:general.settings.headers.header_content.content"
+      "type": "text",
+      "id": "subheading",
+      "label": "t:general.settings.section_subheading.label",
+      "default": "Subheading"
     },
     {
       "type": "text",
       "id": "heading",
-      "label": "t:general.settings.description.label",
+      "label": "t:general.settings.section_heading.label",
       "default": "Testimonials"
     },
     {
-      "type": "textarea",
+      "type": "text",
       "id": "description",
-      "label": "t:general.settings.description.label",
-      "default": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt."
+      "label": "t:general.settings.section_description.label"
     },
     {
       "type": "header",
@@ -75,12 +120,126 @@
     },
     {
       "type": "range",
-      "id": "item_per_row",
-      "min": 1,
-      "max": 6,
-      "step": 1,
-      "label": "t:general.settings.item_per_row.label",
-      "default": 3
+      "id": "max_items_to_show",
+      "min": 0,
+      "max": 48,
+      "step": 4,
+      "default": 4,
+      "label": "t:general.settings.max_items_to_show.label",
+      "info": "t:general.settings.max_items_to_show.info"
+    },
+    {
+      "type": "select",
+      "id": "content_align",
+      "label": "t:general.settings.content_alignment.label",
+      "default": "ta-left",
+      "options": [
+        {
+          "value": "ta-left",
+          "label": "t:general.settings.content_alignment.options.option_left.label"
+        },
+        {
+          "value": "ta-center",
+          "label": "t:general.settings.content_alignment.options.option_center.label"
+        },
+        {
+          "value": "diagonal d-grid-md",
+          "label": "t:general.settings.content_alignment.options.option_diagonal.label"
+        }
+      ]
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_carousel",
+      "label": "t:general.settings.enable_carousel.label",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_navigation",
+      "label": "t:general.settings.show_navigation.label",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "t:sections.testimonials.settings.header_testimonial_items.content"
+    },
+    {
+      "type": "select",
+      "id": "icon_color",
+      "label": "t:sections.testimonials.settings.icon_color_scheme.label",
+      "default": "color-normal-2",
+      "options": [
+        {
+          "value": "color-normal-1",
+          "label": "t:general.settings.accent_scheme.options.option_main_accent.label"
+        },
+        {
+          "value": "color-normal-2",
+          "label": "t:general.settings.accent_scheme.options.option_extra_accent.label"
+        }
+      ]
+    },
+    {
+      "type": "header",
+      "content": "t:general.settings.headers.header_prominent_badge.content"
+    },
+    {
+      "type": "select",
+      "id": "badge_color",
+      "label": "t:general.settings.color_scheme.label",
+      "default": "color-accent-1",
+      "options": [
+        {
+          "value": "color-accent-1",
+          "label": "t:general.settings.accent_scheme.options.option_main_accent.label"
+        },
+        {
+          "value": "color-accent-2",
+          "label": "t:general.settings.accent_scheme.options.option_extra_accent.label"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "badge_position",
+      "label": "t:general.settings.badge_position.label",
+      "default": "p-badge--bottom-right",
+      "options": [
+        {
+          "value": "p-badge--bottom-left",
+          "label": "t:general.settings.badge_position.options.option_left.label"
+        },
+        {
+          "value": "p-badge--bottom-right",
+          "label": "t:general.settings.badge_position.options.option_right.label"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "badge_shape",
+      "label": "t:general.settings.badge_shape.label",
+      "default": "badge--star",
+      "options": [
+        {
+          "value": "badge--star",
+          "label": "t:general.settings.badge_shape.options.option_star.label"
+        },
+        {
+          "value": "badge--diamond",
+          "label": "t:general.settings.badge_shape.options.option_diamond.label"
+        },
+        {
+          "value": "badge--asterisk",
+          "label": "t:general.settings.badge_shape.options.option_asterisk.label"
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "id": "badge_text",
+      "label": "t:general.settings.text.label"
     }
   ],
   "blocks": [
@@ -98,83 +257,19 @@
           "type": "text",
           "id": "name",
           "label": "t:sections.testimonials.blocks.item.settings.name.label",
-          "default": "John Doe"
+          "default": "Author's Name"
         },
         {
           "type": "text",
           "id": "job_title",
           "label": "t:sections.testimonials.blocks.item.settings.job_title.label",
-          "default": "Freelancer & fashionista"
+          "default": "Loyal Customer"
         },
         {
           "type": "textarea",
-          "id": "description",
-          "label": "t:general.settings.description.label",
-          "default": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt."
-        },
-        {
-          "type": "header",
-          "content": "t:general.settings.headers.header_social_accounts.content"
-        },
-        {
-          "type": "text",
-          "id": "social_facebook_link",
-          "label": "t:settings_schema.social_media.settings.social_facebook_link.label",
-          "info": "t:settings_schema.social_media.settings.social_facebook_link.info"
-        },
-        {
-          "type": "text",
-          "id": "social_twitter_link",
-          "label": "t:settings_schema.social_media.settings.social_twitter_link.label",
-          "info": "t:settings_schema.social_media.settings.social_twitter_link.info"
-        },
-        {
-          "type": "text",
-          "id": "social_instagram_link",
-          "label": "t:settings_schema.social_media.settings.social_instagram_link.label",
-          "info": "t:settings_schema.social_media.settings.social_instagram_link.info"
-        },
-        {
-          "type": "text",
-          "id": "social_linkedin_link",
-          "label": "t:settings_schema.social_media.settings.social_linkedin_link.label",
-          "info": "t:settings_schema.social_media.settings.social_linkedin_link.info"
-        },
-        {
-          "type": "text",
-          "id": "social_pinterest_link",
-          "label": "t:settings_schema.social_media.settings.social_pinterest_link.label",
-          "info": "t:settings_schema.social_media.settings.social_pinterest_link.info"
-        },
-        {
-          "type": "text",
-          "id": "social_vimeo_link",
-          "label": "t:settings_schema.social_media.settings.social_vimeo_link.label",
-          "info": "t:settings_schema.social_media.settings.social_vimeo_link.info"
-        },
-        {
-          "type": "text",
-          "id": "social_youtube_link",
-          "label": "t:settings_schema.social_media.settings.social_youtube_link.label",
-          "info": "t:settings_schema.social_media.settings.social_youtube_link.info"
-        },
-        {
-          "type": "text",
-          "id": "social_tiktok_link",
-          "label": "t:settings_schema.social_media.settings.social_tiktok_link.label",
-          "info": "t:settings_schema.social_media.settings.social_tiktok_link.info"
-        },
-        {
-          "type": "text",
-          "id": "social_tumblr_link",
-          "label": "t:settings_schema.social_media.settings.social_tumblr_link.label",
-          "info": "t:settings_schema.social_media.settings.social_tumblr_link.info"
-        },
-        {
-          "type": "text",
-          "id": "social_snapchat_link",
-          "label": "t:settings_schema.social_media.settings.social_snapchat_link.label",
-          "info": "t:settings_schema.social_media.settings.social_snapchat_link.info"
+          "id": "text",
+          "label": "t:sections.testimonials.blocks.item.settings.testimonial_content.label",
+          "default": "Add customer reviews and testimonials to showcase your store's happy customers."
         }
       ]
     }
@@ -183,6 +278,9 @@
     {
       "name": "t:sections.testimonials.name",
       "blocks": [
+        {
+          "type": "testimonial"
+        },
         {
           "type": "testimonial"
         },
