@@ -1,0 +1,1 @@
+if(!customElements.get("sht-content-deferred")){class a extends HTMLElement{constructor(){super();new IntersectionObserver(((e,t)=>{e[0].isIntersecting&&(t.unobserve(this),this.template=this.querySelector("template"),this.template)&&(e=this.template.content,this.appendChild(e))}).bind(this)).observe(this)}}customElements.define("sht-content-deferred",a)}
