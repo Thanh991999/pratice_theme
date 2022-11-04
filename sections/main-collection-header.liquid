@@ -1,0 +1,52 @@
+{{ 'collection-header.css' | asset_url | stylesheet_tag }}
+{% liquid
+  assign sizes = "(min-width: 361px) calc(100vw/2), calc(100vw/3)"
+  assign collection_image = collection.image.src | image_url: width: collection.image.width | image_tag: widths: '350, 450, 550, 750, 950, 1024, 1200', sizes: sizes, alt: collection.title, class: 'js-image-lazy media h-100 w-100 of-cover'
+%}
+<div class="s-grid section collection__header {% if section.settings.show_collection_image and collection.image %} collection__header--image {% endif %}" data-ui-component="Main Collection Header">
+  <div class="ctnr d-none-md">
+    {% render 'breadcrumb' %}
+  </div>
+  {%- if section.settings.show_collection_image and collection.image -%}
+    <div class="s-grid__image collection-image p-relative">
+      {% render 'image',
+        image_item: collection_image,
+      %}
+    </div>
+  {% endif %}
+  <div class="ctnr s-grid__content disable-scrollbars oy-auto m-zero">
+    {% render 'breadcrumb', classes: 'd-none d-block-md' %}
+    <div class="s-header ta-center ta-left-md p-sides">
+      <h1 class="collection-title s-header__title ts-default hide-empty hdg-2 m-zero tt-cap">
+        {{- collection.title | escape -}}
+      </h1>
+      {%- if section.settings.show_description and collection.description != blank -%}
+        <div class="s-header__desc m-sides rte">{{ collection.description }}</div>
+      {%- endif -%}
+    </div>
+  </div>
+</div>
+{% schema %}
+{
+  "name": "t:sections.collection_header.name",
+  "settings": [
+    {
+      "type": "header",
+      "content": "t:general.settings.headers.header_general.content"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_collection_image",
+      "label": "t:sections.collection_header.settings.use_collection_image.label",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_description",
+      "label": "t:sections.collection_header.settings.show_description.label",
+      "info": "t:sections.collection_header.settings.show_description.info",
+      "default": true
+    }
+  ]
+}
+{% endschema %}
