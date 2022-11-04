@@ -1,0 +1,126 @@
+{% liquid
+  assign col_products = '--w-xs: 12;'
+  assign col_product_item = '--w-xs: 12; --w-sm: 3; --w-lg: 3;'
+  assign limit = 8
+  unless settings.search_result_type == 'product'
+    assign col_products = '--w-xs: 12; --w-sm: 12; --w-md: 9;'
+    assign col_product_item = '--w-xs: 12; --w-sm: 4; --w-lg: 4;'
+    assign col_blog_page = '--w-xs: 12; --w-sm: 12; --w-md: 3;'
+    assign limit = 6
+  endunless
+%}
+
+{%- if predictive_search.performed -%}
+  <div class="search__result-contents" id="predictive-search-results-list">
+    <div class="search__result-items js-predictive-search-result-items rw">
+      {% capture no_result %}
+        <span class="d-block w-100 ta-center color--light">
+          No matching result found
+        </span>
+      {% endcapture %}
+      {%- if settings.search_result_type == 'product,page,article' and predictive_search.resources.products.size == 0 and predictive_search.resources.articles.size == 0 and predictive_search.resources.pages.size == 0 -%}
+        {{ no_result }}
+      {%- elsif settings.search_result_type == 'product,article' and predictive_search.resources.products.size == 0 and predictive_search.resources.articles.size == 0 -%}
+        {{ no_result }}
+      {%- elsif settings.search_result_type == 'product,page' and predictive_search.resources.products.size == 0 and predictive_search.resources.pages.size == 0 -%}
+        {{ no_result }}
+      {%- else -%}
+        <div class="clm" style="{{ col_products }}">
+          <div class="search__item__header d-flex between-xs middle-xs mb-24">
+            <h2 class="search__result-heading hdg-5 m-zero">{{ 'general.search.products' | t }} <span>({{ predictive_search.resources.products.size }})</span></h2>
+            {% if predictive_search.resources.products.size > 0 %}
+              <a  href="{{ routes.search_url }}?type=product&q={{ predictive_search.terms | escape }}&{{ 'options[prefix]' | url_encode }}=last" class="button button--link button--small">{{ 'general.search.view_all' | t }}</a>
+            {% endif %}
+          </div>
+          {%- if predictive_search.resources.products.size > 0 -%}
+            <div class="search__result-type search__result--product">
+              <ul class="search__result--list ls-none rw" role="listbox">
+              {%- for product in predictive_search.resources.products limit: limit -%}
+                <li id="predictive-search-item-product-{{ forloop.index }}" class="search__result-item js-predictive-search-item clm" style="{{ col_product_item }}" role="option">
+                  {% render 'card-product',
+                    product: product,
+                    item_per_row: limit | divided_by: 2,
+                    show_vendor: true,
+                    show_color_swatch: false,
+                    show_sale_badge: false,
+                    enable_quick_buy: false,
+                    ratio: '0.8/1',
+                    card_content_inner: false
+                  %}
+                </li>
+              {%- endfor -%}
+            </ul>
+            </div>
+          {% else %}
+            <span class="color--light">
+              No product found
+            </span>
+          {%- endif -%}
+        </div>
+        {% unless settings.search_result_type == 'product' %}
+          <div class="clm pt-0" style="{{ col_blog_page }}">
+            {% unless settings.search_result_type == 'product,page' %}
+              <div class="search__result--article">
+                <div class="search__item__header d-flex between-xs middle-xs mb-24">
+                  <h2 class="search__result-heading hdg-5 m-zero">{{ 'general.search.articles' | t }} <span>({{ predictive_search.resources.articles.size }})</span></h2>
+                  {% if predictive_search.resources.articles.size > 0 %}
+                    <a href="{{ routes.search_url }}?type=article&q={{ predictive_search.terms | escape }}&{{ 'options[prefix]' | url_encode }}=last" class="button button--link button--small">{{ 'general.search.view_all' | t }}</a>
+                  {% endif %}
+                </div>
+                {%- if predictive_search.resources.articles.size > 0 -%}
+                  <div class="search__result-type">
+                    <ul class="search__result--list ls-none rw" role="listbox">
+                      {%- for article in predictive_search.resources.articles limit: 4 -%}
+                        <li id="predictive-search-item-article-{{ forloop.index }}" class="search__result-item clm" style="--w-xs: 12; --w-sm: 6; --w-md: 12;" role="option">
+                          <div class="card__search">
+                            <a href="{{ article.url }}" class="d-block p-relative card__media" aria-label="{{ article.title }}" style="--ratio:1/1;">
+                              {%- if article.image -%}
+                                {{ article.image.src | image_url: width: 150 | image_tag: class: 'w-100 h-100 of-cover media', alt: article.featured_image.alt }}
+                              {% else %}
+                                {{ 'image' | placeholder_svg_tag: 'w-100 h-100 media' }}
+                              {%- endif -%}
+                            </a>
+                            <a href="{{ article.url }}" class="d-block">{{ article.title }}</a>
+                          </div>
+                        </li>
+                      {%- endfor -%}
+                    </ul>
+                  </div>
+                {% else %}
+                  <span class="color--light">
+                    No blog posts found
+                  </span>
+                {%- endif -%}
+              </div>
+            {%- endunless -%}
+            {% unless settings.search_result_type == 'product,article' %}
+              <div class="search__result--page">
+                <div class="search__item__header d-flex between-xs middle-xs mb-24">
+                  <h2 class="search__result-heading hdg-5 m-zero">{{ 'general.search.pages' | t }} <span>({{ predictive_search.resources.pages.size }})</span></h2>
+                  {% if predictive_search.resources.pages.size > 0 %}
+                    <a href="{{ routes.search_url }}?type=page&q={{ predictive_search.terms | escape }}&{{ 'options[prefix]' | url_encode }}=last" class="button button--link button--small">{{ 'general.search.view_all' | t }}</a>
+                  {% endif %}
+                </div>
+                {%- if predictive_search.resources.pages.size > 0 -%}
+                  <div class="search__result-type">
+                    <ul class="search__result--list ls-none rw" role="listbox">
+                      {%- for page in predictive_search.resources.pages limit: 4 -%}
+                        <li id="predictive-search-item-page-{{ forloop.index }}" class="search__result-item clm" style="--w-xs: 12; --w-sm: 6; --w-md: 12;" role="option">
+                          <a href="{{ page.url }}" class="d-block">{{ page.title }}</a>
+                        </li>
+                      {%- endfor -%}
+                    </ul>
+                  </div>
+                {% else %}
+                  <span class="color--light">
+                    No pages found
+                  </span>
+                {%- endif -%}
+              </div>
+            {% endunless %}
+          </div>
+        {% endunless %}
+      {%- endif -%}
+    </div>
+  </div>
+{%- endif -%}

@@ -1,0 +1,73 @@
+#recover {
+  display: none;
+}
+#recover:target {
+  display: block;
+}
+#recover:target ~ #login {
+  display: none;
+}
+[action="/account/reset"],
+[action="/account/activate"] {
+  /* margin-top: calc(var(--spacing) * 4); */
+}
+.account__header {
+  margin-bottom: calc(var(--spacing) * 4);
+}
+.address {
+  border-top: 1px solid var(--color-divider);
+  padding: 32px 0;
+}
+@media (max-width: 768px) {
+  .account__header {
+    margin-bottom: 0;
+  }
+  .profile {
+    margin: 16px 0 48px;
+  }
+  .logout {
+    margin-top: 8px;
+  }
+  .t-thead {
+    display: none;
+  }
+  .t-tr {
+    border-top: 1px solid var(--color-divider);
+    display: block;
+    padding-top: 24px;
+    padding-bottom: 24px;
+  }
+  .t-td {
+    display: flex;
+    justify-content: space-between;
+  }
+  .t-td:before {
+    content: attr(data-name);
+    color: var(--color-light-text);
+  }
+  .add-new-address {
+    margin-top: 24px;
+  }
+  .badge--button {
+    margin-top: 0;
+  }
+  th, td {
+    padding: 8px 0px;
+  }
+  .account-adress .tab__header {
+    margin-bottom: 32px;
+  }
+ 
+}
+
+@media (min-width: 769px) {
+  .t-tr {
+    border-bottom: 1px solid var(--color-divider);
+  }
+  .account-adress .tab__header {
+    margin-bottom: 48px;
+  }
+  .account-adress .address {
+    padding: 48px 0;
+  }
+}

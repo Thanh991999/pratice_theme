@@ -1,0 +1,120 @@
+{{ "running-text.css" | asset_url | stylesheet_tag: preload: true }}
+{% assign rand = section.id | md5 %}
+<div id="{{ section.id }}" class="d-flex middle-xs rng-tt running-text" data-ui-component="Running Text Section">
+  <div class="ws-nowrap o-hidden w-100 p-relative d-flex middle-xs pt-12 pb-16 {{ section.settings.color_scheme }} marquee--{{- section.settings.slope_style }}" style="--marquee-duration: {{- section.settings.speed -}}s;">
+    <div class="around-xs marquee__items--animate js-marquee-items d-flex miw-100 fs-0">
+    {% for i in (1..5) %}
+      <div class="js-marquee-item marquee-item m-zero p-zero p-relative hdg-3">{{ section.settings.text }}</div>
+    {% endfor %}
+    </div>
+    <div class="around-xs marquee__items--animate js-marquee-items d-flex miw-100 fs-0">
+      {% for i in (1..5) %}
+        <div class="js-marquee-item marquee-item m-zero p-zero p-relative hdg-3">{{ section.settings.text }}</div>
+      {% endfor %}
+      </div>
+  </div>
+</div>
+{% unless section.settings.slope_style == 'none' %}
+  <script data-asset="script">
+    function calSideOppositeAngle{{ rand }}() {
+      let elm = document.querySelector("#{{ section.id }}")
+      elm.style.height = null;
+      let degree = (4 * Math.PI) / 180;
+      let height = elm.offsetHeight ;
+      let cHeight = window.innerWidth * Math.tan(degree) + height;
+      elm.style.height = `${cHeight}px`;
+    };
+    window.requestAnimationFrame(() => calSideOppositeAngle{{ rand }}());
+    window.addEventListener('resize', function(event) {
+      window.requestAnimationFrame(()=> calSideOppositeAngle{{ rand }}());
+    });
+  </script>
+{% endunless %}
+{% schema %}
+{
+  "name": "t:sections.running_text.name",
+  "settings": [
+    {
+      "type": "header",
+      "content": "t:general.settings.headers.header_general.content"
+    },
+    {
+      "type": "select",
+      "id": "color_scheme",
+      "label": "t:general.settings.accent_scheme.label",
+      "default": "color-accent-1",
+      "options": [
+        {
+          "value": "color-accent-1",
+          "label": "t:general.settings.accent_scheme.options.option_main_accent.label"
+        },
+        {
+          "value": "color-accent-2",
+          "label": "t:general.settings.accent_scheme.options.option_extra_accent.label"
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "id": "text",
+      "label": "t:general.settings.text.label",
+      "info": "t:general.settings.text.info",
+      "default": "Free shipping and returns"
+    },
+    {
+      "type": "select",
+      "id": "speed",
+      "label": "Speed",
+      "default": "20",
+      "options": [
+        {
+          "value": "50",
+          "label": "Very slow"
+        },
+        {
+          "value": "30",
+          "label": "Slow"
+        },
+        {
+          "value": "20",
+          "label": "Normal"
+        },
+        {
+          "value": "10",
+          "label": "Fast"
+        }
+      ]
+    },
+    {
+      "type": "header",
+      "content": "t:general.settings.headers.header_layout.content"
+    },
+    {
+      "type": "select",
+      "id": "slope_style",
+      "label": "t:sections.running_text.settings.slope_style.label",
+      "default": "up",
+      "options": [
+        {
+          "value": "none",
+          "label": "t:sections.running_text.settings.slope_style.options.option_none.label"
+        },
+        {
+          "value": "up",
+          "label": "t:sections.running_text.settings.slope_style.options.option_up.label"
+        },
+        {
+          "value": "down",
+          "label": "t:sections.running_text.settings.slope_style.options.option_down.label"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:sections.running_text.name"
+    }
+  ]
+}
+{% endschema %}
+

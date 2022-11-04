@@ -1,0 +1,58 @@
+.header-logo {
+  margin-bottom: 52px;
+}
+.hdg-2 {
+  margin-bottom: 32px;
+}
+.price {
+  padding: 0 20px;
+  height: 36px;
+  line-height: 22px;
+  border: 4px solid #fff;
+  box-shadow: 0 12px 24px -8px rgba(var(--color-normal-text-rgb), .24);
+  color: #fff;
+  border-radius: 50px;
+  background: var(--color-success);
+}
+input {
+  padding: 8px 12px;
+  border: 1px dashed var(--color-border);
+  font-size: 18px;
+  font-weight: bold;
+}
+input:focus {
+  outline: 0;
+}
+@media (min-width: 459px) {
+  .header-logo {
+    margin-bottom: 68px;
+  }
+  .hdg-2 {
+    margin-bottom: 48px;
+  }
+  .price {
+    height: 48px;
+    line-height: 40px;
+  }
+}
+@media (min-width: 769px) {
+  .header-logo {
+    margin-bottom: 84px;
+  }
+  .hdg-2 {
+    margin-bottom: 80px;
+  }
+  .price {
+    height: 56px;
+    line-height: 48px;
+  }
+}
+@media (min-width: 1025px) {
+  .hdg-2 {
+    margin-bottom: 96px;
+  }
+  .price {
+    height: 66px;
+    line-height: 58px;
+  }
+}
