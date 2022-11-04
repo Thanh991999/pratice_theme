@@ -1,0 +1,67 @@
+<div class="product__sticky-info w-100 p-fixed bottom-0 zi-2 hidden-xs opacity-0 right-0" id="productStickyInfo-{{ section.id }}">
+  <sht-product-form-sticky class="product-form-sticky d-flex fd-column" data-src-frm-selector={{ product_form_id }}>
+    <div class="form--error js-product-form-error-wrapper pt-12 pb-12" data-type="error-wrapper" role="alert" hidden>
+      <span class="d-flex middle-xs">
+        <span class="icon--error icon icon--small mr-8 flx-auto">
+        {%- render 'icon-error', size: 16 -%}
+        </span>
+        <span class="js-product-form-error-message" data-type="error-message"></span>
+      </span>
+    </div>
+    <div class="product-form-sticky-wrap d-flex fd-column fd-row-md middle-xs pt-16 pb-16">
+      <div class="d-flex product__sticky__variant middle-xs w-100 between-xs">
+        <span class="js-product-sticky-info-variant product__sticky-info__variant hide-empty d-block-md {% unless section.settings.show_product_information_on_mobile %} d-none {% endunless %}"></span>
+        <span class="js-product-sticky-info-price product__sticky-info__price ta-right hide-empty"></span>
+      </div>
+      {%- form 'product', product, id: sticky_product_form_id, class: 'form form__fieds w-100 flx-auto', novalidate: 'novalidate', data-type: 'add-to-cart-form-sticky' -%}
+        <div class="form__fied">
+          <input type="hidden" class="form__control" name="id" value="{{ product.selected_or_first_available_variant.id }}" disabled>
+        </div>
+        <div class="product-form__buttons d-flex top-xs fd-column">
+          <div class="product-form__buttons__quantity d-flex w-100 {% unless section.settings.sticky_button_type == 'add_to_cart' %} d-none-important {% endunless %}">
+            <div class="product__quantity d-none-important" id="productStickyQuantity-{{ section.id }}">
+              <label class="field__label visually-hidden" for="productStickyQuantityInput-{{ section.id }}">{{ 'products.product.quantity.label' | t }}:</label>
+              <sht-quantity-input-sticky class="field_quantity" data-src-input-selector="productQuantityInput-{{ section.id }}">
+                <button class="no-js-hidden js-quantity-button js-quantity-button--minus button button--icon button--large button--plain" aria-label="{{ 'accessibility.minus' | t }}" name="minus" data-name="minus" type="button">
+                  {%- render 'icon-minus', size: 20 -%}
+                </button>
+                <input class="js-quantity-input qty-element input-number b-zero ta-center"
+                    type="number"
+                    name="quantity"
+                    aria-label="{{ 'products.product.quantity.input_label' | t: product: product.title | escape }}"
+                    id="productStickyQuantityInput-{{ section.id }}"
+                    min="1"
+                    value="1"
+                    form="{{ sticky_product_form_id }}"/>
+                  <button class="no-js-hidden js-quantity-button js-quantity-button--plus button button--icon button--large button--plain" aria-label="{{ 'accessibility.plus' | t }}" name="plus" data-name="plus" type="button">
+                    {%- render 'icon-plus', size: 20 -%}
+                  </button>
+              </sht-quantity-input-sticky>
+            </div>
+            <button type="submit" name="add" class="js-product-form-submit-btn product-button--atc button button--primary button--large w-100" {% if product.selected_or_first_available_variant.available == false %}disabled{% endif %}>
+              <span class="p-relative d-flex middle-xs center-xs ta-center">
+                <span class="js-product-form-spinner p-absolute icon">
+                  {% render 'icon-spinner' %}
+                </span>
+                  <span class="js-product-form-submit-btn-text">
+                    {%- if product.selected_or_first_available_variant.available -%}
+                      {{ 'products.product.add_to_cart' | t }}
+                    {%- else -%}
+                      {{ 'products.product.sold_out' | t }}
+                    {%- endif -%}
+                </span>
+              </span>
+            </button>
+          </div>
+          <div class="{% unless section.settings.sticky_button_type == 'dynamic_checkout' %} d-none-important {% endunless %}">
+            <sht-lazy-load-dynamic-checkout-button>
+              <template>
+                {{ form | payment_button }}
+              </template>
+            </sht-lazy-load-dynamic-checkout-button>
+          </div>
+        </div>
+      {%- endform -%}
+    </div>
+  </sht-product-form-sticky>
+</div>
